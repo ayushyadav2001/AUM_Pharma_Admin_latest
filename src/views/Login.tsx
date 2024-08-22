@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 // Next Imports
 import Link from 'next/link'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 // MUI Imports
 import Typography from '@mui/material/Typography'
@@ -19,7 +19,7 @@ import Divider from '@mui/material/Divider'
 import Alert from '@mui/material/Alert'
 
 // Third-party Imports
-import { signIn } from 'next-auth/react'
+
 import { Controller, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { object, minLength, string, email, pipe, nonEmpty } from 'valibot'
@@ -74,7 +74,9 @@ const Login = ({ mode }: { mode: Mode }) => {
 
   // Hooks
   const router = useRouter()
-  const searchParams = useSearchParams()
+
+  // const searchParams = useSearchParams()
+
   const { lang: locale } = useParams()
   const { settings } = useSettings()
 
@@ -103,24 +105,34 @@ const Login = ({ mode }: { mode: Mode }) => {
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-    const res = await signIn('credentials', {
-      email: data.email,
-      password: data.password,
-      redirect: false
-    })
 
-    if (res && res.ok && res.error === null) {
-      // Vars
-      const redirectURL = searchParams.get('redirectTo') ?? '/'
 
-      router.replace(getLocalizedUrl(redirectURL, locale as Locale))
-    } else {
-      if (res?.error) {
-        const error = JSON.parse(res.error)
+    console.log("login-data", data)
 
-        setErrorState(error)
-      }
-    }
+    // const redirectURL = searchParams.get('redirectTo') ?? '/'
+    router.push("/dashboards/crm")
+
+    // router.replace(getLocalizedUrl('/dashboards/crm', locale as Locale))
+
+
+    // const res = await signIn('credentials', {
+    //   email: data.email,
+    //   password: data.password,
+    //   redirect: false
+    // })
+
+    // if (res && res.ok && res.error === null) {
+    //   // Vars
+    // const redirectURL = searchParams.get('redirectTo') ?? '/'
+
+    // router.replace(getLocalizedUrl(redirectURL, locale as Locale))
+    // } else {
+    //   if (res?.error) {
+    //     const error = JSON.parse(res.error)
+
+    //     setErrorState(error)
+    //   }
+    // }
   }
 
   return (
@@ -160,7 +172,7 @@ const Login = ({ mode }: { mode: Mode }) => {
 
           <form
             noValidate
-            action={() => {}}
+            action={() => { }}
             autoComplete='off'
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col gap-5'
@@ -242,15 +254,7 @@ const Login = ({ mode }: { mode: Mode }) => {
             </div>
           </form>
           <Divider className='gap-3'>or</Divider>
-          <Button
-            color='secondary'
-            className='self-center text-textPrimary'
-            startIcon={<img src='/images/logos/google.png' alt='Google' width={22} />}
-            sx={{ '& .MuiButton-startIcon': { marginInlineEnd: 3 } }}
-            onClick={() => signIn('google')}
-          >
-            Sign in with Google
-          </Button>
+
         </div>
       </div>
     </div>
