@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import CustomersList from '@/views/apps/customers'
 import { setData } from '@/redux-store/slices/customerSlice'
+import Loader from '@/views/Loader/Loader'
 
 const UserListApp = () => {
   const [loading, setLoading] = useState<boolean>(true)
@@ -36,7 +37,7 @@ const UserListApp = () => {
   }, [dispatch])
 
   if (loading) {
-    return <div>Loading...</div>
+    return <Loader />
   }
 
   if (error) {

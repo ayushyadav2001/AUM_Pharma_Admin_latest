@@ -103,6 +103,9 @@ const UserDropdown = () => {
     }
   }
 
+  console.log("profile", `${process.env.NEXT_PUBLIC_IMAGE_URL}/${user?.profilePicture}`)
+
+
   return (
     <>
       <Badge
@@ -112,10 +115,13 @@ const UserDropdown = () => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         className='mis-2'
       >
+
         <Avatar
           ref={anchorRef}
           alt={user?.firstName || 'User'}
-          src={user ? `${process.env.NEXT_PUBLIC_IMAGE_URL}/${user.profilePicture}` : 'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'}
+
+          // src={user ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${user.profilePicture}` : 'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'}
+          src={'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'}
 
           onClick={handleDropdownOpen}
           className='cursor-pointer bs-[38px] is-[38px]'
@@ -143,7 +149,7 @@ const UserDropdown = () => {
               <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
                 <MenuList>
                   <div className='flex items-center plb-2 pli-4 gap-2' tabIndex={-1}>
-                    <Avatar alt={user?.firstName || 'User'} src={user ? `${process.env.NEXT_PUBLIC_IMAGE_URL}/${user.profilePicture}` : 'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'} />
+                    <Avatar alt={user?.firstName || 'User'} src={'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'} />
                     <div className='flex items-start flex-col'>
                       <Typography variant='body2' className='font-medium' color='text.primary'>
                         {user ? `${user.firstName} ${user.lastName}` : 'User'}

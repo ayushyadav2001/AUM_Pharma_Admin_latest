@@ -27,6 +27,7 @@ import { i18n } from '@configs/i18n'
 // Util Imports
 import { getDictionary } from '@/utils/getDictionary'
 import { getMode, getSystemMode } from '@core/utils/serverHelpers'
+import AuthWrapper from '@/hocs/AuthWrapper'
 
 const Layout = async ({ children, params }: ChildrenType & { params: { lang: Locale } }) => {
   // Vars
@@ -35,26 +36,28 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
   const mode = getMode()
   const systemMode = getSystemMode()
 
+
   return (
     <Providers direction={direction}>
-
-      <LayoutWrapper
-        systemMode={systemMode}
-        verticalLayout={
-          <VerticalLayout
-            navigation={<Navigation dictionary={dictionary} mode={mode} systemMode={systemMode} />}
-            navbar={<Navbar />}
-            footer={<VerticalFooter />}
-          >
-            {children}
-          </VerticalLayout>
-        }
-        horizontalLayout={
-          <HorizontalLayout header={<Header dictionary={dictionary} />} footer={<HorizontalFooter />}>
-            {children}
-          </HorizontalLayout>
-        }
-      />
+      <AuthWrapper>
+        <LayoutWrapper
+          systemMode={systemMode}
+          verticalLayout={
+            <VerticalLayout
+              navigation={<Navigation dictionary={dictionary} mode={mode} systemMode={systemMode} />}
+              navbar={<Navbar />}
+              footer={<VerticalFooter />}
+            >
+              {children}
+            </VerticalLayout>
+          }
+          horizontalLayout={
+            <HorizontalLayout header={<Header dictionary={dictionary} />} footer={<HorizontalFooter />}>
+              {children}
+            </HorizontalLayout>
+          }
+        />
+      </AuthWrapper>
       <ScrollToTop className='mui-fixed'>
         <Button
           variant='contained'
