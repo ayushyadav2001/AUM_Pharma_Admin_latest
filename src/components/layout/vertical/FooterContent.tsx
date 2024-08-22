@@ -20,7 +20,7 @@ const FooterContent = () => {
     <div
       className={classnames(verticalLayoutClasses.footerContent, 'flex items-center justify-between flex-wrap gap-4')}
     >
-      <p>
+      <p className='hidden'>
         <span className='text-textSecondary'>{`© ${new Date().getFullYear()}, Made with `}</span>
         <span>{`❤️`}</span>
         <span className='text-textSecondary'>{` by `}</span>
@@ -29,7 +29,7 @@ const FooterContent = () => {
         </Link>
       </p>
       {!isBreakpointReached && (
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-4 hidden'>
           <Link href='https://themeforest.net/licenses/standard' target='_blank' className='text-primary'>
             License
           </Link>

@@ -20,14 +20,24 @@ import Alert from '@mui/material/Alert'
 
 // Third-party Imports
 
-import { Controller, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
-import { object, minLength, string, email, pipe, nonEmpty } from 'valibot'
+import { useForm } from 'react-hook-form'
+
+
 import type { SubmitHandler } from 'react-hook-form'
-import type { InferInput } from 'valibot'
+
 import classnames from 'classnames'
 
+import { yupResolver } from '@hookform/resolvers/yup';
+
+// Formik Imports
+
+import * as yup from 'yup'
+
+import axios, { isAxiosError } from 'axios';
+
 // Type Imports
+import { toast } from 'react-toastify'
+
 import type { Mode } from '@core/types'
 import type { Locale } from '@/configs/i18n'
 
@@ -41,6 +51,7 @@ import themeConfig from '@configs/themeConfig'
 import { useImageVariant } from '@core/hooks/useImageVariant'
 import { useSettings } from '@core/hooks/useSettings'
 
+
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
 
@@ -48,16 +59,23 @@ type ErrorType = {
   message: string[]
 }
 
-type FormData = InferInput<typeof schema>
 
-const schema = object({
-  email: pipe(string(), minLength(1, 'This field is required'), email('Please enter a valid email address')),
-  password: pipe(
-    string(),
-    nonEmpty('This field is required'),
-    minLength(5, 'Password must be at least 5 characters long')
-  )
+
+
+
+
+const validationSchema = yup.object({
+  email: yup
+    .string()
+    .email('Please enter a valid email address')
+    .required('Email is required'),
+  password: yup
+    .string()
+    .required('Password is required')
 })
+
+
+type FormValues = yup.InferType<typeof validationSchema>;
 
 const Login = ({ mode }: { mode: Mode }) => {
   // States
@@ -80,17 +98,27 @@ const Login = ({ mode }: { mode: Mode }) => {
   const { lang: locale } = useParams()
   const { settings } = useSettings()
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<FormData>({
-    resolver: valibotResolver(schema),
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormValues>({
+    resolver: yupResolver(validationSchema),
     defaultValues: {
-      email: 'admin@materialize.com',
-      password: 'admin'
+      email: '',
+      password: ''
     }
-  })
+  });
+
+
+
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   formState: { errors }
+  // } = useForm<FormData>({
+  //   resolver: valibotResolver(schema),
+  //   defaultValues: {
+  //     email: 'admin@materialize.com',
+  //     password: 'admin'
+  //   }
+  // })
 
   const authBackground = useImageVariant(mode, lightImg, darkImg)
 
@@ -104,36 +132,43 @@ const Login = ({ mode }: { mode: Mode }) => {
 
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
-  const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
+    try {
+      console.log("data", data)
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/login`, data);
 
+      if (response.status === 200) {
+        // Handle successful login
+        toast.success('Login successful!');
 
-    console.log("login-data", data)
+        // Save data in session storage
+        const { token, user } = response.data;
 
-    // const redirectURL = searchParams.get('redirectTo') ?? '/'
-    router.push("/dashboards/crm")
+        sessionStorage.setItem('authToken', token);
 
-    // router.replace(getLocalizedUrl('/dashboards/crm', locale as Locale))
+        sessionStorage.setItem('user', JSON.stringify(user));
 
+        router.push("/en/dashboards/crm");
+      } else {
+        // Handle unsuccessful login
+        // setErrorState({ message: [response.data.message || 'Login failed. Please try again.'] });
 
-    // const res = await signIn('credentials', {
-    //   email: data.email,
-    //   password: data.password,
-    //   redirect: false
-    // })
+        toast.error(response.data.message || 'Login failed. Please try again.');
+      }
+    } catch (error) {
+      // Handle API errors
+      if (isAxiosError(error) && error.response) {
 
-    // if (res && res.ok && res.error === null) {
-    //   // Vars
-    // const redirectURL = searchParams.get('redirectTo') ?? '/'
+        // setErrorState({ message: [error.response.data.message || 'An error occurred.'] });
 
-    // router.replace(getLocalizedUrl(redirectURL, locale as Locale))
-    // } else {
-    //   if (res?.error) {
-    //     const error = JSON.parse(res.error)
+        toast.error(error.response.data.message || 'An error occurred.');
+      } else {
+        // setErrorState({ message: ['An unexpected error occurred.'] });
 
-    //     setErrorState(error)
-    //   }
-    // }
-  }
+        toast.error('An unexpected error occurred.');
+      }
+    }
+  };
 
   return (
     <div className='flex bs-full justify-center'>
@@ -161,9 +196,9 @@ const Login = ({ mode }: { mode: Mode }) => {
         <div className='flex flex-col gap-5 is-full sm:is-auto md:is-full sm:max-is-[400px] md:max-is-[unset]'>
           <div>
             <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}!👋🏻`}</Typography>
-            <Typography>Please sign-in to your account and start the adventure</Typography>
+            <Typography>Sign in to start managing your Pharmacy admin panel.</Typography>
           </div>
-          <Alert icon={false} className='bg-[var(--mui-palette-primary-lightOpacity)]'>
+          <Alert icon={false} className='bg-[var(--mui-palette-primary-lightOpacity)] hidden'>
             <Typography variant='body2' color='primary'>
               Email: <span className='font-medium'>admin@materialize.com</span> / Pass:{' '}
               <span className='font-medium'>admin</span>
@@ -177,62 +212,45 @@ const Login = ({ mode }: { mode: Mode }) => {
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col gap-5'
           >
-            <Controller
-              name='email'
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  autoFocus
-                  type='email'
-                  label='Email'
-                  onChange={e => {
-                    field.onChange(e.target.value)
-                    errorState !== null && setErrorState(null)
-                  }}
-                  {...((errors.email || errorState !== null) && {
-                    error: true,
-                    helperText: errors?.email?.message || errorState?.message[0]
-                  })}
-                />
-              )}
+            <TextField
+              {...register('email')}
+              fullWidth
+              autoFocus
+              placeholder='Enter you email'
+              type='email'
+              label='Email'
+              onChange={e => {
+                setValue('email', e.target.value);
+                errorState !== null && setErrorState(null);
+              }}
+              error={!!errors.email || !!errorState}
+              helperText={errors.email?.message || errorState?.message[0]}
             />
-            <Controller
-              name='password'
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label='Password'
-                  id='login-password'
-                  type={isPasswordShown ? 'text' : 'password'}
-                  onChange={e => {
-                    field.onChange(e.target.value)
-                    errorState !== null && setErrorState(null)
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <IconButton
-                          edge='end'
-                          onClick={handleClickShowPassword}
-                          onMouseDown={e => e.preventDefault()}
-                          aria-label='toggle password visibility'
-                        >
-                          <i className={isPasswordShown ? 'ri-eye-off-line' : 'ri-eye-line'} />
-                        </IconButton>
-                      </InputAdornment>
-                    )
-                  }}
-                  {...(errors.password && { error: true, helperText: errors.password.message })}
-                />
-              )}
+            <TextField
+              {...register('password')}
+              fullWidth
+              label='Password'
+              placeholder='Enter you password'
+
+              id='login-password'
+              type={isPasswordShown ? 'text' : 'password'}
+              onChange={e => {
+                setValue('password', e.target.value);
+                errorState !== null && setErrorState(null);
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton edge='end' onClick={handleClickShowPassword} onMouseDown={e => e.preventDefault()} aria-label='toggle password visibility'>
+                      <i className={isPasswordShown ? 'ri-eye-off-line' : 'ri-eye-line'} />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+              error={!!errors.password}
+              helperText={errors.password?.message}
             />
-            <div className='flex justify-between items-center flex-wrap gap-x-3 gap-y-1'>
+            <div className='flex justify-between hidden items-center flex-wrap gap-x-3 gap-y-1'>
               <FormControlLabel control={<Checkbox defaultChecked />} label='Remember me' />
               <Typography
                 className='text-end'
@@ -246,14 +264,14 @@ const Login = ({ mode }: { mode: Mode }) => {
             <Button fullWidth variant='contained' type='submit'>
               Log In
             </Button>
-            <div className='flex justify-center items-center flex-wrap gap-2'>
+            <div className='flex justify-center hidden items-center flex-wrap gap-2'>
               <Typography>New on our platform?</Typography>
               <Typography component={Link} href={getLocalizedUrl('/register', locale as Locale)} color='primary'>
                 Create an account
               </Typography>
             </div>
           </form>
-          <Divider className='gap-3'>or</Divider>
+          <Divider className='gap-3 hidden'>or</Divider>
 
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 
 // Next Imports
@@ -47,6 +47,8 @@ const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false)
 
+  const [user, setUser] = useState<{ profilePicture: string, firstName: string, lastName: string, email: string } | null>(null)
+
   // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
 
@@ -55,6 +57,18 @@ const UserDropdown = () => {
 
   const { settings } = useSettings()
   const { lang: locale } = useParams()
+
+
+
+  useEffect(() => {
+    // Get user data from session storage
+    const userData = sessionStorage.getItem('user')
+
+    if (userData) {
+      setUser(JSON.parse(userData))
+    }
+  }, [])
+
 
   const handleDropdownOpen = () => {
     !open ? setOpen(true) : setOpen(false)
@@ -76,11 +90,16 @@ const UserDropdown = () => {
     try {
       // Sign out from the app
       console.log("Logout")
+
+      // Clear session storage
+      sessionStorage.clear()
+
+      // Optionally redirect to login page
+      router.push('/login')
     } catch (error) {
       console.error(error)
 
-      // Show above error in a toast like following
-      // toastService.error((err as Error).message)
+      // Show error in a toast (example: toastService.error((err as Error).message))
     }
   }
 
@@ -95,8 +114,9 @@ const UserDropdown = () => {
       >
         <Avatar
           ref={anchorRef}
-          alt={'John Doe'}
-          src={'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'}
+          alt={user?.firstName || 'User'}
+          src={user ? `${process.env.NEXT_PUBLIC_IMAGE_URL}/${user.profilePicture}` : 'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'}
+
           onClick={handleDropdownOpen}
           className='cursor-pointer bs-[38px] is-[38px]'
         />
@@ -123,12 +143,13 @@ const UserDropdown = () => {
               <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
                 <MenuList>
                   <div className='flex items-center plb-2 pli-4 gap-2' tabIndex={-1}>
-                    <Avatar alt={'John Doe'} src={'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'} />
+                    <Avatar alt={user?.firstName || 'User'} src={user ? `${process.env.NEXT_PUBLIC_IMAGE_URL}/${user.profilePicture}` : 'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'} />
                     <div className='flex items-start flex-col'>
                       <Typography variant='body2' className='font-medium' color='text.primary'>
-                        {'John Doe'}
+                        {user ? `${user.firstName} ${user.lastName}` : 'User'}
+
                       </Typography>
-                      <Typography variant='caption'>{'john@gmail.com'}</Typography>
+                      <Typography variant='caption'>{user?.email || 'user@example.com'}</Typography>
                     </div>
                   </div>
                   <Divider className='mlb-1' />
