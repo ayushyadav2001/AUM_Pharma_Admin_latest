@@ -103,9 +103,10 @@
     "menuLevel3": "Menu Level 3",
     "disabledMenu": "Disabled Menu",
     "masters": "Masters",
-    "addProducts": "Add Products",
+    "addProducts": "Add Product",
     "importProducts": "Import Products",
-    "products": "List Product",
+    "products": "Products",
+    "productsList": "List Products",
     "vendor": "Vendors",
     "customers": "Customers"
   }

@@ -52,6 +52,7 @@ import { useImageVariant } from '@core/hooks/useImageVariant'
 import { useSettings } from '@core/hooks/useSettings'
 
 
+
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
 
@@ -83,12 +84,19 @@ const Login = ({ mode }: { mode: Mode }) => {
   const [errorState, setErrorState] = useState<ErrorType | null>(null)
 
   // Vars
-  const darkImg = '/images/pages/auth-v2-mask-1-dark.png'
-  const lightImg = '/images/pages/auth-v2-mask-1-light.png'
+  // const darkImg = '/images/pages/auth-v2-mask-1-dark.png'
+  // const lightImg = '/images/pages/auth-v2-mask-1-light.png'
+
   const darkIllustration = '/images/illustrations/auth/v2-login-dark.png'
-  const lightIllustration = '/images/illustrations/auth/v2-login-light.png'
-  const borderedDarkIllustration = '/images/illustrations/auth/v2-login-dark-border.png'
-  const borderedLightIllustration = '/images/illustrations/auth/v2-login-light-border.png'
+
+  // const lightIllustration = '/images/illustrations/auth/v2-login-light.png'
+
+  const lightIllustration = '/images/illustrations/auth/login-light.png'
+
+  // const lightIllustration = '/images/illustrations/auth/login-light.png'
+
+  const borderedDarkIllustration = '/images/illustrations/auth/login-light.png'
+  const borderedLightIllustration = '/images/illustrations/auth/login-light.png'
 
   // Hooks
   const router = useRouter()
@@ -120,7 +128,7 @@ const Login = ({ mode }: { mode: Mode }) => {
   //   }
   // })
 
-  const authBackground = useImageVariant(mode, lightImg, darkImg)
+  // const authBackground = useImageVariant(mode, lightImg, darkImg)
 
   const characterIllustration = useImageVariant(
     mode,
@@ -187,7 +195,7 @@ const Login = ({ mode }: { mode: Mode }) => {
             className='max-bs-[673px] max-is-full bs-auto'
           />
         </div>
-        <img src={authBackground} className='absolute bottom-[4%] z-[-1] is-full max-md:hidden' />
+        {/* <img src={authBackground} className='absolute bottom-[4%] z-[-1] is-full max-md:hidden' /> */}
       </div>
       <div className='flex justify-center items-center bs-full bg-backgroundPaper !min-is-full p-6 md:!min-is-[unset] md:p-12 md:is-[480px]'>
         <div className='absolute block-start-5 sm:block-start-[38px] inline-start-6 sm:inline-start-[38px]'>

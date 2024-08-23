@@ -23,6 +23,7 @@ import Button from '@mui/material/Button'
 
 // Third-party Imports
 
+// import DefaultAvatar from "@assets/defaultImages/default-Avator-transformed.png"
 
 // Type Imports
 import type { Locale } from '@configs/i18n'
@@ -103,7 +104,8 @@ const UserDropdown = () => {
     }
   }
 
-  console.log("profile", `${process.env.NEXT_PUBLIC_IMAGE_URL}/${user?.profilePicture}`)
+
+
 
 
   return (
@@ -120,7 +122,8 @@ const UserDropdown = () => {
           ref={anchorRef}
           alt={user?.firstName || 'User'}
 
-          // src={user ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${user.profilePicture}` : 'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'}
+          // src={user ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${user.profilePicture}` : `${DefaultAvatar}`}
+
           src={'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'}
 
           onClick={handleDropdownOpen}
