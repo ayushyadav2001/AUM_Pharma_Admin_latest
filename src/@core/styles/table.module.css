@@ -19,6 +19,7 @@
       font-weight: 500;
       font-size: 0.8125rem;
       letter-spacing: 0.2px;
+      border: 1px solid var(--border-color);
       line-height: 1.8462;
       text-align: start;
       block-size: 64px;
@@ -52,6 +53,7 @@
       font-size: 0.9375rem;
       line-height: 1.4667;
       block-size: 50px;
+      border: 1px solid var(--border-color);
       &:not(:first-of-type):not(:last-of-type) {
         padding-block: 0.5rem;
         padding-inline: 1rem;
@@ -69,6 +71,9 @@
         padding-block: 0.5rem;
         padding-inline: 1rem 1.25rem;
       }
+    }
+    tr:nth-child(even) {
+      background-color: #f0f0f0; /* Light gray background for even rows */
     }
 
     tr:not(:last-child) {

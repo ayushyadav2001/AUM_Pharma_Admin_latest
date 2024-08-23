@@ -102,9 +102,11 @@
     "menuLevel2": "مستوى القائمة 2",
     "menuLevel3": "مستوى القائمة 3",
     "disabledMenu": "قائمة المعوقين",
-    "masters": "Masters",
-    "products": "Products",
-    "vendor": "Vendors",
-      "customers": "Customers"
+    "masters": "ماجستير",
+    "products": "قائمة المنتجات",
+    "addProducts": "إضافة منتجات",
+    "vendor": "البائعون",
+    "customers": "العملاء",
+    "importProducts": "استيراد المنتجات"
   }
 }

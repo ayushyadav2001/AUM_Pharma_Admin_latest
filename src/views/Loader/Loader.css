@@ -1,18 +1,19 @@
-/* Loader.css */
 .loader-container {
   display: flex;
+  flex-direction: column; /* Stack items vertically */
   justify-content: center;
   align-items: center;
   block-size: 100vh; /* Full viewport height */
 }
 
 .loader {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-block-start: 16px solid #3498db; /* Blue */
+  border: 8px solid #f3f3f3; /* Light grey */
+  border-block-start: 8px solid #3498db; /* Blue */
   border-radius: 50%;
-  inline-size: 120px;
-  block-size: 120px;
+  inline-size: 60px; /* Smaller size */
+  block-size: 60px; /* Smaller size */
   animation: spin 2s linear infinite;
+  margin-block-end: 20px; /* Space between loader and logo */
 }
 
 @keyframes spin {

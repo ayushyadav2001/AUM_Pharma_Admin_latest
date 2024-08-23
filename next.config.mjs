@@ -22,6 +22,20 @@ const nextConfig = {
         locale: false
       }
     ]
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'aum-pharma.techbv.in',
+        pathname: '/**'
+      }
+    ]
   }
 }
 

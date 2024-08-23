@@ -102,9 +102,11 @@
     "menuLevel2": "Niveau menu 2",
     "menuLevel3": "Niveau menu 3",
     "disabledMenu": "Menu désactivé",
-    "masters": "Masters",
-    "products": "Products",
-    "vendor": "Vendors",
-    "customers": "Customers"
+    "masters": "Maîtres",
+    "products": "Liste des produits",
+    "addProducts": "Ajouter des produits",
+    "vendor": "Fournisseurs",
+    "customers": "Clients",
+    "importProducts": "Importer des produits"
   }
 }

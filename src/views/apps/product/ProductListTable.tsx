@@ -1,7 +1,9 @@
 'use client'
+import { useEffect, useState, useMemo } from 'react'
+
+import Image from 'next/image'
 
 // React Imports
-import { useEffect, useState, useMemo } from 'react'
 
 // Next Imports
 import Link from 'next/link'
@@ -18,8 +20,11 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Chip from '@mui/material/Chip'
 
-// import Checkbox from '@mui/material/Checkbox'
+import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
+
+import { saveAs } from 'file-saver';
+
 
 // import { styled } from '@mui/material/styles'
 
@@ -70,6 +75,14 @@ import { toast } from 'react-toastify'
 
 import { useDispatch } from 'react-redux'
 
+import { FaFileCsv, FaFileExcel, FaPrint, FaFilePdf } from 'react-icons/fa';
+
+import * as XLSX from 'xlsx';
+
+
+
+import jsPDF from 'jspdf';
+
 import type { UsersType } from '@/types/apps/userTypes'
 import type { Locale } from '@configs/i18n'
 
@@ -93,6 +106,12 @@ import FileUploaderSingleExcel from './ProductExcelUpload/FileUploaderSingle'
 
 import ExcelImportTable from './ExcelImportTale'
 import { setProductData } from '@/redux-store/slices/productSlice'
+import Loader from '@/views/Loader/Loader'
+
+import 'jspdf-autotable';
+
+import DefaultProductImage from "@assets/defaultImages/default-prod.webp"
+
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -224,9 +243,9 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
     fetchVendors()
   }, [importModal])
 
-  const OpenImportModel = () => {
-    setImportModel(true)
-  }
+  // const OpenImportModel = () => {
+  //   setImportModel(true)
+  // }
 
   const closeImportModel = () => {
     setImportModel(false)
@@ -237,29 +256,52 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   const columns = useMemo<ColumnDef<any, any>[]>(
     () => [
-      // {
-      //   id: 'select',
-      //   header: ({ table }) => (
-      //     <Checkbox
-      //       {...{
-      //         checked: table.getIsAllRowsSelected(),
-      //         indeterminate: table.getIsSomeRowsSelected(),
-      //         onChange: table.getToggleAllRowsSelectedHandler()
-      //       }}
-      //     />
-      //   ),
-      //   cell: ({ row }) => (
-      //     <Checkbox
-      //       {...{
-      //         checked: row.getIsSelected(),
-      //         disabled: !row.getCanSelect(),
-      //         indeterminate: row.getIsSomeSelected(),
-      //         onChange: row.getToggleSelectedHandler()
-      //       }}
-      //     />
-      //   )
-      // },
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              indeterminate: table.getIsSomeRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler()
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            {...{
+              checked: row.getIsSelected(),
+              disabled: !row.getCanSelect(),
+              indeterminate: row.getIsSomeSelected(),
+              onChange: row.getToggleSelectedHandler()
+            }}
+          />
+        )
+      },
+      columnHelper.accessor('product_image', {
+        header: 'Product Image',
+        cell: ({ row }) => {
+          const productImage = row.original.product_image;
 
+          const imageUrl = productImage
+            ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${productImage}`
+            : DefaultProductImage;
+
+          return (
+
+            <div className="flex items-center justify-center w-12 h-12">
+              <Image
+                src={imageUrl}
+                alt="Product Image"
+                width={50}
+                height={50}
+                className="object-cover"
+                priority
+              />
+            </div>
+          );
+        },
+      }),
       columnHelper.accessor('category', {
         header: 'Category',
         cell: ({ row }) => <Typography>{row.original.category?.name || 'N/A'}</Typography>
@@ -408,6 +450,89 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   //   }
   // }
 
+  const handleExportPDF = () => {
+    const headers = [
+      'Product Image', 'Category', 'Sub Category', 'Product ID', 'Product Name',
+      'MRP', 'IGST', 'HSN', 'Manufacturer', 'Composition', 'Packing Type',
+      'Packaging', 'Schedule', 'Usage', 'About Salt', 'Status'
+    ];
+
+    const rows = table.getRowModel().rows.map(row => {
+      return row.getAllCells().map(cell => cell.getValue());
+    });
+
+    const doc: any = new jsPDF();
+
+    doc?.autoTable({ head: [headers], body: rows });
+    doc.save('products.pdf');
+  };
+
+  const handlePrint = () => {
+    const tableElement = document.getElementById('table-to-print');
+
+    if (!tableElement) {
+      console.error('Table element not found');
+
+      return;
+    }
+
+    const printWindow = window.open('', '', 'height=600,width=800');
+
+    printWindow?.document.write('<html><head><title>Print Table</title>');
+
+    printWindow?.document.write('</head><body >');
+    printWindow?.document.write('<h1>Table Print</h1>');
+    printWindow?.document.write(tableElement.outerHTML); // Print the table HTML
+    printWindow?.document.write('</body></html>');
+    printWindow?.document.close();
+    printWindow?.focus();
+    printWindow?.print();
+  };
+
+  const handleExportExcel = () => {
+    const headers = [
+      'Product Image', 'Category', 'Sub Category', 'Product ID', 'Product Name',
+      'MRP', 'IGST', 'HSN', 'Manufacturer', 'Composition', 'Packing Type',
+      'Packaging', 'Schedule', 'Usage', 'About Salt', 'Status'
+    ];
+
+    const rows = table.getRowModel().rows.map(row => {
+      return row.getAllCells().map(cell => cell.getValue());
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
+
+    XLSX.writeFile(workbook, 'products.xlsx');
+  };
+
+  const handleExportCSV = () => {
+    const headers = [
+      'Product Image', 'Category', 'Sub Category', 'Product ID', 'Product Name',
+      'MRP', 'IGST', 'HSN', 'Manufacturer', 'Composition', 'Packing Type',
+      'Packaging', 'Schedule', 'Usage', 'About Salt', 'Status'
+    ];
+
+    const csvRows = [];
+
+    // Add the headers
+    csvRows.push(headers.join(','));
+
+    // Add the data
+    table.getRowModel().rows.forEach(row => {
+      const rowData = row.getAllCells().map(cell => `"${cell.getValue()}"`).join(',');
+
+      csvRows.push(rowData);
+    });
+
+    // Create CSV blob and trigger download
+    const csvBlob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8' });
+
+    saveAs(csvBlob, 'products.csv');
+  };
+
   const importProductSchema = yup.object().shape({
     vendor_id: yup.string().required('Vendor is required'),
     product_excel: yup.mixed().required('Excel is required')
@@ -516,7 +641,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <Loader />
   }
 
   return (
@@ -526,24 +651,46 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
         {/* <TableFilters setData={setData} tableData={tableData} /> */}
         <Divider />
         <div className='flex justify-between gap-4 p-5 flex-col items-start sm:flex-row sm:items-center'>
-          <div className='flex justify-between gap-4 p-5 flex-col items-start sm:flex-row sm:items-center'>
+          <div className="flex justify-between gap-4 p-5 flex-col items-start sm:flex-row sm:items-center">
+
             <Button
-              color='secondary'
-              variant='outlined'
-              startIcon={<i className='ri-upload-2-line' />}
-              className='is-full sm:is-auto'
+              color="secondary"
+              variant="outlined"
+              startIcon={<FaFileCsv className="text-xl" />}
+              className="is-full sm:is-auto"
+              onClick={handleExportCSV}
             >
-              Export
+              Export CSV
             </Button>
 
             <Button
-              color='primary'
-              variant='contained'
-              startIcon={<i className='ri-skip-down-line' />}
-              className='is-full sm:is-auto'
-              onClick={OpenImportModel}
+              color="secondary"
+              variant="outlined"
+              startIcon={<FaFileExcel className="text-xl" />}
+              className="is-full sm:is-auto"
+              onClick={handleExportExcel}
             >
-              Import
+              Export Excel
+            </Button>
+
+            <Button
+              color="secondary"
+              variant="outlined"
+              startIcon={<FaPrint className="text-xl" />}
+              className="is-full sm:is-auto"
+              onClick={handlePrint}
+            >
+              Print
+            </Button>
+
+            <Button
+              color="secondary"
+              variant="outlined"
+              startIcon={<FaFilePdf className="text-xl" />}
+              className="is-full sm:is-auto"
+              onClick={handleExportPDF}
+            >
+              Export PDF
             </Button>
           </div>
 
@@ -563,7 +710,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
           </div>
         </div>
         <div className='overflow-x-auto'>
-          <table className={tableStyles.table}>
+          <table id="table-to-print" className={tableStyles.table}>
             <thead>
               {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>

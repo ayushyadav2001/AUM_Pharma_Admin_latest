@@ -14,9 +14,9 @@ import type { getDictionary } from '@/utils/getDictionary'
 import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Menu'
 
 // Component Imports
-// import { Menu, SubMenu, MenuItem, MenuSection } from '@menu/vertical-menu'
+import { Menu, SubMenu, MenuItem, MenuSection } from '@menu/vertical-menu'
 
-import { Menu, MenuItem, MenuSection } from '@menu/vertical-menu'
+// import { Menu, MenuItem, MenuSection } from '@menu/vertical-menu'
 
 // import { GenerateVerticalMenu } from '@components/GenerateMenu'
 
@@ -398,9 +398,31 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
 
         <MenuSection label={dictionary['navigation'].masters}>
-          <MenuItem href={`/${locale}/apps/products`} icon={<i className='ri-layout-4-line' />}>
+          {/* <MenuItem href={`/${locale}/apps/products`} icon={<i className='ri-layout-4-line' />}>
             {dictionary['navigation'].products}
-          </MenuItem>
+          </MenuItem> */}
+
+
+          <SubMenu
+            label={dictionary['navigation'].products}
+            icon={<i className='ri-home-smile-line' />}
+
+          // suffix={<Chip label='5' size='small' color='error' />}
+          >
+            <MenuItem href={`/${locale}/apps/products`}  >
+              {dictionary['navigation'].products}
+            </MenuItem>
+            <MenuItem href={`/${locale}/apps/products/add`}  >
+              {dictionary['navigation'].addProducts}
+            </MenuItem>
+            <MenuItem href={`/${locale}/apps/products/import`}  >
+              {dictionary['navigation'].importProducts}
+            </MenuItem>
+
+
+
+          </SubMenu>
+
 
           <MenuItem href={`/${locale}/apps/vendors`} icon={<i className='ri-team-line' />}>
             {dictionary['navigation'].vendor}

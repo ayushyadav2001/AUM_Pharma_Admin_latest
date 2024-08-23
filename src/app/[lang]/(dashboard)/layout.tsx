@@ -16,8 +16,11 @@ import Navigation from '@components/layout/vertical/Navigation'
 import Header from '@components/layout/horizontal/Header'
 import Navbar from '@components/layout/vertical/Navbar'
 import VerticalFooter from '@components/layout/vertical/Footer'
+
 import HorizontalFooter from '@components/layout/horizontal/Footer'
-import Customizer from '@core/components/customizer'
+
+// import Customizer from '@core/components/customizer'
+
 import ScrollToTop from '@core/components/scroll-to-top'
 
 
@@ -66,7 +69,7 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
           <i className='ri-arrow-up-line' />
         </Button>
       </ScrollToTop>
-      <Customizer dir={direction} />
+      {/* <Customizer dir={direction} /> */}
 
     </Providers>
   )
