@@ -26,8 +26,8 @@ import '@/app/globals.css'
 import '@assets/iconify-icons/generated-icons.css'
 
 export const metadata = {
-  title: 'Materialize - Material Next.js Admin Template',
-  description: 'Materialize - Material Next.js Admin Template'
+  title: 'Aum Pharmacy',
+  description: 'Pharmacy management solution, pharmacy admin panel, medicine sales, e-commerce pharmacy, pharmacy app, order prescriptions online, inventory management, pharmacy website, digital pharmacy platform, mobile pharmacy app.'
 }
 
 const Layout = ({ children }: ChildrenType) => {
