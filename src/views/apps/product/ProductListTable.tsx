@@ -81,7 +81,7 @@ import * as XLSX from 'xlsx';
 
 
 
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 
 import type { UsersType } from '@/types/apps/userTypes'
 import type { Locale } from '@configs/i18n'

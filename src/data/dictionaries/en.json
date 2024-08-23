@@ -35,7 +35,9 @@
     "invoice": "Invoice",
     "preview": "Preview",
     "edit": "Edit",
-    "user": "User",
+    "user": "Users",
+    "userList": "List Users",
+    "rolesList": "Roles",
     "view": "View",
     "rolesPermissions": "Roles & Permissions",
     "roles": "Roles",
@@ -108,6 +110,15 @@
     "products": "Products",
     "productsList": "List Products",
     "vendor": "Vendors",
-    "customers": "Customers"
+    "vendorList": "List Vendors",
+    "vendorAdd": "Add Vendors",
+    "customers": "Customers",
+    "purchases": "Purchase",
+    "orders": "Orders",
+    "stockAdjustment": "Stock Adjustment",
+    "reports": "Reports",
+    "notificationTemplate": "Notification Template",
+    "setting": "Settings",
+    "home": "Home"
   }
 }

@@ -36,6 +36,9 @@
     "preview": "Aperçu",
     "edit": "Éditer",
     "user": "Utilisateur",
+    "user": "Users",
+    "userList": "List Users",
+    "rolesList": "Roles",
     "view": "Voir",
     "rolesPermissions": "Rôles et autorisations",
     "roles": "Les rôles",
@@ -107,7 +110,16 @@
     "productsList": "List Product",
     "addProducts": "Ajouter des produits",
     "vendor": "Fournisseurs",
+    "vendorList": "List Vendors",
+    "vendorAdd": "Add Vendors",
     "customers": "Clients",
-    "importProducts": "Importer des produits"
+    "importProducts": "Importer des produits",
+    "purchases": "Purchase",
+    "orders": "Orders",
+    "stockAdjustment": "Stock Adjustment",
+    "reports": "Reports",
+    "notificationTemplate": "Notification Templates",
+    "setting": "Settings",
+    "home": "Home"
   }
 }

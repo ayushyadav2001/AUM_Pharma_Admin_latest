@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid'
 import type { UsersType } from '@/types/apps/userTypes'
 
 // Component Imports
-import UserListTable from './ProductListTable'
+import UserListTable from './VendorListTable'
 import UserListCards from './UserListCards'
 
 const VendorList = ({ userData }: { userData?: UsersType[] }) => {

@@ -72,9 +72,9 @@
         padding-inline: 1rem 1.25rem;
       }
     }
-    tr:nth-child(even) {
-      background-color: #f0f0f0; /* Light gray background for even rows */
-    }
+    /* tr:nth-child(even) {
+      background-color: #f0f0f0; 
+    } */
 
     tr:not(:last-child) {
       border-block-end: 1px solid var(--border-color);

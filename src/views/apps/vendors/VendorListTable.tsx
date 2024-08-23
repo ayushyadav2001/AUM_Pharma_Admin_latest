@@ -25,6 +25,18 @@ import IconButton from '@mui/material/IconButton'
 import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 
+
+
+import { FaFileCsv, FaFileExcel, FaPrint, FaFilePdf } from 'react-icons/fa';
+
+import * as XLSX from 'xlsx';
+
+
+
+import { jsPDF } from 'jspdf';
+
+import 'jspdf-autotable';
+
 // Third-party Imports
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
@@ -42,6 +54,8 @@ import {
 } from '@tanstack/react-table'
 import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
+
+import { saveAs } from 'file-saver';
 
 // Type Imports
 // import type { ThemeColor } from '@core/types'
@@ -144,6 +158,11 @@ const DebouncedInput = ({
 //   pending: 'warning',
 //   inactive: 'secondary'
 // }
+
+
+
+
+
 
 // Column Definitions
 const columnHelper = createColumnHelper<any>()
@@ -348,6 +367,93 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   //   }
   // }
 
+
+
+
+  const handleExportPDF = () => {
+    const headers = [
+      'Product Image', 'Category', 'Sub Category', 'Product ID', 'Product Name',
+      'MRP', 'IGST', 'HSN', 'Manufacturer', 'Composition', 'Packing Type',
+      'Packaging', 'Schedule', 'Usage', 'About Salt', 'Status'
+    ];
+
+    const rows = table.getRowModel().rows.map(row => {
+      return row.getAllCells().map(cell => cell.getValue());
+    });
+
+    const doc: any = new jsPDF();
+
+    doc?.autoTable({ head: [headers], body: rows });
+    doc.save('products.pdf');
+  };
+
+  const handlePrint = () => {
+    const tableElement = document.getElementById('table-to-print');
+
+    if (!tableElement) {
+      console.error('Table element not found');
+
+      return;
+    }
+
+    const printWindow = window.open('', '', 'height=600,width=800');
+
+    printWindow?.document.write('<html><head><title>Print Table</title>');
+
+    printWindow?.document.write('</head><body >');
+    printWindow?.document.write('<h1>Table Print</h1>');
+    printWindow?.document.write(tableElement.outerHTML); // Print the table HTML
+    printWindow?.document.write('</body></html>');
+    printWindow?.document.close();
+    printWindow?.focus();
+    printWindow?.print();
+  };
+
+  const handleExportExcel = () => {
+    const headers = [
+      'Product Image', 'Category', 'Sub Category', 'Product ID', 'Product Name',
+      'MRP', 'IGST', 'HSN', 'Manufacturer', 'Composition', 'Packing Type',
+      'Packaging', 'Schedule', 'Usage', 'About Salt', 'Status'
+    ];
+
+    const rows = table.getRowModel().rows.map(row => {
+      return row.getAllCells().map(cell => cell.getValue());
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
+
+    XLSX.writeFile(workbook, 'vendor.xlsx');
+  };
+
+  const handleExportCSV = () => {
+    const headers = [
+      'Product Image', 'Category', 'Sub Category', 'Product ID', 'Product Name',
+      'MRP', 'IGST', 'HSN', 'Manufacturer', 'Composition', 'Packing Type',
+      'Packaging', 'Schedule', 'Usage', 'About Salt', 'Status'
+    ];
+
+    const csvRows = [];
+
+    // Add the headers
+    csvRows.push(headers.join(','));
+
+    // Add the data
+    table.getRowModel().rows.forEach(row => {
+      const rowData = row.getAllCells().map(cell => `"${cell.getValue()}"`).join(',');
+
+      csvRows.push(rowData);
+    });
+
+    // Create CSV blob and trigger download
+    const csvBlob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8' });
+
+    saveAs(csvBlob, 'vendor.csv');
+  };
+
+
   return (
     <>
       <Card>
@@ -357,14 +463,48 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
         <Divider />
         <div className='flex justify-between gap-4 p-5 flex-col items-start sm:flex-row sm:items-center'>
-          <Button
-            color='secondary'
-            variant='outlined'
-            startIcon={<i className='ri-upload-2-line' />}
-            className='is-full sm:is-auto'
-          >
-            Export
-          </Button>
+          <div className="flex justify-between gap-4 p-5 flex-col items-start sm:flex-row sm:items-center">
+
+            <Button
+              color="secondary"
+              variant="outlined"
+              startIcon={<FaFileCsv className="text-xl" />}
+              className="is-full sm:is-auto"
+              onClick={handleExportCSV}
+            >
+              Export CSV
+            </Button>
+
+            <Button
+              color="secondary"
+              variant="outlined"
+              startIcon={<FaFileExcel className="text-xl" />}
+              className="is-full sm:is-auto"
+              onClick={handleExportExcel}
+            >
+              Export Excel
+            </Button>
+
+            <Button
+              color="secondary"
+              variant="outlined"
+              startIcon={<FaPrint className="text-xl" />}
+              className="is-full sm:is-auto"
+              onClick={handlePrint}
+            >
+              Print
+            </Button>
+
+            <Button
+              color="secondary"
+              variant="outlined"
+              startIcon={<FaFilePdf className="text-xl" />}
+              className="is-full sm:is-auto"
+              onClick={handleExportPDF}
+            >
+              Export PDF
+            </Button>
+          </div>
           <div className='flex items-center gap-x-4 max-sm:gap-y-4 is-full flex-col sm:is-auto sm:flex-row'>
             <DebouncedInput
               value={globalFilter ?? ''}

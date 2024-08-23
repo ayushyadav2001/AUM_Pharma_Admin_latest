@@ -36,6 +36,9 @@
     "preview": "معاينة",
     "edit": "يحرر",
     "user": "المستعمل",
+    "user": "Users",
+    "userList": "List Users",
+    "rolesList": "Roles",
     "view": "رأي",
     "rolesPermissions": "الأدوار والأذونات",
     "roles": "الأدوار",
@@ -107,7 +110,16 @@
     "productsList": "List Product",
     "addProducts": "إضافة منتجات",
     "vendor": "البائعون",
+    "vendorList": "List Vendors",
+    "vendorAdd": "Add Vendors",
     "customers": "العملاء",
-    "importProducts": "استيراد المنتجات"
+    "importProducts": "استيراد المنتجات",
+    "purchases": "Purchase",
+    "orders": "Orders",
+    "stockAdjustment": "Stock Adjustment",
+    "reports": "Reports",
+    "notificationTemplate": "Notification Templates",
+    "setting": "Settings",
+    "home": "Home"
   }
 }
