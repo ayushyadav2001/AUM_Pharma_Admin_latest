@@ -14,7 +14,9 @@ import type { getDictionary } from '@/utils/getDictionary'
 import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Menu'
 
 // Component Imports
-import { Menu, SubMenu, MenuItem, MenuSection } from '@menu/vertical-menu'
+// import { Menu, SubMenu, MenuItem, MenuSection } from '@menu/vertical-menu'
+
+import { Menu, SubMenu, MenuItem } from '@menu/vertical-menu'
 
 // import { Menu, MenuItem, MenuSection } from '@menu/vertical-menu'
 
@@ -395,151 +397,151 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           </SubMenu>
         </MenuSection> */}
 
-        <MenuSection label={dictionary['navigation'].dashboard}>
-          <MenuItem href={`/${locale}/dashboards/crm`} icon={<i className=' ri-home-smile-line' />}>
-            {dictionary['navigation'].home}
-          </MenuItem>
-        </MenuSection>
-        <MenuSection label={dictionary['navigation'].masters}>
-          {/* <MenuItem href={`/${locale}/apps/products`} icon={<i className='ri-layout-4-line' />}>
+        {/* <MenuSection label={dictionary['navigation'].dashboard}> */}
+        <MenuItem href={`/${locale}/dashboards/crm`} icon={<i className=' ri-home-smile-line' />}>
+          {dictionary['navigation'].home}
+        </MenuItem>
+        {/* </MenuSection> */}
+
+        {/* <MenuItem href={`/${locale}/apps/products`} icon={<i className='ri-layout-4-line' />}>
             {dictionary['navigation'].products}
           </MenuItem> */}
-          <SubMenu
-            label={dictionary['navigation'].user}
-            icon={<i className='ri-team-line' />}
+        <SubMenu
+          label={dictionary['navigation'].user}
+          icon={<i className='ri-team-line' />}
 
 
-          >
-            <MenuItem href={`/${locale}/apps/user/list`}  >
-              {dictionary['navigation'].userList}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-              {dictionary['navigation'].rolesList}
-            </MenuItem>
+        >
+          <MenuItem href={`/${locale}/apps/user/list`}  >
+            {dictionary['navigation'].userList}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
+            {dictionary['navigation'].rolesList}
+          </MenuItem>
 
 
-          </SubMenu>
+        </SubMenu>
 
-          <SubMenu
-            label={dictionary['navigation'].products}
-            icon={<i className='ri-home-smile-line' />}
+        <SubMenu
+          label={dictionary['navigation'].products}
+          icon={<i className='ri-home-smile-line' />}
 
-          // suffix={<Chip label='5' size='small' color='error' />}
-          >
-            <MenuItem href={`/${locale}/apps/products`}  >
-              {dictionary['navigation'].productsList}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/products/add`}  >
-              {dictionary['navigation'].addProducts}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/products/import`}  >
-              {dictionary['navigation'].importProducts}
-            </MenuItem>
-
-
-
-          </SubMenu>
-
-          <SubMenu
-            label={dictionary['navigation'].vendor}
-            icon={<i className='ri-group-3-line' />}
-
-          // suffix={<Chip label='5' size='small' color='error' />}
-          >
-            <MenuItem href={`/${locale}/apps/vendors`} >
-              {dictionary['navigation'].vendorList}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/vendors/add`} >
-              {dictionary['navigation'].vendorAdd}
-            </MenuItem>
-
-
-          </SubMenu>
-          <SubMenu
-            label={dictionary['navigation'].purchases}
-            icon={<i className='ri-download-line' />}
-
-
-          >
-            <MenuItem href={`/${locale}/apps/user/list`}  >
-              {dictionary['navigation'].userList}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-              {dictionary['navigation'].rolesList}
-            </MenuItem>
-
-
-          </SubMenu>
-          <SubMenu
-            label={dictionary['navigation'].orders}
-            icon={<i className='ri-shape-line' />}
-          >
-            <MenuItem href={`/${locale}/apps/user/list`}  >
-              {dictionary['navigation'].userList}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-              {dictionary['navigation'].rolesList}
-            </MenuItem>
-          </SubMenu>
-
-
-          <SubMenu
-            label={dictionary['navigation'].stockAdjustment}
-            icon={<i className='ri-database-2-line' />}
-          >
-            <MenuItem href={`/${locale}/apps/user/list`}  >
-              {dictionary['navigation'].userList}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-              {dictionary['navigation'].rolesList}
-            </MenuItem>
-          </SubMenu>
-
-          <SubMenu
-            label={dictionary['navigation'].reports}
-            icon={<i className='ri-folder-chart-line' />}
-          >
-            <MenuItem href={`/${locale}/apps/user/list`}  >
-              {dictionary['navigation'].userList}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-              {dictionary['navigation'].rolesList}
-            </MenuItem>
-          </SubMenu>
-
-
-          <SubMenu
-            label={dictionary['navigation'].notificationTemplate}
-            icon={<i className='ri-mail-line' />}
-          >
-            <MenuItem href={`/${locale}/apps/user/list`}  >
-              {dictionary['navigation'].userList}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-              {dictionary['navigation'].rolesList}
-            </MenuItem>
-          </SubMenu>
-
-          <SubMenu
-            label={dictionary['navigation'].setting}
-            icon={<i className='ri-settings-5-line' />}
-          >
-            <MenuItem href={`/${locale}/apps/user/list`}  >
-              {dictionary['navigation'].userList}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-              {dictionary['navigation'].rolesList}
-            </MenuItem>
-          </SubMenu>
-
-
-          <MenuItem href={`/${locale}/apps/customers`} icon={<i className='ri-user-follow-line' />}>
-            {dictionary['navigation'].customers}
+        // suffix={<Chip label='5' size='small' color='error' />}
+        >
+          <MenuItem href={`/${locale}/apps/products`}  >
+            {dictionary['navigation'].productsList}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/products/add`}  >
+            {dictionary['navigation'].addProducts}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/products/import`}  >
+            {dictionary['navigation'].importProducts}
           </MenuItem>
 
 
 
-        </MenuSection>
+        </SubMenu>
+
+        <SubMenu
+          label={dictionary['navigation'].vendor}
+          icon={<i className='ri-group-3-line' />}
+
+        // suffix={<Chip label='5' size='small' color='error' />}
+        >
+          <MenuItem href={`/${locale}/apps/vendors`} >
+            {dictionary['navigation'].vendorList}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/vendors/add`} >
+            {dictionary['navigation'].vendorAdd}
+          </MenuItem>
+
+
+        </SubMenu>
+        <SubMenu
+          label={dictionary['navigation'].purchases}
+          icon={<i className='ri-download-line' />}
+
+
+        >
+          <MenuItem href={`/${locale}/apps/user/list`}  >
+            {dictionary['navigation'].userList}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
+            {dictionary['navigation'].rolesList}
+          </MenuItem>
+
+
+        </SubMenu>
+        <SubMenu
+          label={dictionary['navigation'].orders}
+          icon={<i className='ri-shape-line' />}
+        >
+          <MenuItem href={`/${locale}/apps/user/list`}  >
+            {dictionary['navigation'].userList}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
+            {dictionary['navigation'].rolesList}
+          </MenuItem>
+        </SubMenu>
+
+
+        <SubMenu
+          label={dictionary['navigation'].stockAdjustment}
+          icon={<i className='ri-database-2-line' />}
+        >
+          <MenuItem href={`/${locale}/apps/user/list`}  >
+            {dictionary['navigation'].userList}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
+            {dictionary['navigation'].rolesList}
+          </MenuItem>
+        </SubMenu>
+
+        <SubMenu
+          label={dictionary['navigation'].reports}
+          icon={<i className='ri-folder-chart-line' />}
+        >
+          <MenuItem href={`/${locale}/apps/user/list`}  >
+            {dictionary['navigation'].userList}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
+            {dictionary['navigation'].rolesList}
+          </MenuItem>
+        </SubMenu>
+
+
+        <SubMenu
+          label={dictionary['navigation'].notificationTemplate}
+          icon={<i className='ri-mail-line' />}
+        >
+          <MenuItem href={`/${locale}/apps/user/list`}  >
+            {dictionary['navigation'].userList}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
+            {dictionary['navigation'].rolesList}
+          </MenuItem>
+        </SubMenu>
+
+        <SubMenu
+          label={dictionary['navigation'].setting}
+          icon={<i className='ri-settings-5-line' />}
+        >
+          <MenuItem href={`/${locale}/apps/user/list`}  >
+            {dictionary['navigation'].userList}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
+            {dictionary['navigation'].rolesList}
+          </MenuItem>
+        </SubMenu>
+
+
+        <MenuItem href={`/${locale}/apps/customers`} icon={<i className='ri-user-follow-line' />}>
+          {dictionary['navigation'].customers}
+        </MenuItem>
+
+
+
+
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 17 }}

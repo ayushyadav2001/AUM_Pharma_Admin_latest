@@ -15,13 +15,15 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Divider,
   FormControl,
   FormHelperText,
   Grid,
   InputLabel,
   MenuItem,
   Select,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material'
 
 // MUI Imports
@@ -128,9 +130,16 @@ const AddVendorActions = () => {
           color: 'primary'
         }}
       />
+      <Divider />
       <CardContent className='sm:!p-12'>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={6}>
+            {/* Basic Details */}
+            <Grid item xs={12}>
+              <Typography variant='body2' className='font-medium' color='text.primary'>
+                1. Basic Details
+              </Typography>
+            </Grid>
             <Grid item xs={12} md={4}>
               <FormControl fullWidth className='mbe-4'>
                 <InputLabel id='format-select'>Select Format</InputLabel>
@@ -138,9 +147,7 @@ const AddVendorActions = () => {
                   fullWidth
                   label='Select Format'
                   {...register('format')}
-                  onChange={(e: any) => {
-                    setValue('format', e.target?.value)
-                  }}
+                  onChange={(e: any) => setValue('format', e.target?.value)}
                   labelId='format-select'
                 >
                   {formats?.map((category: any) => (
@@ -152,13 +159,13 @@ const AddVendorActions = () => {
                 <FormHelperText className='text-red-600'>{errors.format?.message}</FormHelperText>
               </FormControl>
             </Grid>
-
             <Grid item xs={12} md={4}>
               <TextField {...register('name')} fullWidth id='outlined-basic' label='Vendor Name' />
               <FormHelperText className='text-red-600'>{errors.name?.message}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
-              <TextField fullWidth id='outlined-basic' label='Phone Number' {...register('phoneNumber')} />
+              <TextField fullWidth id='outlined-basic' type='number'
+                placeholder='123-456-7890' label='Phone Number' {...register('phoneNumber')} />
               <FormHelperText className='text-red-600'>{errors.phoneNumber?.message}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -166,15 +173,24 @@ const AddVendorActions = () => {
               <FormHelperText className='text-red-600'>{errors.email?.message}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
-              <TextField fullWidth id='outlined-basic' label='GST Number' {...register('gstNumber')} />
+              <TextField fullWidth id='outlined-basic' type='text' label='GST Number' {...register('gstNumber')} />
               <FormHelperText className='text-red-600'>{errors.gstNumber?.message}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
-              <TextField fullWidth id='outlined-basic' label='PAN Number' {...register('panNumber')} />
+              <TextField fullWidth id='outlined-basic' type='text' label='PAN Number' {...register('panNumber')} />
               <FormHelperText className='text-red-600'>{errors.panNumber?.message}</FormHelperText>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField fullWidth id='outlined-basic' label='Address' {...register('addressLine')} />
+
+            {/* Address Details */}
+            <Grid item xs={12}>
+              <Typography variant='body2' className='font-medium' color='text.primary'>
+                2. Address Details
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <TextField fullWidth id='outlined-basic'
+                multiline
+                minRows={2} label='Address' {...register('addressLine')} />
               <FormHelperText className='text-red-600'>{errors.addressLine?.message}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -186,8 +202,15 @@ const AddVendorActions = () => {
               <FormHelperText className='text-red-600'>{errors.city?.message}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
-              <TextField fullWidth id='outlined-basic' label='Pin Code' {...register('pinCode')} />
+              <TextField fullWidth id='outlined-basic' type='number' label='Pin Code' {...register('pinCode')} />
               <FormHelperText className='text-red-600'>{errors.pinCode?.message}</FormHelperText>
+            </Grid>
+
+            {/* Identification and Licenses */}
+            <Grid item xs={12}>
+              <Typography variant='body2' className='font-medium' color='text.primary'>
+                3. Identification and Licenses
+              </Typography>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='DL Number' {...register('dlNumber')} />
@@ -198,34 +221,40 @@ const AddVendorActions = () => {
               <FormHelperText className='text-red-600'>{errors.foodLicenseNumber?.message}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
-              <TextField fullWidth id='outlined-basic' label='Contact Person Name' {...register('contactPersonName')} />
-              <FormHelperText className='text-red-600'>{errors.contactPersonName?.message}</FormHelperText>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
-                id='outlined-basic'
-                label='Contact Person Number'
-                {...register('contactPersonMobileNumber')}
-              />
-              <FormHelperText className='text-red-600'>{errors.contactPersonMobileNumber?.message}</FormHelperText>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
-                id='outlined-basic'
-                label='Contact Person Phone Number'
-                {...register('contactPersonPhoneNumber')}
-              />
-              <FormHelperText className='text-red-600'>{errors.contactPersonPhoneNumber?.message}</FormHelperText>
-            </Grid>
-            <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='MSME Number' {...register('msmeNumber')} />
               <FormHelperText className='text-red-600'>{errors.msmeNumber?.message}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='FSS Number' {...register('fssNumber')} />
               <FormHelperText className='text-red-600'>{errors.fssNumber?.message}</FormHelperText>
+            </Grid>
+
+            {/* Contact Information */}
+            <Grid item xs={12}>
+              <Typography variant='body2' className='font-medium' color='text.primary'>
+                4. Contact Person Information
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField fullWidth id='outlined-basic' label='Name' {...register('contactPersonName')} />
+              <FormHelperText className='text-red-600'>{errors.contactPersonName?.message}</FormHelperText>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField fullWidth id='outlined-basic' type='number'
+                placeholder='123-456-7890' label='Mobile Number' {...register('contactPersonMobileNumber')} />
+              <FormHelperText className='text-red-600'>{errors.contactPersonMobileNumber?.message}</FormHelperText>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField fullWidth id='outlined-basic' type='number'
+                placeholder='123-456-7890' label='Phone Number' {...register('contactPersonPhoneNumber')} />
+              <FormHelperText className='text-red-600'>{errors.contactPersonPhoneNumber?.message}</FormHelperText>
+            </Grid>
+
+            {/* Financials */}
+            <Grid item xs={12}>
+              <Typography variant='body2' className='font-medium' color='text.primary'>
+                5. Financials
+              </Typography>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Payable' {...register('payable')} />
@@ -235,6 +264,7 @@ const AddVendorActions = () => {
               <TextField fullWidth id='outlined-basic' label='Due' {...register('due')} />
               <FormHelperText className='text-red-600'>{errors.due?.message}</FormHelperText>
             </Grid>
+
           </Grid>
 
           <div className='flex justify-end'>

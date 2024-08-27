@@ -650,14 +650,14 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
         <CardHeader title='Products' className='pbe-4' />
         {/* <TableFilters setData={setData} tableData={tableData} /> */}
         <Divider />
-        <div className='flex justify-between gap-4 p-5 flex-col items-start sm:flex-row sm:items-center'>
-          <div className="flex justify-between gap-4 p-5 flex-col items-start sm:flex-row sm:items-center">
+        <div className='flex justify-between gap-4 p-4 flex-col items-start sm:flex-row sm:items-center'>
+          <div className="flex justify-between gap-4  flex-col items-start sm:flex-row sm:items-center">
 
             <Button
               color="secondary"
               variant="outlined"
-              startIcon={<FaFileCsv className="text-xl" />}
-              className="is-full sm:is-auto"
+              startIcon={<FaFileCsv size={16} className="text-xl" />}
+              className="is-full sm:is-auto h-6 py-3"
               onClick={handleExportCSV}
             >
               Export CSV
@@ -666,8 +666,8 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
             <Button
               color="secondary"
               variant="outlined"
-              startIcon={<FaFileExcel className="text-xl" />}
-              className="is-full sm:is-auto"
+              startIcon={<FaFileExcel className="text-xl" size={16} />}
+              className="is-full sm:is-auto h-6 py-3"
               onClick={handleExportExcel}
             >
               Export Excel
@@ -676,8 +676,8 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
             <Button
               color="secondary"
               variant="outlined"
-              startIcon={<FaPrint className="text-xl" />}
-              className="is-full sm:is-auto"
+              startIcon={<FaPrint size={16} className="text-xl" />}
+              className="is-full sm:is-auto h-6 py-3"
               onClick={handlePrint}
             >
               Print
@@ -686,8 +686,8 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
             <Button
               color="secondary"
               variant="outlined"
-              startIcon={<FaFilePdf className="text-xl" />}
-              className="is-full sm:is-auto"
+              startIcon={<FaFilePdf size={16} className="text-xl" />}
+              className="is-full sm:is-auto h-6 py-3"
               onClick={handleExportPDF}
             >
               Export PDF
