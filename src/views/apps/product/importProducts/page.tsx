@@ -1,5 +1,9 @@
 "use client"
+
 import React, { useState } from 'react'
+
+import { useRouter } from 'next/navigation'
+
 
 import { Card, CardHeader, Divider, FormControl, FormHelperText, Grid, Typography, LinearProgress, Button } from '@mui/material'
 
@@ -22,10 +26,12 @@ import { useDispatch } from 'react-redux'
 import * as yup from 'yup'
 
 
+
 import { setProductData } from '@/redux-store/slices/productSlice'
 import FileUploaderSingleExcel from '../ProductExcelUpload/FileUploaderSingle'
 
 import Loader from '@/views/Loader/Loader'
+
 
 
 const LinearProgressWithLabel = (props: LinearProgressProps & { value: number }) => {
@@ -227,10 +233,9 @@ const ImportProduct = () => {
 
   const [progress, setProgress] = useState<number>(0)
 
+  const router = useRouter()
 
 
-
-  const token = sessionStorage.getItem('authToken');
 
 
 
@@ -260,7 +265,7 @@ const ImportProduct = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true })
 
       dispatch(setProductData(response.data.products)) // Ensure `setData` action is correctly set
     } catch (err) {
@@ -288,7 +293,7 @@ const ImportProduct = () => {
         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/insert-product-using-excel`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
+            withCredentials: true,
           },
           onUploadProgress: event => {
             if (event.total) {
@@ -313,6 +318,8 @@ const ImportProduct = () => {
           setLoading(false)
           fetchProducts()
           toast.success("Products Inserted Successfully !")
+          router.push('/apps/products')
+
           setExcelData(res.data.data)
           console.log('res.data.data', res.data.data)
 

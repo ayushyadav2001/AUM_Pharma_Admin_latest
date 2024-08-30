@@ -8,21 +8,23 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 
-import CustomersList from '@/views/apps/customers'
-import { setData } from '@/redux-store/slices/customerSlice'
+
+
 import Loader from '@/views/Loader/Loader'
+import PurchaseOrderList from '@/views/apps/purchase-orders'
+import { setData } from '@/redux-store/slices/purchaseOrderSlice'
 
 const UserListApp = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-  const customers = useSelector((state: any) => state?.customer?.data)
+  const purchaseOrders = useSelector((state: any) => state?.purchaseOrders?.data)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/customer/get-customers`, { withCredentials: true })
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/purchase-orders/get-all-order`, { withCredentials: true })
 
         dispatch(setData(response.data.data)) // Ensure `setData` action is correctly set
       } catch (err) {
@@ -44,7 +46,7 @@ const UserListApp = () => {
     return <div>{error}</div>
   }
 
-  return <CustomersList userData={customers} />
+  return <PurchaseOrderList userData={purchaseOrders} />
 }
 
 export default UserListApp

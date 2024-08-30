@@ -73,7 +73,7 @@ const AddVendorActions = () => {
 
   const fetchVendors = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`, { withCredentials: true })
 
       dispatch(setData(response.data.data))
     } catch (err) {
@@ -94,7 +94,7 @@ const AddVendorActions = () => {
     }
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/add-vendor`, data).then(res => {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/add-vendor`, data, { withCredentials: true, }).then(res => {
         toast.success('Vendor Added Successfully!')
         fetchVendors()
         router.push('/apps/vendors')
@@ -109,7 +109,7 @@ const AddVendorActions = () => {
 
   const fetchFormats = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/excel/get-all-format`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/excel/get-all-format`, { withCredentials: true })
 
       setFormats(response.data.data)
     } catch (error) {
@@ -140,25 +140,7 @@ const AddVendorActions = () => {
                 1. Basic Details
               </Typography>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth className='mbe-4'>
-                <InputLabel id='format-select'>Select Format</InputLabel>
-                <Select
-                  fullWidth
-                  label='Select Format'
-                  {...register('format')}
-                  onChange={(e: any) => setValue('format', e.target?.value)}
-                  labelId='format-select'
-                >
-                  {formats?.map((category: any) => (
-                    <MenuItem key={category._id} value={category._id}>
-                      {category.formatName}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText className='text-red-600'>{errors.format?.message}</FormHelperText>
-              </FormControl>
-            </Grid>
+
             <Grid item xs={12} md={4}>
               <TextField {...register('name')} fullWidth id='outlined-basic' label='Vendor Name' />
               <FormHelperText className='text-red-600'>{errors.name?.message}</FormHelperText>
@@ -172,14 +154,7 @@ const AddVendorActions = () => {
               <TextField fullWidth id='outlined-basic' label='Email' {...register('email')} />
               <FormHelperText className='text-red-600'>{errors.email?.message}</FormHelperText>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField fullWidth id='outlined-basic' type='text' label='GST Number' {...register('gstNumber')} />
-              <FormHelperText className='text-red-600'>{errors.gstNumber?.message}</FormHelperText>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <TextField fullWidth id='outlined-basic' type='text' label='PAN Number' {...register('panNumber')} />
-              <FormHelperText className='text-red-600'>{errors.panNumber?.message}</FormHelperText>
-            </Grid>
+
 
             {/* Address Details */}
             <Grid item xs={12}>
@@ -211,6 +186,14 @@ const AddVendorActions = () => {
               <Typography variant='body2' className='font-medium' color='text.primary'>
                 3. Identification and Licenses
               </Typography>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField fullWidth id='outlined-basic' type='text' label='GST Number' {...register('gstNumber')} />
+              <FormHelperText className='text-red-600'>{errors.gstNumber?.message}</FormHelperText>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <TextField fullWidth id='outlined-basic' type='text' label='PAN Number' {...register('panNumber')} />
+              <FormHelperText className='text-red-600'>{errors.panNumber?.message}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='DL Number' {...register('dlNumber')} />
@@ -249,11 +232,34 @@ const AddVendorActions = () => {
                 placeholder='123-456-7890' label='Phone Number' {...register('contactPersonPhoneNumber')} />
               <FormHelperText className='text-red-600'>{errors.contactPersonPhoneNumber?.message}</FormHelperText>
             </Grid>
-
+            <Grid item xs={12}>
+              <Typography variant='body2' className='font-medium' color='text.primary'>
+                5. Assign Excel Format
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <FormControl fullWidth className='mbe-4'>
+                <InputLabel id='format-select'>Select Format</InputLabel>
+                <Select
+                  fullWidth
+                  label='Select Format'
+                  {...register('format')}
+                  onChange={(e: any) => setValue('format', e.target?.value)}
+                  labelId='format-select'
+                >
+                  {formats?.map((category: any) => (
+                    <MenuItem key={category._id} value={category._id}>
+                      {category.formatName}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText className='text-red-600'>{errors.format?.message}</FormHelperText>
+              </FormControl>
+            </Grid>
             {/* Financials */}
             <Grid item xs={12}>
               <Typography variant='body2' className='font-medium' color='text.primary'>
-                5. Financials
+                6. Financials
               </Typography>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -264,6 +270,9 @@ const AddVendorActions = () => {
               <TextField fullWidth id='outlined-basic' label='Due' {...register('due')} />
               <FormHelperText className='text-red-600'>{errors.due?.message}</FormHelperText>
             </Grid>
+
+
+
 
           </Grid>
 

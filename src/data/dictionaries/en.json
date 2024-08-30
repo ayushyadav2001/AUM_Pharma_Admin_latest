@@ -114,6 +114,8 @@
     "vendorAdd": "Add Vendors",
     "customers": "Customers",
     "purchases": "Purchase",
+    "listPurchases": "List Purchase",
+    "addPurchases": "Add Purchase",
     "orders": "Orders",
     "stockAdjustment": "Stock Adjustment",
     "reports": "Reports",

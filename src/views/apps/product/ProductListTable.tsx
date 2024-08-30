@@ -231,7 +231,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   const fetchVendors = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`,{ withCredentials: true })
 
       setVendors(response.data.data)
     } catch (error) {
@@ -556,7 +556,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true })
 
       dispatch(setProductData(response.data.products)) // Ensure `setData` action is correctly set
     } catch (err) {
@@ -598,7 +598,8 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
                 setProgress(prevProgress => Math.max(prevProgress, percent))
               }
             }
-          }
+          },
+          withCredentials: true,
         })
         .then((res: any) => {
           console.log('res', res)
@@ -624,7 +625,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   const onSubmitInsert = async () => {
     try {
       await axios
-        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/insert-product-using-excel`, { data: excelData }, {})
+        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/insert-product-using-excel`, { data: excelData }, { withCredentials: true, })
         .then((res: any) => {
           console.log('res', res)
 

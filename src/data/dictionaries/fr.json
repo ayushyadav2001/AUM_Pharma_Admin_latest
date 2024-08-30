@@ -111,6 +111,8 @@
     "addProducts": "Ajouter des produits",
     "vendor": "Fournisseurs",
     "vendorList": "List Vendors",
+    "listPurchases": "List Purchase",
+    "addPurchases": "Add Purchase",
     "vendorAdd": "Add Vendors",
     "customers": "Clients",
     "importProducts": "Importer des produits",

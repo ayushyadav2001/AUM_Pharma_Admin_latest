@@ -143,7 +143,7 @@ const Login = ({ mode }: { mode: Mode }) => {
   const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
     try {
       console.log("data", data)
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/login`, data);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/login`, data, { withCredentials: true });
 
       if (response.status === 200) {
         // Handle successful login

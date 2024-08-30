@@ -12,6 +12,8 @@ import vendorReducer from '@/redux-store/slices/vendorSlice'
 
 import customerReducer from '@/redux-store/slices/customerSlice'
 
+import purchaseOrderSlice from '@/redux-store/slices/purchaseOrderSlice'
+
 export const store = configureStore({
   reducer: {
     chatReducer,
@@ -20,7 +22,8 @@ export const store = configureStore({
     emailReducer,
     products: productReducer,
     vendor: vendorReducer,
-    customer: customerReducer
+    customer: customerReducer,
+    purchaseOrders: purchaseOrderSlice
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false })
 })

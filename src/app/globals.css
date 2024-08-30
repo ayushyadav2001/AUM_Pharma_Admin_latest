@@ -131,3 +131,30 @@ code {
   background-color: rgb(var(--mui-palette-info-mainChannel) / 0.08);
   border: 0;
 }
+
+.select-input-pay-term .mui-vaojmi-MuiInputBase-root-MuiOutlinedInput-root {
+  padding-inline-end: 0 !important;
+}
+
+/* Hide number input arrows in most browsers */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield; /* For Firefox */
+}
+
+/* Hide number input arrows in most browsers */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield; /* For Firefox */
+  /* Add additional styling as needed */
+}

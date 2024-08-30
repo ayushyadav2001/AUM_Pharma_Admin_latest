@@ -73,7 +73,7 @@ const AddCustomerActions = () => {
 
   const fetchVendors = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/customer/get-customers`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/customer/get-customers`, { withCredentials: true })
 
       dispatch(setData(response.data.data))
     } catch (err) {
@@ -95,7 +95,7 @@ const AddCustomerActions = () => {
 
     try {
       const response = await axios
-        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/customer/add-customer`, data)
+        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/customer/add-customer`, data, { withCredentials: true })
         .then(res => {
           toast.success('Customer Added Successfully!')
           fetchVendors()
@@ -111,7 +111,7 @@ const AddCustomerActions = () => {
 
   const fetchFormats = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/excel/get-all-format`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/excel/get-all-format`, { withCredentials: true })
 
       setFormats(response.data.data)
     } catch (error) {

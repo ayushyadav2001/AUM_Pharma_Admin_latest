@@ -161,7 +161,7 @@ const ProductListingWizard = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true })
 
       dispatch(setData(response.data.products)) // Ensure `setData` action is correctly set
     } catch (err) {
@@ -186,7 +186,8 @@ const ProductListingWizard = () => {
         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/add-product`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
-          }
+          },
+          withCredentials: true,
         })
         .then(res => {
           toast.success('Product Added Successfully!')

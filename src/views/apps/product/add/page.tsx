@@ -68,7 +68,7 @@ const AddProductActions = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`,{ withCredentials: true })
 
       dispatch(setData(response.data.products)) // Ensure `setData` action is correctly set
     } catch (err) {
@@ -93,7 +93,8 @@ const AddProductActions = () => {
         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/add-product`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
-          }
+          },
+          withCredentials: true,
         })
         .then(res => {
           toast.success('Product Added Successfully!')
@@ -110,7 +111,7 @@ const AddProductActions = () => {
 
   const fetchVendors = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`, { withCredentials: true })
 
       setVendors(response.data.data)
     } catch (error) {
@@ -120,7 +121,7 @@ const AddProductActions = () => {
 
   const fetchCategory = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category`, { withCredentials: true })
 
       setCategory(response.data.categories)
     } catch (error) {

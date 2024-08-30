@@ -1,30 +1,44 @@
-'use client'
-/* eslint-disable @next/next/no-async-client-component */
 /* eslint-disable react-hooks/exhaustive-deps */
+"use client"
 
-// Component Imports
+// Data Imports
+
 import { useEffect, useState } from 'react'
 
-import axios from 'axios'
+import { useParams } from 'next/navigation'
+
 import { useDispatch, useSelector } from 'react-redux'
 
-import CustomersList from '@/views/apps/customers'
-import { setData } from '@/redux-store/slices/customerSlice'
+import axios from 'axios'
+
+
 import Loader from '@/views/Loader/Loader'
 
-const UserListApp = () => {
+import { setEditData } from '@/redux-store/slices/purchaseOrderSlice'
+import ViewPurchaseOrdersActions from '@/views/apps/purchase-orders/view/page'
+
+
+
+
+const ProductViewApp = () => {
+  const { id } = useParams()
+
+
+
+
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-  const customers = useSelector((state: any) => state?.customer?.data)
+
+  const purchaseOrder = useSelector((state: any) => state?.purchaseOrders?.editData)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/customer/get-customers`, { withCredentials: true })
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/purchase-orders/get-purchase-order/${id}`, { withCredentials: true })
 
-        dispatch(setData(response.data.data)) // Ensure `setData` action is correctly set
+        dispatch(setEditData(response.data.data)) // Ensure `setData` action is correctly set
       } catch (err) {
         console.error('Failed to fetch products', err) // Log the error for debugging
         setError('Failed to fetch products')
@@ -44,7 +58,7 @@ const UserListApp = () => {
     return <div>{error}</div>
   }
 
-  return <CustomersList userData={customers} />
+  return <ViewPurchaseOrdersActions tableData={purchaseOrder} />
 }
 
-export default UserListApp
+export default ProductViewApp

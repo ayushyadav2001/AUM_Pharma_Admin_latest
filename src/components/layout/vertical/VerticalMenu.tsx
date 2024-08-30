@@ -415,7 +415,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <MenuItem href={`/${locale}/apps/user/list`}  >
             {dictionary['navigation'].userList}
           </MenuItem>
-          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
+          <MenuItem href={`/${locale}/apps/roles`}  >
             {dictionary['navigation'].rolesList}
           </MenuItem>
 
@@ -463,11 +463,11 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
 
         >
-          <MenuItem href={`/${locale}/apps/user/list`}  >
-            {dictionary['navigation'].userList}
+          <MenuItem href={`/${locale}/apps/purchase-orders`}  >
+            {dictionary['navigation'].listPurchases}
           </MenuItem>
-          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-            {dictionary['navigation'].rolesList}
+          <MenuItem href={`/${locale}/apps/purchase-orders/add`}  >
+            {dictionary['navigation'].addPurchases}
           </MenuItem>
 
 

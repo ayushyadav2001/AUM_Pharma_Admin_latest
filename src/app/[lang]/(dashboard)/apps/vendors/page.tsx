@@ -22,7 +22,7 @@ const UserListApp = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`)
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`, { withCredentials: true })
 
         dispatch(setData(response.data.data)) // Ensure `setData` action is correctly set
       } catch (err) {

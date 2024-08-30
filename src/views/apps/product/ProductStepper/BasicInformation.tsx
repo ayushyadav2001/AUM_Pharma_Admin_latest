@@ -79,7 +79,7 @@ const StepPersonalDetails = ({
 
   const fetchVendors = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`, { withCredentials: true })
 
       setVendors(response.data.data)
     } catch (error) {
@@ -89,7 +89,7 @@ const StepPersonalDetails = ({
 
   const fetchCategory = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category`, { withCredentials: true })
 
       setCategory(response.data.categories)
     } catch (error) {
