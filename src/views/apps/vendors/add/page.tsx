@@ -69,7 +69,7 @@ const AddVendorActions = () => {
     defaultValues
   })
 
-  console.log('errors', errors)
+
 
   const fetchVendors = async () => {
     try {
@@ -83,7 +83,7 @@ const AddVendorActions = () => {
   }
 
   const onSubmit = async (data: any) => {
-    console.log(data)
+
 
     const formData = new FormData()
 

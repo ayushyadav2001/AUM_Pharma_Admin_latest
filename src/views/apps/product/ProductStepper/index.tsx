@@ -171,7 +171,7 @@ const ProductListingWizard = () => {
   }
 
   const onSubmit = async (data: any) => {
-    console.log('data', data)
+
 
     const formData = new FormData()
 
@@ -200,7 +200,7 @@ const ProductListingWizard = () => {
     }
   }
 
-  console.log('errors', errors)
+
 
   // const handleNext = () => {
   // if (activeStep !== steps.length - 1) {

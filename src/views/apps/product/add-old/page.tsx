@@ -138,7 +138,7 @@ const ProductStepperLinear = () => {
 
 
   // here
-  console.log("healthDetailsErrors", healthDetailsErrors)
+
 
 
 
@@ -172,14 +172,15 @@ const ProductStepperLinear = () => {
     }
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/add-product`, formDataObj, {
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/add-product`, formDataObj, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
         withCredentials: true,
       });
 
-      console.log("response", response)
+
+
 
 
       toast.success('Product Added Successfully!');
@@ -193,9 +194,9 @@ const ProductStepperLinear = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true });
+      await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true });
 
-      console.log('Products fetched:', response.data.products);
+
     } catch (err) {
       console.error('Failed to fetch products', err);
     }
@@ -214,7 +215,7 @@ const ProductStepperLinear = () => {
     // setActiveStep(prevActiveStep => prevActiveStep + 1)
 
     if (activeStep === steps.length - 1) {
-      console.log("data", data)
+
 
       collectFormData();
       toast.success('Form Submitted')

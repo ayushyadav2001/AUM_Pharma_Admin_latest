@@ -181,7 +181,7 @@ const StepPersonalDetails = ({
                   defaultValue=''
                   label='Select Category'
                   onChange={(e: any) => {
-                    console.log('e', e)
+
 
                     setValue('sub_category', e.target?.value)
                   }}
@@ -204,7 +204,7 @@ const StepPersonalDetails = ({
                   defaultValue=''
                   label='Select Vendor'
                   onChange={(e: any) => {
-                    console.log('e', e)
+
 
                     setValue('vendor_id', e.target?.value)
                   }}

@@ -9,7 +9,7 @@ import PurchasedOrderViewTable from '../purchase-order-view-table/page';
 
 const ViewPurchaseOrdersActions = ({ tableData }: { tableData?: any }) => {
   // States
-  console.log("tableData", tableData)
+
 
   const formattedDate = tableData?.purchase_date
     ? dayjs(tableData.purchase_date).format('DD/MM/YYYY')

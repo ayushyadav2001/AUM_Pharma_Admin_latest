@@ -118,7 +118,7 @@ const PurchaseOrderListErrorTable = ({
 }) => {
   // States
 
-  console.log('importedData', importedData)
+
 
   const [rowSelection, setRowSelection] = useState({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -127,7 +127,7 @@ const PurchaseOrderListErrorTable = ({
 
   const [selectedItems, setSelectedItems] = useState<any[]>([])
 
-  console.log('data', data)
+
 
   useEffect(() => {
     if (tableData) {
@@ -138,14 +138,16 @@ const PurchaseOrderListErrorTable = ({
   // Hooks
   // const { lang: locale } = useParams()
 
-  const handleCheckboxChange = (rowId: string, event: React.ChangeEvent<HTMLInputElement>, row: any) => {
-    console.log('Row ID:', rowId)
-    console.log('Checked:', event.target.checked)
-    console.log('rowfrom checkbox:', row)
 
-    let updatedData: any
+  const handleCheckboxChange = (rowId: string, event: React.ChangeEvent<HTMLInputElement>, row: any) => {
+
+
+    let updatedData: any;
+
 
     if (event.target.checked) {
+
+
       updatedData = importedData.map((item: any) => {
         if (item.item_name === row.original.file_item_name) {
           const updatedItem = {
@@ -187,7 +189,10 @@ const PurchaseOrderListErrorTable = ({
     }
 
     // Log the updated data to the console
-    console.log('Updated Data:', updatedData)
+
+
+    setSelectedItems(updatedData)
+
 
     // Update the row selection state
     setRowSelection(prev => ({
@@ -334,10 +339,12 @@ const PurchaseOrderListErrorTable = ({
   })
 
   const handleUpdate = () => {
+
     setImportedDataUpdatedData(selectedItems)
     setImportedDataFormik(selectedItems)
     setShowImportError()
   }
+
 
   return (
     <>

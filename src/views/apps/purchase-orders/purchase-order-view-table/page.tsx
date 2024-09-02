@@ -120,7 +120,7 @@ const columnHelper = createColumnHelper<any>()
 const PurchasedOrderViewTable = ({ tableData }: { tableData?: any, }) => {
   // States
 
-  console.log("tableData", tableData)
+
 
   const [rowSelection, setRowSelection] = useState({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -129,7 +129,7 @@ const PurchasedOrderViewTable = ({ tableData }: { tableData?: any, }) => {
 
 
 
-  console.log("data", data)
+
 
 
   useEffect(() => {

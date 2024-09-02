@@ -46,7 +46,7 @@ const itemSchema = yup.object().shape({
 
 const purchaseOrderValidationSchema = yup.object().shape({
   vendor_id: yup.string().required('Vendor is required'),
-  referenceNumber: yup.string().notRequired(),
+  reference_number: yup.string().notRequired(),
   purchase_date: yup.date().nullable().required('Purchase Date is required'),
   purchaseStatus: yup.string().required('Purchase Status is required'),
   payTermNumber: yup.number().typeError('Pay Term Number is required').required('Pay Term Number is required'),
@@ -56,10 +56,10 @@ const purchaseOrderValidationSchema = yup.object().shape({
 
 const defaultValues = {
   vendor_id: '',
-  referenceNumber: '',
+  reference_number: '',
   purchase_date: null, // Matches the updated TypeScript type
   purchaseStatus: '',
-  payTermNumber: '', // Ensure this matches the expected type (number | string)
+  payTermNumber: '0', // Ensure this matches the expected type (number | string)
   payTermUnit: 'days',
   items: []
 }

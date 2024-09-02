@@ -120,7 +120,7 @@ const columnHelper = createColumnHelper<any>()
 const PurchaseOrderListPreviewTable = ({ tableData, setImportedDataUpdatedData }: { tableData?: any, setImportedDataUpdatedData: (data: UsersType[]) => void; }) => {
   // States
 
-  console.log("tableData", tableData)
+
 
   const [rowSelection, setRowSelection] = useState({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -129,7 +129,7 @@ const PurchaseOrderListPreviewTable = ({ tableData, setImportedDataUpdatedData }
 
 
 
-  console.log("data", data)
+
 
   const handleDelete = (rowIndex: number) => {
 
@@ -137,6 +137,7 @@ const PurchaseOrderListPreviewTable = ({ tableData, setImportedDataUpdatedData }
 
     setData(updatedData);
 
+    // console.log("updatedData", updatedData)
 
     setImportedDataUpdatedData(updatedData);
   };

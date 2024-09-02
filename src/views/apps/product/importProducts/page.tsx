@@ -297,7 +297,7 @@ const ImportProduct = () => {
           },
           onUploadProgress: event => {
             if (event.total) {
-              console.log('event', event)
+
 
               // setProgress(Math.round((event.loaded / event.total) * 100))
 
@@ -313,7 +313,7 @@ const ImportProduct = () => {
           }
         })
         .then((res: any) => {
-          console.log('res', res)
+
           setProgress(100)
           setLoading(false)
           fetchProducts()
@@ -321,7 +321,7 @@ const ImportProduct = () => {
           router.push('/apps/products')
 
           setExcelData(res.data.data)
-          console.log('res.data.data', res.data.data)
+
 
 
         })

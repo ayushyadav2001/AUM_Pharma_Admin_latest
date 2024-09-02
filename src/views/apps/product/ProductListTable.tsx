@@ -231,7 +231,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   const fetchVendors = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`,{ withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`, { withCredentials: true })
 
       setVendors(response.data.data)
     } catch (error) {
@@ -585,7 +585,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
           },
           onUploadProgress: event => {
             if (event.total) {
-              console.log('event', event)
+
 
               // setProgress(Math.round((event.loaded / event.total) * 100))
 
@@ -602,13 +602,13 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
           withCredentials: true,
         })
         .then((res: any) => {
-          console.log('res', res)
+
           setProgress(100)
           setLoading(false)
           fetchProducts()
 
           setExcelData(res.data.data)
-          console.log('res.data.data', res.data.data)
+
 
           // setShowProgressBar(false)
         })
@@ -627,8 +627,8 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
       await axios
         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/insert-product-using-excel`, { data: excelData }, { withCredentials: true, })
         .then((res: any) => {
-          console.log('res', res)
 
+          console.log("res", res)
           toast.success('Data Inserted Successfuly !')
           setImportModel(false)
         })
@@ -821,7 +821,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
                         defaultValue=''
                         label='Select Vendor'
                         onChange={(e: any) => {
-                          console.log('e', e)
+
 
                           setValue('vendor_id', e.target?.value)
                         }}

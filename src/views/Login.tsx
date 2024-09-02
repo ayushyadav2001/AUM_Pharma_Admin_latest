@@ -38,6 +38,8 @@ import axios, { isAxiosError } from 'axios';
 // Type Imports
 import { toast } from 'react-toastify'
 
+import { CircularProgress } from '@mui/material'
+
 import type { Mode } from '@core/types'
 import type { Locale } from '@/configs/i18n'
 
@@ -81,6 +83,9 @@ type FormValues = yup.InferType<typeof validationSchema>;
 const Login = ({ mode }: { mode: Mode }) => {
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
+
+  const [loading, setLoading] = useState(false)
+
   const [errorState, setErrorState] = useState<ErrorType | null>(null)
 
   // Vars
@@ -142,7 +147,8 @@ const Login = ({ mode }: { mode: Mode }) => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
     try {
-      console.log("data", data)
+      setLoading(true)
+
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/login`, data, { withCredentials: true });
 
       if (response.status === 200) {
@@ -155,7 +161,7 @@ const Login = ({ mode }: { mode: Mode }) => {
         sessionStorage.setItem('authToken', token);
 
         sessionStorage.setItem('user', JSON.stringify(user));
-
+        setLoading(false)
         router.push("/en/dashboards/crm");
       } else {
         // Handle unsuccessful login
@@ -175,6 +181,8 @@ const Login = ({ mode }: { mode: Mode }) => {
 
         toast.error('An unexpected error occurred.');
       }
+
+      setLoading(false)
     }
   };
 
@@ -269,8 +277,8 @@ const Login = ({ mode }: { mode: Mode }) => {
                 Forgot password?
               </Typography>
             </div>
-            <Button fullWidth variant='contained' type='submit'>
-              Log In
+            <Button disabled={loading} fullWidth variant='contained' type='submit'>
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Log In'}
             </Button>
             <div className='flex justify-center hidden items-center flex-wrap gap-2'>
               <Typography>New on our platform?</Typography>

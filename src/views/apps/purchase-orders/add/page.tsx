@@ -249,7 +249,7 @@ const AddPurchaseOrderActions = () => {
     defaultValues
   })
 
-  console.log('errors', errors)
+
 
   const importProductSchema = yup.object().shape({
     product_excel: yup.mixed().required('Excel is required')
@@ -268,10 +268,10 @@ const AddPurchaseOrderActions = () => {
     defaultValues: importProductDefaultValues
   })
 
-  console.log('importErrors', importErrors)
+
 
   const onSubmit = async (data: any) => {
-    console.log('Purchase Orders Data', data)
+
 
     const formData = new FormData()
 
@@ -287,11 +287,23 @@ const AddPurchaseOrderActions = () => {
         .then(res => {
           toast.success('Purchase Order Added Successfully!')
           fetchVendors()
-          router.push('/apps/purchase-orders')
+          setTimeout(() => {
+            router.push('/apps/purchase-orders');
+          }, 2000);
+
+
         })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding product:', error)
-      toast.error('Something went wrong!')
+
+      if (error.response && error.response.data && error.response.data.error) {
+
+        toast.error(`Error: ${error.response.data.error}`);
+
+      } else {
+
+        toast.error('Something went wrong!');
+      }
     }
   }
 
@@ -325,7 +337,8 @@ const AddPurchaseOrderActions = () => {
               setImportModel(false)
             } else {
               setShowImportError(true)
-
+              setTotalItems(res.data.total_items)
+              setNetTotalAmount(res.data.net_total_amount)
               setShowImportModifiedData(res?.data?.purchaseOrderProducts)
 
               setShowImportErrorData(res.data.itemComparisons)
@@ -339,7 +352,7 @@ const AddPurchaseOrderActions = () => {
     }
   }
 
-  console.log('importedData', importedData)
+
 
   const fetchVendors = async () => {
     try {
@@ -370,7 +383,7 @@ const AddPurchaseOrderActions = () => {
     setValue('purchase_date', dateTime)
   }, [])
 
-  console.log('vendorData', vendorData)
+
 
   return (
     <div>
@@ -428,12 +441,12 @@ const AddPurchaseOrderActions = () => {
                       </InputAdornment>
                     )
                   }}
-                  {...register('referenceNumber')}
+                  {...register('reference_number')}
                   fullWidth
                   id='outlined-basic'
                   label='Reference Number'
                 />
-                <FormHelperText className='text-red-600'>{errors.referenceNumber?.message as string}</FormHelperText>
+                <FormHelperText className='text-red-600'>{errors.reference_number?.message as string}</FormHelperText>
               </Grid>
               <Grid item xs={12} md={4}>
                 <AppReactDatepicker

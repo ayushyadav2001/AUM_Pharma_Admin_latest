@@ -26,7 +26,7 @@ const FileUploaderSingleExcel = ({ setValue, fieldName }: any) => {
     onDrop: (acceptedFiles: File[]) => {
       const file = acceptedFiles[0]
 
-      console.log("file", file)
+
 
       setFiles([file])
       setValue(fieldName, file)
