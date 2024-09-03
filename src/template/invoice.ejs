@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #000;
+        }
+
+        .container {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header .vendor, .header .invoice-info {
+            display: inline-block;
+            width: 49%;
+            vertical-align: top;
+        }
+
+        .invoice-info {
+            text-align: right;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .details {
+            margin-bottom: 20px;
+        }
+
+        .details .customer-info, .details .invoice-meta {
+            display: inline-block;
+            width: 49%;
+            vertical-align: top;
+        }
+
+        .invoice-meta {
+            text-align: right;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="vendor">
+                <h1><%= vendor.name %></h1>
+                <p><%= vendor.address %></p>
+                <p>GST No.: <%= vendor.gst %></p>
+            </div>
+            <div class="invoice-info">
+                <h2>Invoice No.: <%= invoice.number %></h2>
+                <p>Date: <%= invoice.date %></p>
+            </div>
+        </div>
+
+        <div class="details">
+            <div class="customer-info">
+                <p><strong>Bill To:</strong></p>
+                <p><%= customer.name %></p>
+                <p><%= customer.address %></p>
+                <p>GST No.: <%= customer.gst %></p>
+            </div>
+            <div class="invoice-meta">
+                <p><strong>Due Date:</strong> <%= invoice.dueDate %></p>
+                <p><strong>Salesman:</strong> <%= invoice.salesman %></p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>HSN Code</th>
+                    <th>Item Name</th>
+                    <th>Batch No</th>
+                    <th>Exp</th>
+                    <th>Qty</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% items.forEach(item => { %>
+                <tr>
+                    <td><%= item.hsnCode %></td>
+                    <td><%= item.name %></td>
+                    <td><%= item.batchNo %></td>
+                    <td><%= item.expiry %></td>
+                    <td><%= item.quantity %></td>
+                    <td><%= item.rate %></td>
+                    <td><%= item.amount %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" style="text-align: right;"><strong>Total:</strong></td>
+                    <td><%= totalAmount %></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="footer">
+            <p><strong>Amount in Words:</strong> <%= amountInWords %></p>
+            <p><strong>Net Payable:</strong> <%= totalAmount %></p>
+            <p>Thank you for your business!</p>
+        </div>
+    </div>
+</body>
+</html>

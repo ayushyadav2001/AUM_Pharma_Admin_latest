@@ -14,6 +14,8 @@ import customerReducer from '@/redux-store/slices/customerSlice'
 
 import purchaseOrderSlice from '@/redux-store/slices/purchaseOrderSlice'
 
+import invoiceSlice from '@/redux-store/slices/invoicePreviewSlice'
+
 export const store = configureStore({
   reducer: {
     chatReducer,
@@ -23,7 +25,8 @@ export const store = configureStore({
     products: productReducer,
     vendor: vendorReducer,
     customer: customerReducer,
-    purchaseOrders: purchaseOrderSlice
+    purchaseOrders: purchaseOrderSlice,
+    invoice: invoiceSlice
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false })
 })

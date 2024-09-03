@@ -186,6 +186,7 @@ const PurchaseOrderListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
 
 
+
   // Hooks
   const { lang: locale } = useParams()
 
@@ -340,17 +341,23 @@ const PurchaseOrderListTable = ({ tableData }: { tableData?: UsersType[] }) => {
               </Link>
             </IconButton>
             <OptionMenu
+
               iconClassName='text-textSecondary'
               options={[
                 {
-                  text: 'Download',
-                  icon: 'ri-download-line'
+                  text: 'Invoice',
+                  icon: 'ri-download-line',
+                  href: `/apps/purchase-orders/preview-invoice/${row.original._id}`,
+                  linkProps: {
+                    className: 'flex items-center is-full plb-2 pli-5 gap-2'
+                  }
                 },
                 {
                   text: 'Edit',
                   icon: 'ri-edit-box-line'
                 }
               ]}
+
             />
 
           </div>
