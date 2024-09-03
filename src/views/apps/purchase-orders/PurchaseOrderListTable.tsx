@@ -352,6 +352,7 @@ const PurchaseOrderListTable = ({ tableData }: { tableData?: UsersType[] }) => {
                 }
               ]}
             />
+
           </div>
         ),
         enableSorting: false

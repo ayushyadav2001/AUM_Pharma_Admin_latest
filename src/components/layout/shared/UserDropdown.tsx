@@ -26,6 +26,10 @@ import Button from '@mui/material/Button'
 // import DefaultAvatar from "@assets/defaultImages/default-Avator-transformed.png"
 
 // Type Imports
+import { toast } from 'react-toastify'
+
+import axios from 'axios'
+
 import type { Locale } from '@configs/i18n'
 
 // Hook Imports
@@ -33,6 +37,7 @@ import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
+
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -88,21 +93,36 @@ const UserDropdown = () => {
   }
 
   const handleUserLogout = async () => {
+
+
     try {
-      // Sign out from the app
-      console.log("Logout")
+      // Log the start of the logout process
+      console.log("Starting logout");
+
+      // Make the API call to the backend logout endpoint
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/logout`, {}, {
+        withCredentials: true,
+      });
+
+      toast.success(response.data.message || "Logout successful");
 
       // Clear session storage
-      sessionStorage.clear()
+      sessionStorage.clear();
 
-      // Optionally redirect to login page
-      router.push('/login')
+      // Log the successful logout
+      console.log("Logout successful");
+
+      // Optionally redirect to the login page
+      router.push('/login');
     } catch (error) {
-      console.error(error)
+      console.error("Error during logout:", error);
 
-      // Show error in a toast (example: toastService.error((err as Error).message))
+      // Optionally show an error message in a toast
+      // toastService.error((error.response?.data?.error) || (error.message));
+
+      // Handle any additional error handling logic here
     }
-  }
+  };
 
 
 
