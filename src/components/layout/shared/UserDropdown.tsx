@@ -23,12 +23,13 @@ import Button from '@mui/material/Button'
 
 // Third-party Imports
 
-// import DefaultAvatar from "@assets/defaultImages/default-Avator-transformed.png"
 
 // Type Imports
 import { toast } from 'react-toastify'
 
 import axios from 'axios'
+
+import DefaultAvatar from "@assets/defaultImages/default-Avator-transformed.png"
 
 import type { Locale } from '@configs/i18n'
 
@@ -97,7 +98,7 @@ const UserDropdown = () => {
 
     try {
       // Log the start of the logout process
-      console.log("Starting logout");
+
 
       // Make the API call to the backend logout endpoint
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/logout`, {}, {
@@ -142,9 +143,9 @@ const UserDropdown = () => {
           ref={anchorRef}
           alt={user?.firstName || 'User'}
 
-          // src={user ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${user.profilePicture}` : `${DefaultAvatar}`}
+          src={user ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${user.profilePicture}` : `${DefaultAvatar}`}
 
-          src={'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'}
+          // src={'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'}
 
           onClick={handleDropdownOpen}
           className='cursor-pointer bs-[38px] is-[38px]'
@@ -172,7 +173,7 @@ const UserDropdown = () => {
               <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
                 <MenuList>
                   <div className='flex items-center plb-2 pli-4 gap-2' tabIndex={-1}>
-                    <Avatar alt={user?.firstName || 'User'} src={'https://img.freepik.com/premium-photo/3d-avatar-cartoon-character_113255-93124.jpg?w=740'} />
+                    <Avatar alt={user?.firstName || 'User'} src={user ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${user.profilePicture}` : `${DefaultAvatar}`} />
                     <div className='flex items-start flex-col'>
                       <Typography variant='body2' className='font-medium' color='text.primary'>
                         {user ? `${user.firstName} ${user.lastName}` : 'User'}
