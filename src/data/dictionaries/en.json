@@ -117,10 +117,14 @@
     "listPurchases": "List Purchase",
     "addPurchases": "Add Purchase",
     "orders": "Orders",
-    "stockAdjustment": "Stock Adjustment",
+    "stockAdjustment": "Stock Adjustments",
+    "listStockAdjustment": "List Stock Adjustments",
+    "addStockAdjustment": "Add Stock Adjustment",
     "reports": "Reports",
     "notificationTemplate": "Notification Template",
     "setting": "Settings",
-    "home": "Home"
+    "home": "Home",
+    "stock": "Stocks",
+    "stockList": "List Stock"
   }
 }

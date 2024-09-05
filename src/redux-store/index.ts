@@ -15,6 +15,8 @@ import customerReducer from '@/redux-store/slices/customerSlice'
 import purchaseOrderSlice from '@/redux-store/slices/purchaseOrderSlice'
 
 import invoiceSlice from '@/redux-store/slices/invoicePreviewSlice'
+import StockSlice from './slices/StockSlice'
+import StockAdjustmentSlice from './slices/StockAdjustmentSlice'
 
 export const store = configureStore({
   reducer: {
@@ -26,7 +28,9 @@ export const store = configureStore({
     vendor: vendorReducer,
     customer: customerReducer,
     purchaseOrders: purchaseOrderSlice,
-    invoice: invoiceSlice
+    invoice: invoiceSlice,
+    stock: StockSlice,
+    stockAdjustment: StockAdjustmentSlice
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false })
 })

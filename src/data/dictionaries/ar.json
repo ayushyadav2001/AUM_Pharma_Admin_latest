@@ -119,9 +119,13 @@
     "addPurchases": "Add Purchase",
     "orders": "Orders",
     "stockAdjustment": "Stock Adjustment",
+    "listStockAdjustment": "List Stock Adjustments",
+    "addStockAdjustment": "Add Stock Adjustment",
     "reports": "Reports",
     "notificationTemplate": "Notification Templates",
     "setting": "Settings",
-    "home": "Home"
+    "home": "Home",
+    "stock": "Stocks",
+    "stockList": "List Stock"
   }
 }

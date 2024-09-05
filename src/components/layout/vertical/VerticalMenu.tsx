@@ -483,19 +483,28 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             {dictionary['navigation'].rolesList}
           </MenuItem>
         </SubMenu>
+        <SubMenu
+          label={dictionary['navigation'].stock}
+          icon={<i className='ri-funds-box-line' />}
+        >
+          <MenuItem href={`/${locale}/apps/stock`}  >
+            {dictionary['navigation'].stockList}
+          </MenuItem>
 
+        </SubMenu>
 
         <SubMenu
           label={dictionary['navigation'].stockAdjustment}
           icon={<i className='ri-database-2-line' />}
         >
-          <MenuItem href={`/${locale}/apps/user/list`}  >
-            {dictionary['navigation'].userList}
+          <MenuItem href={`/${locale}/apps/stock-adjustment`}  >
+            {dictionary['navigation'].listStockAdjustment}
           </MenuItem>
-          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-            {dictionary['navigation'].rolesList}
+          <MenuItem href={`/${locale}/apps/stock-adjustment/add`}  >
+            {dictionary['navigation'].addStockAdjustment}
           </MenuItem>
         </SubMenu>
+
 
         <SubMenu
           label={dictionary['navigation'].reports}
