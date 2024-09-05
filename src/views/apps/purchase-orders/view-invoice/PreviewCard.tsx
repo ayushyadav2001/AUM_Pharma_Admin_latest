@@ -21,7 +21,7 @@ import LogoSmall from '@/components/layout/shared/LogoSmall'
 // Vars
 
 
-const PreviewCard = ({ invoiceData }: { invoiceData?: any; id: string }) => {
+const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
 
   const formattedDate = dayjs(invoiceData?.purchase_date).format('DD/MM/YYYY hh:mm A');
 

@@ -16,11 +16,11 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
-import Chip from '@mui/material/Chip'
+
 import Typography from '@mui/material/Typography'
-import Checkbox from '@mui/material/Checkbox'
+
 import IconButton from '@mui/material/IconButton'
-import { styled } from '@mui/material/styles'
+
 import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 
@@ -43,16 +43,18 @@ import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Type Imports
-import type { ThemeColor } from '@core/types'
+
+import dayjs from 'dayjs'
+
 import type { UsersType } from '@/types/apps/userTypes'
 import type { Locale } from '@configs/i18n'
 
 // Component Imports
 import OptionMenu from '@core/components/option-menu'
-import CustomAvatar from '@core/components/mui/Avatar'
+
 
 // Util Imports
-import { getInitials } from '@/utils/getInitials'
+
 import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
@@ -67,20 +69,8 @@ declare module '@tanstack/table-core' {
   }
 }
 
-type UsersTypeWithAction = UsersType & {
-  action?: string
-}
 
-type UserRoleType = {
-  [key: string]: { icon: string; color: string }
-}
 
-type UserStatusType = {
-  [key: string]: ThemeColor
-}
-
-// Styled Components
-const Icon = styled('i')({})
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -125,26 +115,15 @@ const DebouncedInput = ({
 }
 
 // Vars
-const userRoleObj: UserRoleType = {
-  admin: { icon: 'ri-vip-crown-line', color: 'error' },
-  author: { icon: 'ri-computer-line', color: 'warning' },
-  editor: { icon: 'ri-edit-box-line', color: 'info' },
-  maintainer: { icon: 'ri-pie-chart-2-line', color: 'success' },
-  subscriber: { icon: 'ri-user-3-line', color: 'primary' }
-}
 
-const userStatusObj: UserStatusType = {
-  active: 'success',
-  pending: 'warning',
-  inactive: 'secondary'
-}
+
 
 // Column Definitions
-const columnHelper = createColumnHelper<UsersTypeWithAction>()
+const columnHelper = createColumnHelper<any>()
 
 const RolesTable = ({ tableData }: { tableData?: UsersType[] }) => {
   // States
-  const [role, setRole] = useState<UsersType['role']>('')
+  const [role, setRole] = useState<any['role']>('')
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState(...[tableData])
   const [filteredData, setFilteredData] = useState(data)
@@ -153,83 +132,23 @@ const RolesTable = ({ tableData }: { tableData?: UsersType[] }) => {
   // Hooks
   const { lang: locale } = useParams()
 
-  const columns = useMemo<ColumnDef<UsersTypeWithAction, any>[]>(
+  const columns = useMemo<ColumnDef<any>[]>(
     () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler()
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            {...{
-              checked: row.getIsSelected(),
-              disabled: !row.getCanSelect(),
-              indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler()
-            }}
-          />
-        )
-      },
-      columnHelper.accessor('fullName', {
-        header: 'User',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-3'>
-            {getAvatar({ avatar: row.original.avatar, fullName: row.original.fullName })}
-            <div className='flex flex-col'>
-              <Typography color='text.primary' className='font-medium'>
-                {row.original.fullName}
-              </Typography>
-              <Typography variant='body2'>{row.original.username}</Typography>
-            </div>
-          </div>
-        )
+
+      columnHelper.accessor('roleName', {
+        header: 'Role Name',
+        cell: ({ row }) => <Typography>{row.original.roleName}</Typography>
       }),
-      columnHelper.accessor('email', {
-        header: 'Email',
-        cell: ({ row }) => <Typography>{row.original.email}</Typography>
-      }),
-      columnHelper.accessor('role', {
-        header: 'Role',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-2'>
-            <Icon
-              className={userRoleObj[row.original.role].icon}
-              sx={{ color: `var(--mui-palette-${userRoleObj[row.original.role].color}-main)`, fontSize: '1.375rem' }}
-            />
-            <Typography color='text.primary' className='capitalize'>
-              {row.original.role}
-            </Typography>
-          </div>
-        )
-      }),
-      columnHelper.accessor('currentPlan', {
-        header: 'Plan',
-        cell: ({ row }) => (
-          <Typography color='text.primary' className='capitalize'>
-            {row.original.currentPlan}
-          </Typography>
-        )
-      }),
-      columnHelper.accessor('status', {
-        header: 'Status',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-3'>
-            <Chip
-              variant='tonal'
-              label={row.original.status}
-              size='small'
-              color={userStatusObj[row.original.status]}
-              className='capitalize'
-            />
-          </div>
-        )
+      columnHelper.accessor('createdAt', {
+        header: 'Created Date',
+        enableSorting: true,
+        cell: ({ row }) => {
+          const formattedDate = row.original.createdAt
+            ? dayjs(row.original.createdAt).format('DD/MM/YYYY hh:mm A')
+            : 'N/A';
+
+          return <Typography className="cursor-pointer" >{formattedDate}</Typography>;
+        }
       }),
       columnHelper.accessor('action', {
         header: 'Actions',
@@ -296,15 +215,7 @@ const RolesTable = ({ tableData }: { tableData?: UsersType[] }) => {
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
 
-  const getAvatar = (params: Pick<UsersType, 'avatar' | 'fullName'>) => {
-    const { avatar, fullName } = params
 
-    if (avatar) {
-      return <CustomAvatar src={avatar} size={34} />
-    } else {
-      return <CustomAvatar>{getInitials(fullName as string)}</CustomAvatar>
-    }
-  }
 
   useEffect(() => {
     const filteredData = data?.filter(user => {
@@ -334,7 +245,13 @@ const RolesTable = ({ tableData }: { tableData?: UsersType[] }) => {
             onChange={value => setGlobalFilter(String(value))}
             placeholder='Search User'
           />
-          <FormControl size='small' className='max-sm:is-full'>
+
+          <Link className='' href={`/${locale}/apps/roles/add`}>
+            <Button variant='contained' className='is-full sm:is-auto'>
+              Add
+            </Button>
+          </Link>
+          <FormControl size='small' className='max-sm:is-full hidden'>
             <InputLabel id='roles-app-role-select-label'>Select Role</InputLabel>
             <Select
               value={role}

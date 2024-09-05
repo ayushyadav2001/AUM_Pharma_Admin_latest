@@ -63,6 +63,55 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
 
+  const userPermissions = JSON.parse(localStorage.getItem('permissions') ?? '{}');
+
+  const isSuperAdmin = () => {
+    const userRole = localStorage.getItem('role_name') ?? '';
+
+    return userRole === 'Super Admin';
+  };
+
+
+
+
+  const canShowMaster = (masterName: any) => {
+
+    if (isSuperAdmin()) {
+      return true; // Super Admin sees everything
+    }
+
+    const masterPermission = userPermissions.find(
+      (perm: any) => perm.masterName === masterName
+    );
+
+    return masterPermission ? masterPermission.visible : false;
+  };
+
+
+  const canShowSubmenu = (masterName: any, submenuName: any) => {
+
+
+    if (isSuperAdmin()) {
+      return true; // Super Admin sees everything
+    }
+
+    const masterPermission = userPermissions.find(
+      (perm: any) => perm.masterName === masterName
+    );
+
+    if (!masterPermission || !masterPermission.visible) {
+      return false; // Master item is not visible
+    }
+
+    const submenuPermission = masterPermission.submenus.find(
+      (submenu: any) => submenu.submenuName === submenuName
+    );
+
+    return submenuPermission ? submenuPermission.visible : false;
+  };
+
+
+
   return (
     // eslint-disable-next-line lines-around-comment
     /* Custom scrollbar instead of browser scroll, remove if you want browser scroll only */
@@ -398,15 +447,50 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         </MenuSection> */}
 
         {/* <MenuSection label={dictionary['navigation'].dashboard}> */}
-        <MenuItem href={`/${locale}/dashboards/crm`} icon={<i className=' ri-home-smile-line' />}>
-          {dictionary['navigation'].home}
-        </MenuItem>
+
+
+        {canShowMaster('Home') && (
+          <MenuItem href={`/${locale}/dashboards/crm`} icon={<i className=' ri-home-smile-line' />}>
+            {dictionary['navigation'].home}
+          </MenuItem>
+
+
+        )}
+
         {/* </MenuSection> */}
 
         {/* <MenuItem href={`/${locale}/apps/products`} icon={<i className='ri-layout-4-line' />}>
             {dictionary['navigation'].products}
           </MenuItem> */}
-        <SubMenu
+
+
+
+        {canShowMaster('Users') && (
+          <SubMenu
+            label={dictionary['navigation'].user}
+            icon={<i className='ri-team-line' />}
+          >
+            {canShowSubmenu('Users', "List User") && (
+
+              <MenuItem href={`/${locale}/apps/user/list`}>
+                {dictionary['navigation'].userList}
+              </MenuItem>
+            )}
+            {canShowSubmenu('Users', "Roles") && (
+
+              <MenuItem href={`/${locale}/apps/roles`}>
+                {dictionary['navigation'].rolesList}
+              </MenuItem>
+            )}
+
+
+          </SubMenu>
+        )}
+
+
+
+
+        {/* <SubMenu
           label={dictionary['navigation'].user}
           icon={<i className='ri-team-line' />}
 
@@ -420,133 +504,264 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           </MenuItem>
 
 
-        </SubMenu>
+        </SubMenu> */}
 
-        <SubMenu
-          label={dictionary['navigation'].products}
-          icon={<i className='ri-home-smile-line' />}
 
-        // suffix={<Chip label='5' size='small' color='error' />}
-        >
-          <MenuItem href={`/${locale}/apps/products`}  >
-            {dictionary['navigation'].productsList}
+        {canShowMaster('Products') && (
+
+          <SubMenu
+            label={dictionary['navigation'].products}
+            icon={<i className='ri-home-smile-line' />}
+
+          // suffix={<Chip label='5' size='small' color='error' />}
+          >
+
+            {canShowSubmenu('Products', "List Product") && (
+              <MenuItem href={`/${locale}/apps/products`}  >
+                {dictionary['navigation'].productsList}
+              </MenuItem>
+
+            )}
+
+
+            {canShowSubmenu('Products', "Add Product") && (
+              <MenuItem href={`/${locale}/apps/products/add`}  >
+                {dictionary['navigation'].addProducts}
+              </MenuItem>
+
+            )}
+
+
+            {canShowSubmenu('Products', "Import Product") && (
+              <MenuItem href={`/${locale}/apps/products/import`}  >
+                {dictionary['navigation'].importProducts}
+              </MenuItem>
+
+            )}
+
+
+
+
+
+
+
+          </SubMenu>
+
+        )}
+
+        {canShowMaster('Vendors') && (
+
+          <SubMenu
+            label={dictionary['navigation'].vendor}
+            icon={<i className='ri-group-3-line' />}
+
+          // suffix={<Chip label='5' size='small' color='error' />}
+          >
+
+
+            {canShowSubmenu('Vendors', "List Vendor") && (
+              <MenuItem href={`/${locale}/apps/vendors`} >
+                {dictionary['navigation'].vendorList}
+              </MenuItem>
+
+            )}
+
+
+            {canShowSubmenu('Vendors', "Add Vendor") && (
+              <MenuItem href={`/${locale}/apps/vendors/add`} >
+                {dictionary['navigation'].vendorAdd}
+              </MenuItem>
+
+            )}
+
+
+
+
+
+
+          </SubMenu>
+
+        )}
+
+
+        {canShowMaster('Purchases') && (
+
+          <SubMenu
+            label={dictionary['navigation'].purchases}
+            icon={<i className='ri-download-line' />}
+
+
+          >
+
+
+            {canShowSubmenu('Purchases', "List Purchase") && (
+              <MenuItem href={`/${locale}/apps/purchase-orders`}  >
+                {dictionary['navigation'].listPurchases}
+              </MenuItem>
+
+            )}
+
+            {canShowSubmenu('Purchases', "Add Purchase") && (
+              <MenuItem href={`/${locale}/apps/purchase-orders/add`}  >
+                {dictionary['navigation'].addPurchases}
+              </MenuItem>
+
+            )}
+
+
+
+
+
+
+          </SubMenu>
+
+        )}
+
+        {canShowMaster('Orders') && (
+
+
+          <SubMenu
+            label={dictionary['navigation'].orders}
+            icon={<i className='ri-shape-line' />}
+          >
+
+
+            {canShowSubmenu('Orders', "List Order") && (
+              <MenuItem href={`/${locale}/apps/user/list`}  >
+                {dictionary['navigation'].userList}
+              </MenuItem>
+
+            )}
+            {canShowSubmenu('Orders', "Add Order") && (
+              <MenuItem href={`/${locale}/apps/vendors/roles`}  >
+                {dictionary['navigation'].rolesList}
+              </MenuItem>
+
+            )}
+
+
+          </SubMenu>
+
+        )}
+
+
+        {canShowMaster('Stocks') && (
+
+          <SubMenu
+            label={dictionary['navigation'].stock}
+            icon={<i className='ri-funds-box-line' />}
+          >
+
+
+            {canShowSubmenu('Stocks', "List Stock") && (
+              <MenuItem href={`/${locale}/apps/stock`}  >
+                {dictionary['navigation'].stockList}
+              </MenuItem>
+
+            )}
+
+
+          </SubMenu>
+
+        )}
+
+
+        {canShowMaster('Stocks Adjustment') && (
+          <SubMenu
+            label={dictionary['navigation'].stockAdjustment}
+            icon={<i className='ri-database-2-line' />}
+          >
+
+
+            {canShowSubmenu('Stocks Adjustment', "List Stock Adjustment") && (
+              <MenuItem href={`/${locale}/apps/stock-adjustment`}  >
+                {dictionary['navigation'].listStockAdjustment}
+              </MenuItem>
+
+            )}
+            {canShowSubmenu('Stocks Adjustment', "Add Stock Adjustment") && (
+              <MenuItem href={`/${locale}/apps/stock-adjustment/add`}  >
+                {dictionary['navigation'].addStockAdjustment}
+              </MenuItem>
+
+            )}
+
+
+
+          </SubMenu>
+
+
+        )}
+
+        {canShowMaster('Reports') && (
+          <SubMenu
+            label={dictionary['navigation'].reports}
+            icon={<i className='ri-folder-chart-line' />}
+          >
+
+
+            {canShowSubmenu('Reports', "List Report") && (
+              <MenuItem href={`/${locale}/apps/user/list`}  >
+                {dictionary['navigation'].userList}
+              </MenuItem>
+
+            )}
+
+
+
+
+          </SubMenu>
+
+
+        )}
+
+
+
+
+        {canShowMaster('Notification Template') && (
+          <SubMenu
+            label={dictionary['navigation'].notificationTemplate}
+            icon={<i className='ri-mail-line' />}
+          >
+            {canShowSubmenu('Notification Template', "List Template") && (
+              <MenuItem href={`/${locale}/apps/user/list`}  >
+                {dictionary['navigation'].userList}
+              </MenuItem>
+
+            )}
+
+
+          </SubMenu>
+
+        )}
+
+
+        {canShowMaster('Settings') && (
+
+          <SubMenu
+            label={dictionary['navigation'].setting}
+            icon={<i className='ri-settings-5-line' />}
+          >
+
+            {canShowSubmenu('Settings', "General Settings") && (
+              <MenuItem href={`/${locale}/apps/user/list`}  >
+                {dictionary['navigation'].userList}
+              </MenuItem>
+
+            )}
+
+
+          </SubMenu>
+        )}
+
+
+        {canShowMaster('Customers') && (
+          <MenuItem href={`/${locale}/apps/customers`} icon={<i className='ri-user-follow-line' />}>
+            {dictionary['navigation'].customers}
           </MenuItem>
-          <MenuItem href={`/${locale}/apps/products/add`}  >
-            {dictionary['navigation'].addProducts}
-          </MenuItem>
-          <MenuItem href={`/${locale}/apps/products/import`}  >
-            {dictionary['navigation'].importProducts}
-          </MenuItem>
 
 
-
-        </SubMenu>
-
-        <SubMenu
-          label={dictionary['navigation'].vendor}
-          icon={<i className='ri-group-3-line' />}
-
-        // suffix={<Chip label='5' size='small' color='error' />}
-        >
-          <MenuItem href={`/${locale}/apps/vendors`} >
-            {dictionary['navigation'].vendorList}
-          </MenuItem>
-          <MenuItem href={`/${locale}/apps/vendors/add`} >
-            {dictionary['navigation'].vendorAdd}
-          </MenuItem>
-
-
-        </SubMenu>
-        <SubMenu
-          label={dictionary['navigation'].purchases}
-          icon={<i className='ri-download-line' />}
-
-
-        >
-          <MenuItem href={`/${locale}/apps/purchase-orders`}  >
-            {dictionary['navigation'].listPurchases}
-          </MenuItem>
-          <MenuItem href={`/${locale}/apps/purchase-orders/add`}  >
-            {dictionary['navigation'].addPurchases}
-          </MenuItem>
-
-
-        </SubMenu>
-        <SubMenu
-          label={dictionary['navigation'].orders}
-          icon={<i className='ri-shape-line' />}
-        >
-          <MenuItem href={`/${locale}/apps/user/list`}  >
-            {dictionary['navigation'].userList}
-          </MenuItem>
-          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-            {dictionary['navigation'].rolesList}
-          </MenuItem>
-        </SubMenu>
-        <SubMenu
-          label={dictionary['navigation'].stock}
-          icon={<i className='ri-funds-box-line' />}
-        >
-          <MenuItem href={`/${locale}/apps/stock`}  >
-            {dictionary['navigation'].stockList}
-          </MenuItem>
-
-        </SubMenu>
-
-        <SubMenu
-          label={dictionary['navigation'].stockAdjustment}
-          icon={<i className='ri-database-2-line' />}
-        >
-          <MenuItem href={`/${locale}/apps/stock-adjustment`}  >
-            {dictionary['navigation'].listStockAdjustment}
-          </MenuItem>
-          <MenuItem href={`/${locale}/apps/stock-adjustment/add`}  >
-            {dictionary['navigation'].addStockAdjustment}
-          </MenuItem>
-        </SubMenu>
-
-
-        <SubMenu
-          label={dictionary['navigation'].reports}
-          icon={<i className='ri-folder-chart-line' />}
-        >
-          <MenuItem href={`/${locale}/apps/user/list`}  >
-            {dictionary['navigation'].userList}
-          </MenuItem>
-          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-            {dictionary['navigation'].rolesList}
-          </MenuItem>
-        </SubMenu>
-
-
-        <SubMenu
-          label={dictionary['navigation'].notificationTemplate}
-          icon={<i className='ri-mail-line' />}
-        >
-          <MenuItem href={`/${locale}/apps/user/list`}  >
-            {dictionary['navigation'].userList}
-          </MenuItem>
-          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-            {dictionary['navigation'].rolesList}
-          </MenuItem>
-        </SubMenu>
-
-        <SubMenu
-          label={dictionary['navigation'].setting}
-          icon={<i className='ri-settings-5-line' />}
-        >
-          <MenuItem href={`/${locale}/apps/user/list`}  >
-            {dictionary['navigation'].userList}
-          </MenuItem>
-          <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-            {dictionary['navigation'].rolesList}
-          </MenuItem>
-        </SubMenu>
-
-
-        <MenuItem href={`/${locale}/apps/customers`} icon={<i className='ri-user-follow-line' />}>
-          {dictionary['navigation'].customers}
-        </MenuItem>
+        )}
 
 
 

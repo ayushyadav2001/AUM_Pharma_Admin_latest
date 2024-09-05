@@ -1,30 +1,55 @@
-// Component Imports
+"use client"
+/* eslint-disable @next/next/no-async-client-component */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useEffect, useState } from 'react'
+
+import { useDispatch, useSelector } from 'react-redux'
+
+import axios from 'axios'
+
 import Roles from '@views/apps/roles'
 
 // Data Imports
-import { getUserData } from '@/app/server/actions'
 
-/**
- * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
- * ! `.env` file found at root of your project and also update the API endpoints like `/apps/user-list` in below example.
- * ! Also, remove the above server action import and the action itself from the `src/app/server/actions.ts` file to clean up unused code
- * ! because we've used the server action for getting our static data.
- */
+import Loader from '@/views/Loader/Loader'
+import { setRolesData } from '@/redux-store/slices/rolesSlice'
 
-/* const getUserData = async () => {
-  // Vars
-  const res = await fetch(`${process.env.API_URL}/apps/user-list`)
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch userData')
+const RolesApp = () => {
+
+
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const data = useSelector((state: any) => state?.roles?.data)
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/role/get-roles`, { withCredentials: true })
+
+        dispatch(setRolesData(response.data.roles)) // Ensure `setData` action is correctly set
+      } catch (err) {
+        console.error('Failed to fetch products', err) // Log the error for debugging
+        setError('Failed to fetch products')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [dispatch])
+
+  if (loading) {
+    return <Loader />
   }
 
-  return res.json()
-} */
+  if (error) {
+    return <div>{error}</div>
+  }
 
-const RolesApp = async () => {
-  // Vars
-  const data = await getUserData()
+
 
   return <Roles userData={data} />
 }

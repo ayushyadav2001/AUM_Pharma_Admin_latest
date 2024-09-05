@@ -156,9 +156,11 @@ const Login = ({ mode }: { mode: Mode }) => {
         toast.success('Login successful!');
 
         // Save data in session storage
-        const { token, user } = response.data;
+        const { token, user, } = response.data;
 
         sessionStorage.setItem('authToken', token);
+        localStorage.setItem('role_name', user?.roleName);
+        localStorage.setItem('permissions', JSON.stringify(user?.permissions));
 
         sessionStorage.setItem('user', JSON.stringify(user));
         setLoading(false)
