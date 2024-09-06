@@ -472,7 +472,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           >
             {canShowSubmenu('Users', "List User") && (
 
-              <MenuItem href={`/${locale}/apps/user/list`}>
+              <MenuItem href={`/${locale}/apps/users`}>
                 {dictionary['navigation'].userList}
               </MenuItem>
             )}
