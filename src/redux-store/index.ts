@@ -20,6 +20,8 @@ import StockAdjustmentSlice from './slices/StockAdjustmentSlice'
 import masterSlice from './slices/masterSlice'
 import rolesSlice from './slices/rolesSlice'
 import usersSlice from './slices/userSlice'
+import categorySlice from './slices/categorySlice'
+import subCategorySlice from './slices/subCategorySlice'
 
 export const store = configureStore({
   reducer: {
@@ -36,7 +38,9 @@ export const store = configureStore({
     stockAdjustment: StockAdjustmentSlice,
     masters: masterSlice,
     roles: rolesSlice,
-    users: usersSlice
+    users: usersSlice,
+    category: categorySlice,
+    subCategory: subCategorySlice
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false })
 })

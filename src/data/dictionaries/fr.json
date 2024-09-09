@@ -126,6 +126,10 @@
     "setting": "Settings",
     "home": "Home",
     "stock": "Stocks",
-    "stockList": "List Stock"
+    "stockList": "List Stock",
+    "categorys": "Categorys",
+    "listCategorys": "List Categorys",
+    "subCategorys": "Sub Categorys",
+    "listSubCategorys": "List Sub Categorys"
   }
 }
