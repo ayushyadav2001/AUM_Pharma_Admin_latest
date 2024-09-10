@@ -293,8 +293,8 @@ const ImportProduct = () => {
         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/insert-product-using-excel`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
-            withCredentials: true,
           },
+          withCredentials: true,
           onUploadProgress: event => {
             if (event.total) {
 

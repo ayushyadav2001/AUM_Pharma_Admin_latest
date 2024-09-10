@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
+import ExcelJS from 'exceljs';
+
 
 import { Card, CardHeader, Divider, FormControl, FormHelperText, Grid, Typography, LinearProgress, Button } from '@mui/material'
 
@@ -15,7 +17,8 @@ import axios from 'axios'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 import { useForm } from 'react-hook-form'
-import * as XLSX from 'xlsx';
+
+// import * as XLSX from 'xlsx';
 
 import { saveAs } from 'file-saver';
 
@@ -54,8 +57,13 @@ const ImportProduct = () => {
 
   const [excelData, setExcelData] = useState([
     {
-      "fieldName": "product_id",
-      "headerName": "Product ID",
+      "fieldName": "product_code",
+      "headerName": "Product Code",
+      "width": 20
+    },
+    {
+      "fieldName": "product_image",
+      "headerName": "Product Image",
       "width": 20
     },
     {
@@ -64,19 +72,14 @@ const ImportProduct = () => {
       "width": 30
     },
     {
-      "fieldName": "mrp",
-      "headerName": "MRP",
-      "width": 15
+      "fieldName": "category",
+      "headerName": "Category",
+      "width": 20
     },
     {
-      "fieldName": "igst",
-      "headerName": "igst",
-      "width": 15
-    },
-    {
-      "fieldName": "hsn",
-      "headerName": "HSN",
-      "width": 15
+      "fieldName": "sub_category",
+      "headerName": "Sub Category",
+      "width": 20
     },
     {
       "fieldName": "manufacturer",
@@ -84,14 +87,9 @@ const ImportProduct = () => {
       "width": 25
     },
     {
-      "fieldName": "composition",
-      "headerName": "Composition",
-      "width": 25
-    },
-    {
-      "fieldName": "packing_type",
-      "headerName": "Packing Type",
-      "width": 20
+      "fieldName": "manufacturer_address",
+      "headerName": "Manufacturer Address",
+      "width": 30
     },
     {
       "fieldName": "packaging",
@@ -99,133 +97,137 @@ const ImportProduct = () => {
       "width": 20
     },
     {
-      "fieldName": "Schedule",
-      "headerName": "Schedule",
+      "fieldName": "packing_type",
+      "headerName": "Packing Type",
       "width": 20
     },
     {
-      "fieldName": "usage",
-      "headerName": "Usage",
+      "fieldName": "quantity",
+      "headerName": "Quantity",
+      "width": 15
+    },
+    {
+      "fieldName": "mrp",
+      "headerName": "MRP",
+      "width": 15
+    },
+    {
+      "fieldName": "discount",
+      "headerName": "Discount",
+      "width": 15
+    },
+    {
+      "fieldName": "prescription_required",
+      "headerName": "Prescription Required",
       "width": 20
     },
     {
-      "fieldName": "about_salt",
-      "headerName": "About Salt",
-      "width": 30
+      "fieldName": "stock_management_required",
+      "headerName": "Stock Management Required",
+      "width": 25
     },
     {
-      "fieldName": "mechanism_of_action",
-      "headerName": "Mechanism of Action",
-      "width": 30
-    },
-    {
-      "fieldName": "pharmacokinets",
-      "headerName": "Pharmacokinets",
-      "width": 30
-    },
-    {
-      "fieldName": "onset_of_action",
-      "headerName": "Onset of Action",
-      "width": 30
-    },
-    {
-      "fieldName": "duration_of_action",
-      "headerName": "Duration of Action",
-      "width": 30
-    },
-    {
-      "fieldName": "half_life",
-      "headerName": "Half Life",
+      "fieldName": "alert_quantity",
+      "headerName": "Alert Quantity",
       "width": 20
     },
     {
-      "fieldName": "side_effects",
-      "headerName": "Side Effects",
+      "fieldName": "introduction",
+      "headerName": "Introduction",
+      "width": 25
+    },
+    {
+      "fieldName": "description",
+      "headerName": "Description",
       "width": 30
     },
     {
-      "fieldName": "contra_indications",
-      "headerName": "Contra-indications",
-      "width": 30
+      "fieldName": "salt_composition",
+      "headerName": "Salt Composition",
+      "width": 25
     },
     {
-      "fieldName": "special_precautions_while_taking",
-      "headerName": "Special Precautions while taking",
-      "width": 30
+      "fieldName": "benefits",
+      "headerName": "Benefits",
+      "width": 25
     },
     {
-      "fieldName": "pregnancy_related_information",
-      "headerName": "Pregnancy Related Information",
-      "width": 30
-    },
-    {
-      "fieldName": "product_and_alcohol_interaction",
-      "headerName": "Product and Alcohol Interaction",
-      "width": 30
-    },
-    {
-      "fieldName": "old_age_related_information",
-      "headerName": "Old Age Related Information",
-      "width": 30
-    },
-    {
-      "fieldName": "breast_feeding_related_information",
-      "headerName": "Breast Feeding Related Information",
-      "width": 30
-    },
-    {
-      "fieldName": "children_related_information",
-      "headerName": "Children Related Information",
-      "width": 30
-    },
-    {
-      "fieldName": "indications",
-      "headerName": "Indications",
-      "width": 30
-    },
-    {
-      "fieldName": "interactions",
-      "headerName": "Interactions",
-      "width": 30
-    },
-    {
-      "fieldName": "typical_dosage",
-      "headerName": "Typical Dosage",
+      "fieldName": "use_of",
+      "headerName": "Use Of",
       "width": 20
-    },
-    {
-      "fieldName": "storage_requirements",
-      "headerName": "Storage Requirements",
-      "width": 30
-    },
-    {
-      "fieldName": "effects_of_missed_dosage",
-      "headerName": "Effects of Missed Dosage",
-      "width": 30
-    },
-    {
-      "fieldName": "effects_of_overdose",
-      "headerName": "Effects of Overdose",
-      "width": 30
-    },
-    {
-      "fieldName": "expert_advice",
-      "headerName": "Expert Advice",
-      "width": 30
     },
     {
       "fieldName": "how_to_use",
-      "headerName": "How to Use",
+      "headerName": "How To Use",
+      "width": 25
+    },
+    {
+      "fieldName": "safety_advice",
+      "headerName": "Safety Advice",
+      "width": 25
+    },
+    {
+      "fieldName": "ingredients",
+      "headerName": "Ingredients",
+      "width": 25
+    },
+    {
+      "fieldName": "primary_use",
+      "headerName": "Primary Use",
+      "width": 20
+    },
+    {
+      "fieldName": "storage",
+      "headerName": "Storage",
+      "width": 20
+    },
+    {
+      "fieldName": "common_side_effects",
+      "headerName": "Common Side Effects",
       "width": 30
+    },
+    {
+      "fieldName": "alcohol_interaction",
+      "headerName": "Alcohol Interaction",
+      "width": 30
+    },
+    {
+      "fieldName": "pregnancy_interaction",
+      "headerName": "Pregnancy Interaction",
+      "width": 30
+    },
+    {
+      "fieldName": "lactation_interaction",
+      "headerName": "Lactation Interaction",
+      "width": 30
+    },
+    {
+      "fieldName": "driving_interaction",
+      "headerName": "Driving Interaction",
+      "width": 30
+    },
+    {
+      "fieldName": "kidney_interaction",
+      "headerName": "Kidney Interaction",
+      "width": 30
+    },
+    {
+      "fieldName": "liver_interaction",
+      "headerName": "Liver Interaction",
+      "width": 30
+    },
+    {
+      "fieldName": "country_of_origin",
+      "headerName": "Country Of Origin",
+      "width": 20
     },
     {
       "fieldName": "faqs",
       "headerName": "FAQs",
       "width": 30
-    },
+    }
+  ]);
 
-  ]
-  )
 
   const [loading, setLoading] = useState(false)
 
@@ -293,8 +295,8 @@ const ImportProduct = () => {
         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/insert-product-using-excel`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
-            withCredentials: true,
           },
+          withCredentials: true,
           onUploadProgress: event => {
             if (event.total) {
 
@@ -314,15 +316,27 @@ const ImportProduct = () => {
         })
         .then((res: any) => {
 
-          setProgress(100)
-          setLoading(false)
-          fetchProducts()
-          toast.success("Products Inserted Successfully !")
-          router.push('/apps/products')
-
-          setExcelData(res.data.data)
 
 
+          if (res.data.errorData.length > 0) {
+            // Handle error case
+            setLoading(false);
+            toast.error("Some products failed to insert. Please check the errors.");
+
+            // Optionally log or display error details
+            console.error("Error Data:", res.data.errorData);
+
+            // You can choose to show these errors to the user
+            // e.g., setErrorData(res.data.errorData);
+          } else {
+            setProgress(100)
+            setLoading(false)
+            fetchProducts()
+            toast.success("Products Inserted Successfully !")
+            router.push('/apps/products')
+
+            setExcelData(res.data.data)
+          }
 
         })
 
@@ -335,28 +349,67 @@ const ImportProduct = () => {
     }
   }
 
-  const exportToExcel = (headers: any, fileName: string) => {
-    // Create a new workbook
-    const wb = XLSX.utils.book_new();
+  // const exportToExcel = (headers: any, fileName: string) => {
+  //   // Create a new workbook
+  //   const wb = XLSX.utils.book_new();
 
-    // Create an array of headers for the worksheet
-    const headerRow = headers.map((header: any) => header.headerName);
+  //   // Create an array of headers for the worksheet
+  //   const headerRow = headers.map((header: any) => header.headerName);
 
-    // Create a worksheet with headers only
-    const wsData = [headerRow];
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+  //   // Create a worksheet with headers only
+  //   const wsData = [headerRow];
+  //   const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-    // Set column widths based on the headers
-    ws['!cols'] = headers.map((header: any) => ({ width: header.width }));
+  //   // Set column widths based on the headers
+  //   ws['!cols'] = headers.map((header: any) => ({ width: header.width }));
 
-    // Append the worksheet to the workbook
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-    // Generate buffer
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
 
-    // Save to file
-    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), `${fileName}.xlsx`);
+
+  //   // Append the worksheet to the workbook
+  //   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+  //   // Generate buffer
+  //   const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+  //   // Save to file
+  //   saveAs(new Blob([wbout], { type: 'application/octet-stream' }), `${fileName}.xlsx`);
+  // };
+
+  const exportToExcel = async (headers: any, fileName: string) => {
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet1');
+
+    // Add headers to the worksheet
+    worksheet.addRow(headers.map((header: any) => header.headerName));
+
+    // Set column widths
+    headers.forEach((header: any, index: number) => {
+      worksheet.getColumn(index + 1).width = header.width;
+    });
+
+    // Style the header row
+    const headerRow = worksheet.getRow(1);
+
+    headerRow.eachCell((cell) => {
+
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF008000' } // Green background
+      };
+      cell.font = {
+        color: { argb: 'FFFFFFFF' }, // White text
+        bold: true
+      };
+      cell.alignment = { horizontal: 'center' };
+    });
+
+    // Generate buffer and save file
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), `${fileName}.xlsx`);
   };
 
 
