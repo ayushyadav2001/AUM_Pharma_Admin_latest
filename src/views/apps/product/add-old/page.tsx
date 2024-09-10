@@ -34,6 +34,8 @@ import { valibotResolver } from '@hookform/resolvers/valibot'
 // Component Imports
 import axios from 'axios'
 
+import { Checkbox, FormControlLabel, IconButton, InputAdornment, Tooltip } from '@mui/material'
+
 import StepperWrapper from '@core/styles/stepper'
 import StepperCustomDot from '@components/stepper-dot'
 import DirectionalIcon from '@components/DirectionalIcon'
@@ -50,14 +52,15 @@ const steps = [
     title: 'Product Details',
     subtitle: 'Detailed Specifications'
   },
-  {
-    title: 'Health Information',
-    subtitle: 'Health & Safety Information'
-  },
-  {
-    title: 'Additional Information',
-    subtitle: 'Usage & Documentation'
-  }
+
+  // {
+  //   title: 'Health Information',
+  //   subtitle: 'Health & Safety Information'
+  // },
+  // {
+  //   title: 'Additional Information',
+  //   subtitle: 'Usage & Documentation'
+  // }
 ]
 
 // Styled Components
@@ -84,24 +87,20 @@ const ProductStepperLinear = () => {
   // States
   const [activeStep, setActiveStep] = useState(0)
 
-  const [vendors, setVendors] = useState([])
+  const [stockAdjustment, setStockAdjustment] = useState(false)
   const [category, setCategory] = useState([])
   const [subCategory, setSubCategory] = useState([])
 
 
 
 
-  const { basicInfoSchema, productDetailsSchema, healthInfoSchema, additionalInfoSchema } = createProductSchema
+  const { basicInfoSchema, productDetailsSchema, } = createProductSchema
 
-  const { basicInfoDefaultValues, productDetailsDefaultValues, healthDetailsDefaultValues, additionalInfoDefaultValues } =
+  const { basicInfoDefaultValues, productDetailsDefaultValues, } =
     createProductSchema
 
-  const [formData, setFormData] = useState({
-    basicInfo: {},
-    productDetails: {},
-    healthDetails: {},
-    additionalDetails: {},
-  });
+  const [formData, setFormData] = useState<any>({});
+
 
 
   // Hooks
@@ -111,10 +110,12 @@ const ProductStepperLinear = () => {
     setValue: basicSetValue,
     handleSubmit: handleBasicInfoSubmit,
     formState: { errors: basicInfoErrors }
-  } = useForm({
+  } = useForm<any>({
     resolver: valibotResolver(basicInfoSchema),
     defaultValues: basicInfoDefaultValues
   })
+
+
 
   const {
     reset: productDetailsReset,
@@ -126,15 +127,15 @@ const ProductStepperLinear = () => {
     defaultValues: productDetailsDefaultValues
   })
 
-  const {
-    reset: healthInfoDetailsReset,
-    control: healthDetailsControl,
-    handleSubmit: handleHealthDetailsSubmit,
-    formState: { errors: healthDetailsErrors }
-  } = useForm({
-    resolver: valibotResolver(healthInfoSchema),
-    defaultValues: healthDetailsDefaultValues
-  })
+  // const {
+  //   reset: healthInfoDetailsReset,
+  //   control: healthDetailsControl,
+  //   handleSubmit: handleHealthDetailsSubmit,
+  //   formState: { errors: healthDetailsErrors }
+  // } = useForm({
+  //   resolver: valibotResolver(healthInfoSchema),
+  //   defaultValues: healthDetailsDefaultValues
+  // })
 
 
   // here
@@ -144,30 +145,78 @@ const ProductStepperLinear = () => {
 
 
 
-  const {
-    reset: additionalDetailsReset,
-    control: additionalControl,
-    handleSubmit: handleAdditionSubmit,
-    formState: { errors: additionalErrors }
-  } = useForm({
-    resolver: valibotResolver(additionalInfoSchema),
-    defaultValues: additionalInfoDefaultValues
-  })
+  // const {
+  //   reset: additionalDetailsReset,
+  //   control: additionalControl,
+  //   handleSubmit: handleAdditionSubmit,
+  //   formState: { errors: additionalErrors }
+  // } = useForm({
+  //   resolver: valibotResolver(additionalInfoSchema),
+  //   defaultValues: additionalInfoDefaultValues
+  // })
 
   const router = useRouter()
 
-  const collectFormData = async () => {
+  // const collectFormData = async () => {
 
-    const combinedData: any = { ...formData.basicInfo, ...formData.productDetails, ...formData.healthDetails, ...formData.additionalDetails };
+  //   const combinedData: any = { ...formData.basicInfo, ...formData.productDetails };
+
+  //   console.log("combinedData", combinedData)
+
+  // };
+
+  const fetchProducts = async () => {
+    try {
+      await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true });
+
+
+    } catch (err) {
+      console.error('Failed to fetch products', err);
+    }
+  };
+
+
+
+  const handleNext = () => {
+    if (activeStep === 0) {
+      // First step: validate and save the first step's data
+      handleBasicInfoSubmit(data => {
+        setFormData((prev: any) => ({ ...prev, ...data })); // Save the first step's data
+        setActiveStep(prevActiveStep => prevActiveStep + 1); // Move to the next step
+      })();
+    } else if (activeStep === 1) {
+      // Second step: validate and handle the final submission in one go
+      handleProductDetailSubmit(data => {
+        setFormData((prev: any) => {
+          const updatedFormData = { ...prev, ...data }; // Merge second step data into formData
+
+          if (activeStep === steps.length - 1) {
+            // If on the last step, make the API call directly after saving
+            onSubmit(updatedFormData); // Submit the complete formData to the API
+          }
+
+          return updatedFormData;
+        });
+      })();
+    }
+  };
+
+  const onSubmit = async (data: any) => {
+
+
+
+    const finalData = { ...formData, ...data };
+
+
 
 
     const formDataObj = new FormData();
 
-    for (const key in combinedData) {
+    for (const key in finalData) {
 
-      if (Object.hasOwnProperty.call(combinedData, key)) {
+      if (Object.hasOwnProperty.call(finalData, key)) {
 
-        formDataObj.append(key, combinedData[key]);
+        formDataObj.append(key, finalData[key]);
       }
     }
 
@@ -190,35 +239,21 @@ const ProductStepperLinear = () => {
       console.error('Error adding product:', error);
       toast.error('Something went wrong!');
     }
-  };
 
-  const fetchProducts = async () => {
-    try {
-      await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true });
-
-
-    } catch (err) {
-      console.error('Failed to fetch products', err);
-    }
-  };
-
-
-  const onSubmit = (data: any) => {
-
-
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [activeStep === 0 ? 'basicInfo' : activeStep === 1 ? 'productDetails' : activeStep === 2 ? 'healthDetails' : 'additionalDetails']: data,
-    }));
+    // setFormData((prevData) => ({
+    //   ...prevData,
+    //   [activeStep === 0 ? 'basicInfo' : 'productDetails']: data,
+    // }));
 
     // setActiveStep(prevActiveStep => prevActiveStep + 1)
 
     if (activeStep === steps.length - 1) {
 
 
-      collectFormData();
-      toast.success('Form Submitted')
+
+      // collectFormData();
+
+      // toast.success('Form Submitted')
     } else {
       setActiveStep((prevStep) => prevStep + 1);
     }
@@ -230,15 +265,7 @@ const ProductStepperLinear = () => {
 
 
 
-  const fetchVendors = async () => {
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`, { withCredentials: true })
 
-      setVendors(response.data.data)
-    } catch (error) {
-      console.error('Error fetching vendors:', error)
-    }
-  }
 
   const fetchCategory = async () => {
     try {
@@ -252,6 +279,9 @@ const ProductStepperLinear = () => {
 
   const fetchSubCategory = async (id: any) => {
     try {
+
+      setSubCategory([])
+
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/sub-category/get-sub-category-by-category/${id}`, { withCredentials: true }
       )
@@ -264,7 +294,7 @@ const ProductStepperLinear = () => {
 
   useEffect(() => {
     fetchCategory()
-    fetchVendors()
+
   }, [])
 
 
@@ -272,8 +302,9 @@ const ProductStepperLinear = () => {
     setActiveStep(0)
     basicInfoReset(basicInfoDefaultValues)
     productDetailsReset(productDetailsDefaultValues)
-    healthInfoDetailsReset(healthDetailsDefaultValues)
-    additionalDetailsReset(additionalInfoDefaultValues)
+
+    // healthInfoDetailsReset(healthDetailsDefaultValues)
+    // additionalDetailsReset(additionalInfoDefaultValues)
 
   }
 
@@ -294,7 +325,7 @@ const ProductStepperLinear = () => {
                 <Grid container spacing={5}>
                   <Grid item xs={12} md={6}>
                     <Controller
-                      name='product_id'
+                      name='product_code'
                       control={basicInfoControl}
                       rules={{ required: true }}
                       render={({ field }) => (
@@ -302,9 +333,12 @@ const ProductStepperLinear = () => {
                           {...field}
                           fullWidth
                           id='outlined-basic'
-                          label='Product ID'
-                          placeholder='Enter Product ID'
-                          {...(basicInfoErrors.product_id && { error: true, helperText: basicInfoErrors.product_id.message })}
+                          label='Product Code'
+                          placeholder='Enter Product Code'
+
+                          error={!!basicInfoErrors.product_code}
+                          helperText={typeof basicInfoErrors.product_code?.message === 'string' ? basicInfoErrors.product_code.message : ''}
+
                         />
                       )}
                     />
@@ -321,83 +355,15 @@ const ProductStepperLinear = () => {
                           id='outlined-basic'
                           label='Product Name'
                           placeholder='Enter Product Name'
-                          {...(basicInfoErrors.product_name && { error: true, helperText: basicInfoErrors.product_name.message })}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Controller
-                      name='mrp'
-                      control={basicInfoControl}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          id='outlined-basic'
-                          label='MRP'
-                          placeholder='Enter MRP'
-                          type='number'
-                          {...(basicInfoErrors.mrp && { error: true, helperText: basicInfoErrors.mrp.message })}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Controller
-                      name='igst'
-                      control={basicInfoControl}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          id='outlined-basic'
-                          label='IGST'
-                          placeholder='Enter IGST'
-                          type='number'
-                          {...(basicInfoErrors.igst && { error: true, helperText: basicInfoErrors.igst.message })}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Controller
-                      name='hsn'
-                      control={basicInfoControl}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          id='outlined-basic'
-                          label='HSN'
-                          placeholder='Enter HSN'
-                          {...(basicInfoErrors.hsn && { error: true, helperText: basicInfoErrors.hsn.message })}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Controller
-                      name='manufacturer'
-                      control={basicInfoControl}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          id='outlined-basic'
-                          label='Manufacturer'
-                          placeholder='Enter Manufacturer'
-                          {...(basicInfoErrors.manufacturer && { error: true, helperText: basicInfoErrors.manufacturer.message })}
+
+                          error={!!basicInfoErrors.product_name}
+                          helperText={typeof basicInfoErrors.product_name?.message === 'string' ? basicInfoErrors.product_name.message : ''}
                         />
                       )}
                     />
                   </Grid>
 
-                  <Grid item xs={12} md={4}>
+                  <Grid item xs={12} md={6}>
                     <Controller
                       name='category'
                       control={basicInfoControl}
@@ -421,12 +387,16 @@ const ProductStepperLinear = () => {
                               </MenuItem>
                             ))}
                           </Select>
-                          <FormHelperText className='text-red-600'>{basicInfoErrors.category?.message}</FormHelperText>
+                          {basicInfoErrors.category?.message && (
+                            <FormHelperText className='text-red-600'>
+                              {String(basicInfoErrors.category.message)}
+                            </FormHelperText>
+                          )}
                         </FormControl>
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12} md={4}>
+                  <Grid item xs={12} md={6}>
                     <Controller
                       name='sub_category'
                       control={basicInfoControl}
@@ -448,38 +418,259 @@ const ProductStepperLinear = () => {
                               </MenuItem>
                             ))}
                           </Select>
-                          <FormHelperText className='text-red-600'>{basicInfoErrors.sub_category?.message}</FormHelperText>
+
+                          {basicInfoErrors.sub_category?.message && (
+                            <FormHelperText className='text-red-600'>
+                              {String(basicInfoErrors.sub_category.message)}
+                            </FormHelperText>
+                          )}
+
                         </FormControl>
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      name='manufacturer'
+                      control={basicInfoControl}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          id='outlined-basic'
+                          label='Manufacturer'
+                          placeholder='Enter manufacturer name'
+                          type='text'
+                          error={!!basicInfoErrors.manufacturer}
+                          helperText={typeof basicInfoErrors.manufacturer?.message === 'string' ? basicInfoErrors.manufacturer.message : ''}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      name='manufacturer_address'
+                      control={basicInfoControl}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          id='outlined-basic'
+                          label='Manufacturer Address'
+                          placeholder='Enter manufacturer address'
+                          type='text'
+                          error={!!basicInfoErrors.manufacturer_address}
+                          helperText={typeof basicInfoErrors.manufacturer_address?.message === 'string' ? basicInfoErrors.manufacturer_address.message : ''}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      name='packaging'
+                      control={basicInfoControl}
+                      render={({ field }) => (
+                        <FormControl fullWidth>
+                          <InputLabel id='packing-type'>Packaging</InputLabel>
+                          <Select
+                            {...field}
+                            id='packing-type'
+                            label='Packaging'
+
+                            onChange={(e) => {
+
+
+                              field.onChange(e.target.value)
+                            }}
+
+                          >
+                            <MenuItem value='strip'>Strip</MenuItem>
+                            <MenuItem value='bottle'>Bottle</MenuItem>
+                            <MenuItem value='packet'>Packet</MenuItem>
+                            <MenuItem value='prefilled syringe'>Prefilled Syringe</MenuItem>
+                            <MenuItem value='tube'>Tube</MenuItem>
+                            <MenuItem value='vial'>Vial</MenuItem>
+                          </Select>
+                          <FormHelperText className='text-red-600'>{basicInfoErrors.packaging?.message as string}</FormHelperText>
+                        </FormControl>
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      name='packing_type'
+                      control={basicInfoControl}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          id='outlined-basic'
+                          label='Packaging Type'
+                          placeholder='Bottle of 500 ml syrup'
+                          type='text'
+                          error={!!basicInfoErrors.packing_type}
+                          helperText={typeof basicInfoErrors.packing_type?.message === 'string' ? basicInfoErrors.packing_type.message : ''}
+                        />
                       )}
                     />
                   </Grid>
                   <Grid item xs={12} md={4}>
                     <Controller
-                      name='vendor_id'
+                      name='quantity'
                       control={basicInfoControl}
                       rules={{ required: true }}
                       render={({ field }) => (
-                        <FormControl fullWidth className='mbe-4'>
-                          <InputLabel id='vendor-select'>Select Vendor</InputLabel>
-                          <Select
-                            {...field}
-                            fullWidth
-                            defaultValue=''
-                            label='Select Vendor'
-                            onChange={(e) => field.onChange(e)}
-                            labelId='vendor-select'
-                          >
-                            {vendors?.map((vendor: any) => (
-                              <MenuItem key={vendor?._id} value={vendor?._id}>
-                                {vendor?.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          <FormHelperText className='text-red-600'>{basicInfoErrors.vendor_id?.message}</FormHelperText>
-                        </FormControl>
+                        <TextField
+                          {...field}
+                          fullWidth
+                          id='outlined-basic'
+                          label='Quantity'
+                          placeholder='200ml ,1.05Kg'
+                          type='text'
+                          error={!!basicInfoErrors.quantity}
+                          helperText={typeof basicInfoErrors.quantity?.message === 'string' ? basicInfoErrors.quantity.message : ''}
+                        />
                       )}
                     />
                   </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Controller
+                      name='mrp'
+                      control={basicInfoControl}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          id='outlined-basic'
+                          label='MRP'
+                          placeholder='Enter MRP'
+                          type='number'
+                          error={!!basicInfoErrors.mrp}
+                          helperText={typeof basicInfoErrors.mrp?.message === 'string' ? basicInfoErrors.mrp.message : ''}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Controller
+                      name='discount'
+                      control={basicInfoControl}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          id='outlined-basic'
+                          label='Discount'
+                          placeholder='Enter Discount eg.25 %'
+                          type='number'
+                          error={!!basicInfoErrors.discount}
+                          helperText={typeof basicInfoErrors.discount?.message === 'string' ? basicInfoErrors.discount.message : ''}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+
+                  <Grid item xs={12} md={4}>
+                    <Controller
+                      name='prescription_required'
+                      control={basicInfoControl}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                {...field}
+                                checked={field.value} // Bind the checked state
+
+                              />
+                            }
+                            label='Prescription Required'
+                          />
+                          {basicInfoErrors.prescription_required && (
+                            <FormHelperText className='text-red-600'>
+                              {typeof basicInfoErrors.prescription_required?.message === 'string'
+                                ? basicInfoErrors.prescription_required.message
+                                : ''}
+                            </FormHelperText>
+                          )}
+                        </>
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} md={4}>
+                    <Controller
+                      name='stock_management_required'
+                      control={basicInfoControl}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                {...field}
+                                checked={field.value}
+
+                                onChange={(e) => {
+                                  field.onChange(e.target.checked); // Update the form field's value
+                                  setStockAdjustment(e.target.checked); // Update the local state
+                                }}
+                              />
+                            }
+                            label='Manage Stock'
+                          />
+                          {basicInfoErrors.stock_management_required && (
+                            <FormHelperText className='text-red-600'>
+                              {typeof basicInfoErrors.stock_management_required?.message === 'string'
+                                ? basicInfoErrors.stock_management_required.message
+                                : ''}
+                            </FormHelperText>
+                          )}
+                        </>
+                      )}
+                    />
+                  </Grid>
+                  {stockAdjustment && (
+                    <Grid item xs={12} md={4}>
+                      <Controller
+                        name='alert_quantity'
+                        control={basicInfoControl}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            fullWidth
+                            id='outlined-basic'
+                            label='Alert Quantity'
+                            placeholder='Enter alert quantity'
+                            type='number'
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position='end'>
+                                  <Tooltip title='Get alert when product stock reaches or goes below the specified quantity'>
+                                    <IconButton>
+                                      <i className='ri-information-fill bg-blue-500' />
+                                    </IconButton>
+                                  </Tooltip>
+                                </InputAdornment>
+                              )
+                            }}
+                            error={!!basicInfoErrors.alert_quantity}
+                            helperText={typeof basicInfoErrors.alert_quantity?.message === 'string' ? basicInfoErrors.alert_quantity.message : ''}
+                          />
+                        )}
+                      />
+                    </Grid>
+
+                  )}
+
                   <Grid item xs={12} md={12}>
                     <Controller
                       name='product_image'
@@ -490,7 +681,7 @@ const ProductStepperLinear = () => {
                           <div id='prod-image-select'>
                             <FileUploaderSingle setValue={basicSetValue} fieldName={'product_image'} />
                           </div>
-                          <FormHelperText className='text-red-600'>{basicInfoErrors.product_image?.message}</FormHelperText>
+                          <FormHelperText className='text-red-600'>{basicInfoErrors.product_image?.message as string}</FormHelperText>
                         </FormControl>
                       )}
                     />
@@ -508,10 +699,17 @@ const ProductStepperLinear = () => {
                 </Button>
                 <Button
                   variant='contained'
-                  type='submit'
-                  endIcon={<DirectionalIcon ltrIconClass='ri-arrow-right-line' rtlIconClass='ri-arrow-left-line' />}
+                  color={activeStep === steps.length - 1 ? 'success' : 'primary'}
+                  onClick={handleNext} // Triggers validation for the current step
+                  endIcon={
+                    activeStep === steps.length - 1 ? (
+                      <i className='ri-check-line' />
+                    ) : (
+                      <DirectionalIcon ltrIconClass='ri-arrow-right-line' rtlIconClass='ri-arrow-left-line' />
+                    )
+                  }
                 >
-                  Next
+                  {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
                 </Button>
               </Grid>
 
@@ -525,13 +723,13 @@ const ProductStepperLinear = () => {
             <Grid container spacing={5}>
               <Grid item xs={12}>
                 <Typography className='font-medium' color='text.primary'>
-                  {steps[2].title}
+                  {steps[1].title}
                 </Typography>
-                <Typography variant='body2'>{steps[2].subtitle}</Typography>
+                <Typography variant='body2'>{steps[1].subtitle}</Typography>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Controller
-                  name='composition'
+                  name='introduction'
                   control={productDetailsControl}
                   render={({ field }) => (
                     <TextField
@@ -540,16 +738,18 @@ const ProductStepperLinear = () => {
                       multiline
                       minRows={2}
                       type='text'
-                      label='Composition'
-                      placeholder='Enter product composition'
-                      {...(productDetailsErrors.composition && { error: true, helperText: productDetailsErrors.composition.message })}
+                      label='Introduction'
+                      placeholder='Enter product introduction'
+
+                      {...(productDetailsErrors.introduction && { error: true, helperText: productDetailsErrors.introduction.message })}
                     />
                   )}
                 />
+
               </Grid>
               <Grid item xs={12} md={6}>
                 <Controller
-                  name='usage'
+                  name='description'
                   control={productDetailsControl}
                   render={({ field }) => (
                     <TextField
@@ -557,56 +757,32 @@ const ProductStepperLinear = () => {
                       fullWidth
                       multiline
                       minRows={2}
-                      label='Usage'
-                      placeholder='Enter product Usage'
-                      {...(productDetailsErrors.usage && { error: true, helperText: productDetailsErrors.usage.message })}
+                      label='Description'
+                      placeholder='Enter product description'
+                      {...(productDetailsErrors.description && { error: true, helperText: productDetailsErrors.description.message })}
                     />
                   )}
                 />
               </Grid>
+
               <Grid item xs={12} md={6}>
                 <Controller
-                  name='packing_type'
-                  control={productDetailsControl}
-                  render={({ field }) => (
-                    <FormControl fullWidth>
-                      <InputLabel id='packing-type'>Packing Type</InputLabel>
-                      <Select
-                        {...field}
-                        id='packing-type'
-                        label='Packing Type'
-                        defaultValue=''
-                      >
-                        <MenuItem value='strip'>Strip</MenuItem>
-                        <MenuItem value='bottle'>Bottle</MenuItem>
-                        <MenuItem value='packet'>Packet</MenuItem>
-                        <MenuItem value='prefilled syringe'>Prefilled Syringe</MenuItem>
-                        <MenuItem value='tube'>Tube</MenuItem>
-                        <MenuItem value='vial'>Vial</MenuItem>
-                      </Select>
-                      <FormHelperText className='text-red-600'>{productDetailsErrors.packing_type?.message}</FormHelperText>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name='packaging'
+                  name='salt_composition'
                   control={productDetailsControl}
                   render={({ field }) => (
                     <TextField
                       {...field}
                       fullWidth
-                      label='Packaging'
+                      label='Salt Composition'
                       placeholder='Enter product Packaging'
-                      {...(productDetailsErrors.packaging && { error: true, helperText: productDetailsErrors.packaging.message })}
+                      {...(productDetailsErrors.salt_composition && { error: true, helperText: productDetailsErrors.salt_composition.message })}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Controller
-                  name='Schedule'
+                  name='benefits'
                   control={productDetailsControl}
                   render={({ field }) => (
                     <TextField
@@ -614,16 +790,16 @@ const ProductStepperLinear = () => {
                       fullWidth
                       multiline
                       minRows={2}
-                      label='Schedule'
+                      label='Benefits'
                       placeholder='Enter product schedule'
-                      {...(productDetailsErrors.Schedule && { error: true, helperText: productDetailsErrors.Schedule.message })}
+                      {...(productDetailsErrors.benefits && { error: true, helperText: productDetailsErrors.benefits.message })}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Controller
-                  name='about_salt'
+                  name='use_of'
                   control={productDetailsControl}
                   render={({ field }) => (
                     <TextField
@@ -631,16 +807,16 @@ const ProductStepperLinear = () => {
                       fullWidth
                       multiline
                       minRows={2}
-                      label='About Salt'
-                      placeholder='Enter product about salt'
-                      {...(productDetailsErrors.about_salt && { error: true, helperText: productDetailsErrors.about_salt.message })}
+                      label='Use of'
+                      placeholder='Enter product use of'
+                      {...(productDetailsErrors.use_of && { error: true, helperText: productDetailsErrors.use_of.message })}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Controller
-                  name='mechanism_of_action'
+                  name='how_to_use'
                   control={productDetailsControl}
                   render={({ field }) => (
                     <TextField
@@ -648,16 +824,16 @@ const ProductStepperLinear = () => {
                       fullWidth
                       multiline
                       minRows={2}
-                      label='Mechanism of Action'
+                      label='Enter product how to use'
                       placeholder='Enter mechanism of action'
-                      {...(productDetailsErrors.mechanism_of_action && { error: true, helperText: productDetailsErrors.mechanism_of_action.message })}
+                      {...(productDetailsErrors.how_to_use && { error: true, helperText: productDetailsErrors.how_to_use.message })}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Controller
-                  name='pharmacokinets'
+                  name='safety_advice'
                   control={productDetailsControl}
                   render={({ field }) => (
                     <TextField
@@ -665,448 +841,192 @@ const ProductStepperLinear = () => {
                       fullWidth
                       multiline
                       minRows={2}
-                      label='Pharmacokinetics'
-                      placeholder='Enter product Pharmacokinetics'
-                      {...(productDetailsErrors.pharmacokinets && { error: true, helperText: productDetailsErrors.pharmacokinets.message })}
+                      label='Safety Advice'
+                      placeholder='Enter product safety advice'
+                      {...(productDetailsErrors.safety_advice && { error: true, helperText: productDetailsErrors.safety_advice.message })}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Controller
-                  name='onset_of_action'
+                  name='ingredients'
                   control={productDetailsControl}
                   render={({ field }) => (
                     <TextField
                       {...field}
                       fullWidth
-                      label='Onset of Action'
-                      placeholder='Enter Onset of Action'
-                      {...(productDetailsErrors.onset_of_action && { error: true, helperText: productDetailsErrors.onset_of_action.message })}
+                      label='Ingredients'
+                      placeholder='Enter product ingredients'
+                      {...(productDetailsErrors.ingredients && { error: true, helperText: productDetailsErrors.ingredients.message })}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Controller
-                  name='duration_of_action'
+                  name='primary_use'
                   control={productDetailsControl}
                   render={({ field }) => (
                     <TextField
                       {...field}
                       fullWidth
-                      label='Duration of Action'
-                      placeholder='Enter duration of action'
-                      {...(productDetailsErrors.duration_of_action && { error: true, helperText: productDetailsErrors.duration_of_action.message })}
+                      label='Primary Use'
+                      placeholder='Enter product primary use'
+                      {...(productDetailsErrors.primary_use && { error: true, helperText: productDetailsErrors.primary_use.message })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='storage'
+                  control={productDetailsControl}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label='Storage'
+                      placeholder='Enter product storage'
+                      {...(productDetailsErrors.storage && { error: true, helperText: productDetailsErrors.storage.message })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='common_side_effects'
+                  control={productDetailsControl}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label='Common Side Effects'
+                      placeholder='Enter product common side effects'
+                      {...(productDetailsErrors.common_side_effects && { error: true, helperText: productDetailsErrors.common_side_effects.message })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='alcohol_interaction'
+                  control={productDetailsControl}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label='Alcohol Interaction'
+                      placeholder='Enter product alcohol interaction'
+                      {...(productDetailsErrors.alcohol_interaction && { error: true, helperText: productDetailsErrors.alcohol_interaction.message })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='pregnancy_interaction'
+                  control={productDetailsControl}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label='Pregnancy Interaction'
+                      placeholder='Enter product pregnancy interaction'
+                      {...(productDetailsErrors.pregnancy_interaction && { error: true, helperText: productDetailsErrors.pregnancy_interaction.message })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='lactation_interaction'
+                  control={productDetailsControl}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label='Lactation Interaction'
+                      placeholder='Enter product lactation interaction'
+                      {...(productDetailsErrors.lactation_interaction && { error: true, helperText: productDetailsErrors.lactation_interaction.message })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='driving_interaction'
+                  control={productDetailsControl}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label='Driving Interaction'
+                      placeholder='Enter product driving interaction'
+                      {...(productDetailsErrors.driving_interaction && { error: true, helperText: productDetailsErrors.driving_interaction.message })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='kidney_interaction'
+                  control={productDetailsControl}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label='Kidney Interaction'
+                      placeholder='Enter product Kidney interaction'
+                      {...(productDetailsErrors.kidney_interaction && { error: true, helperText: productDetailsErrors.kidney_interaction.message })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='liver_interaction'
+                  control={productDetailsControl}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label='Liver Interaction'
+                      placeholder='Enter product liver interaction'
+                      {...(productDetailsErrors.liver_interaction && { error: true, helperText: productDetailsErrors.liver_interaction.message })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='country_of_origin'
+                  control={productDetailsControl}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label='Country of Origin'
+                      placeholder='Enter product country of origin'
+                      {...(productDetailsErrors.country_of_origin && { error: true, helperText: productDetailsErrors.country_of_origin.message })}
                     />
                   )}
                 />
               </Grid>
               <Grid item xs={12} md={12}>
                 <Controller
-                  name='half_life'
+                  name='faqs'
                   control={productDetailsControl}
                   render={({ field }) => (
                     <TextField
                       {...field}
                       fullWidth
-                      label='Half Life'
-                      placeholder='Enter half life'
-                      {...(productDetailsErrors.half_life && { error: true, helperText: productDetailsErrors.half_life.message })}
+                      label='Faqs'
+                      placeholder='Enter product faqs'
+                      {...(productDetailsErrors.faqs && { error: true, helperText: productDetailsErrors.faqs.message })}
                     />
                   )}
                 />
-              </Grid>
-
-              <Grid item xs={12} className='flex justify-between'>
-                <Button
-                  variant='outlined'
-                  onClick={handleBack}
-                  color='secondary'
-                  startIcon={<DirectionalIcon ltrIconClass='ri-arrow-left-line' rtlIconClass='ri-arrow-right-line' />}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant='contained'
-                  type='submit'
-                  endIcon={<DirectionalIcon ltrIconClass='ri-arrow-right-line' rtlIconClass='ri-arrow-left-line' />}
-                >
-                  Next
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        )
-
-      case 2:
-        return (
-          <form key={2} onSubmit={handleHealthDetailsSubmit(onSubmit)}>
-            <Grid container spacing={5}>
-              <Grid item xs={12}>
-                <Typography className='font-medium' color='text.primary'>
-                  {steps[2].title}
-                </Typography>
-                <Typography variant='body2'>{steps[2].subtitle}</Typography>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="side_effects"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Side Effects"
-                      placeholder="Enter product side effects"
-                      error={!!healthDetailsErrors.side_effects}
-                      helperText={healthDetailsErrors.side_effects?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="contra_indications"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Contra-indications"
-                      placeholder="Enter contra-indications"
-                      error={!!healthDetailsErrors.contra_indications}
-                      helperText={healthDetailsErrors.contra_indications?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="special_precautions_while_taking"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Special Precautions While Taking"
-                      placeholder="Enter special precautions while taking"
-                      error={!!healthDetailsErrors.special_precautions_while_taking}
-                      helperText={healthDetailsErrors.special_precautions_while_taking?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="pregnancy_related_information"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Pregnancy Related Information"
-                      placeholder="Enter pregnancy related information"
-                      error={!!healthDetailsErrors.pregnancy_related_information}
-                      helperText={healthDetailsErrors.pregnancy_related_information?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="product_and_alcohol_interaction"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Product and Alcohol Interaction"
-                      placeholder="Enter product and alcohol interaction"
-                      error={!!healthDetailsErrors.product_and_alcohol_interaction}
-                      helperText={healthDetailsErrors.product_and_alcohol_interaction?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="old_age_related_information"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Old Age Related Information"
-                      placeholder="Enter old age related information"
-                      error={!!healthDetailsErrors.old_age_related_information}
-                      helperText={healthDetailsErrors.old_age_related_information?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="breast_feeding_related_information"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Breast Feeding Related Information"
-                      placeholder="Enter breast feeding related information"
-                      error={!!healthDetailsErrors.breast_feeding_related_information}
-                      helperText={healthDetailsErrors.breast_feeding_related_information?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="children_related_information"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Children Related Information"
-                      placeholder="Enter children related information"
-                      error={!!healthDetailsErrors.children_related_information}
-                      helperText={healthDetailsErrors.children_related_information?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="indications"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Indications"
-                      placeholder="Enter indications"
-                      error={!!healthDetailsErrors.indications}
-                      helperText={healthDetailsErrors.indications?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="interactions"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Interactions"
-                      placeholder="Enter interactions"
-                      error={!!healthDetailsErrors.interactions}
-                      helperText={healthDetailsErrors.interactions?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="typical_dosage"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Typical Dosage"
-                      placeholder="Enter typical dosage"
-                      error={!!healthDetailsErrors.typical_dosage}
-                      helperText={healthDetailsErrors.typical_dosage?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="storage_requirements"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Storage Requirements"
-                      placeholder="Enter storage requirements"
-                      error={!!healthDetailsErrors.storage_requirements}
-                      helperText={healthDetailsErrors.storage_requirements?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="effects_of_missed_dosage"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Effects of Missed Dosage"
-                      placeholder="Enter effects of missed dosage"
-                      error={!!healthDetailsErrors.effects_of_missed_dosage}
-                      helperText={healthDetailsErrors.effects_of_missed_dosage?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="effects_of_overdose"
-                  control={healthDetailsControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      label="Effects of Overdose"
-                      placeholder="Enter effects of overdose"
-                      error={!!healthDetailsErrors.effects_of_overdose}
-                      helperText={healthDetailsErrors.effects_of_overdose?.message}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} className='flex justify-between'>
-                <Button
-                  variant='outlined'
-                  onClick={handleBack}
-                  color='secondary'
-                  startIcon={<DirectionalIcon ltrIconClass='ri-arrow-left-line' rtlIconClass='ri-arrow-right-line' />}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant='contained'
-                  type='submit'
-                  endIcon={<DirectionalIcon ltrIconClass='ri-arrow-right-line' rtlIconClass='ri-arrow-left-line' />}
-                >
-                  Next
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        )
-
-      case 3:
-        return (
-          <form key={3} onSubmit={handleAdditionSubmit(onSubmit)}>
-            <Grid container spacing={5}>
-              <Grid item xs={12}>
-                <Typography className='font-medium' color='text.primary'>
-                  {steps[1].title}
-                </Typography>
-                <Typography variant='body2'>{steps[1].subtitle}</Typography>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="expert_advice"
-                  control={additionalControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      type="text"
-                      label="Expert Advice"
-                      placeholder="Enter product expert advice"
-                    />
-                  )}
-                />
-                <FormHelperText className="text-red-600">
-                  {additionalErrors.expert_advice?.message}
-                </FormHelperText>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Controller
-                  name="how_to_use"
-                  control={additionalControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                      type="text"
-                      label="How to Use"
-                      placeholder="Enter how to use"
-                    />
-                  )}
-                />
-                <FormHelperText className="text-red-600">
-                  {additionalErrors.how_to_use?.message}
-                </FormHelperText>
-              </Grid>
-
-              <Grid item xs={12} md={12}>
-                <Controller
-                  name="faqs"
-                  control={additionalControl}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      type="text"
-                      label="FAQs"
-                      placeholder="Enter FAQs"
-                      multiline
-                      minRows={2}
-                    />
-                  )}
-                />
-                <FormHelperText className="text-red-600">
-                  {additionalErrors.faqs?.message}
-                </FormHelperText>
               </Grid>
 
               <Grid item xs={12} className='flex justify-between'>
@@ -1129,6 +1049,8 @@ const ProductStepperLinear = () => {
             </Grid>
           </form>
         )
+
+
       default:
         return <Typography color='text.primary'>Unknown stepIndex</Typography>
     }
@@ -1148,15 +1070,20 @@ const ProductStepperLinear = () => {
                 labelProps.error = false
 
                 if (
-                  (basicInfoErrors.product_id ||
+                  (basicInfoErrors.product_code ||
                     basicInfoErrors.product_name ||
-                    basicInfoErrors.mrp ||
-                    basicInfoErrors.igst ||
-                    basicInfoErrors.hsn ||
-                    basicInfoErrors.manufacturer ||
                     basicInfoErrors.category ||
                     basicInfoErrors.sub_category ||
-                    basicInfoErrors.vendor_id ||
+                    basicInfoErrors.manufacturer ||
+                    basicInfoErrors.manufacturer_address ||
+                    basicInfoErrors.packaging ||
+                    basicInfoErrors.packing_type ||
+                    basicInfoErrors.mrp ||
+                    basicInfoErrors.discount ||
+                    basicInfoErrors.prescription_required ||
+                    basicInfoErrors.stock_management_required ||
+                    basicInfoErrors.alert_quantity ||
+                    basicInfoErrors.quantity ||
                     basicInfoErrors.product_image) &&
                   activeStep === 0
                 ) {
@@ -1165,48 +1092,32 @@ const ProductStepperLinear = () => {
 
                 // Product Details Step (Step 1)
                 else if (
-                  (productDetailsErrors.composition ||
-                    productDetailsErrors.packing_type ||
-                    productDetailsErrors.packaging ||
-                    productDetailsErrors.Schedule ||
-                    productDetailsErrors.usage ||
-                    productDetailsErrors.about_salt ||
-                    productDetailsErrors.mechanism_of_action ||
-                    productDetailsErrors.pharmacokinets ||
-                    productDetailsErrors.onset_of_action ||
-                    productDetailsErrors.duration_of_action ||
-                    productDetailsErrors.half_life) &&
+                  (productDetailsErrors.introduction ||
+                    productDetailsErrors.description ||
+                    productDetailsErrors.salt_composition ||
+                    productDetailsErrors.benefits ||
+                    productDetailsErrors.use_of ||
+                    productDetailsErrors.how_to_use ||
+                    productDetailsErrors.safety_advice ||
+                    productDetailsErrors.ingredients ||
+                    productDetailsErrors.primary_use ||
+                    productDetailsErrors.storage ||
+                    productDetailsErrors.common_side_effects ||
+                    productDetailsErrors.alcohol_interaction ||
+                    productDetailsErrors.pregnancy_interaction ||
+                    productDetailsErrors.lactation_interaction ||
+                    productDetailsErrors.driving_interaction ||
+                    productDetailsErrors.kidney_interaction ||
+                    productDetailsErrors.liver_interaction ||
+                    productDetailsErrors.country_of_origin ||
+                    productDetailsErrors.faqs) &&
                   activeStep === 1
                 ) {
                   labelProps.error = true;
                 }
 
-                // Health Info Step (Step 2)
-                else if (
-                  (healthDetailsErrors.side_effects ||
-                    healthDetailsErrors.contra_indications ||
-                    healthDetailsErrors.special_precautions_while_taking ||
-                    healthDetailsErrors.pregnancy_related_information ||
-                    healthDetailsErrors.product_and_alcohol_interaction ||
-                    healthDetailsErrors.old_age_related_information ||
-                    healthDetailsErrors.breast_feeding_related_information ||
-                    healthDetailsErrors.children_related_information ||
-                    healthDetailsErrors.indications ||
-                    healthDetailsErrors.interactions ||
-                    healthDetailsErrors.typical_dosage ||
-                    healthDetailsErrors.storage_requirements ||
-                    healthDetailsErrors.effects_of_missed_dosage ||
-                    healthDetailsErrors.effects_of_overdose) &&
-                  activeStep === 2
-                ) {
-                  labelProps.error = true;
-                } else if (
-                  additionalErrors.expert_advice ||
-                  additionalErrors.how_to_use ||
-                  additionalErrors.faqs
-                ) {
-                  labelProps.error = true;
-                }
+
+
               }
 
               return (

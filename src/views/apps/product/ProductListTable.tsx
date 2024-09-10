@@ -310,9 +310,9 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
         header: 'Sub Category',
         cell: ({ row }) => <Typography>{row.original.sub_category?.name || 'N/A'}</Typography>
       }),
-      columnHelper.accessor('product_id', {
+      columnHelper.accessor('product_code', {
         header: 'Product ID',
-        cell: ({ row }) => <Typography>{row.original.product_id}</Typography>
+        cell: ({ row }) => <Typography>{row.original.product_code}</Typography>
       }),
       columnHelper.accessor('product_name', {
         header: 'Product Name',
@@ -322,22 +322,34 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
         header: 'MRP',
         cell: ({ row }) => <Typography>{row.original.mrp}</Typography>
       }),
-      columnHelper.accessor('igst', {
-        header: 'IGST',
-        cell: ({ row }) => <Typography>{row.original.igst}</Typography>
-      }),
-      columnHelper.accessor('hsn', {
-        header: 'HSN',
-        cell: ({ row }) => <Typography>{row.original.hsn}</Typography>
-      }),
+
+      // columnHelper.accessor('igst', {
+      //   header: 'IGST',
+      //   cell: ({ row }) => <Typography>{row.original.igst}</Typography>
+      // }),
+      // columnHelper.accessor('hsn', {
+      //   header: 'HSN',
+      //   cell: ({ row }) => <Typography>{row.original.hsn}</Typography>
+      // }),
+
       columnHelper.accessor('manufacturer', {
         header: 'Manufacturer',
         cell: ({ row }) => <Typography>{row.original.manufacturer}</Typography>
       }),
-      columnHelper.accessor('composition', {
-        header: 'Composition',
-        cell: ({ row }) => <Typography>{row.original.composition}</Typography>
+      columnHelper.accessor('manufacturer_address', {
+        header: 'Manufacturer Address',
+        cell: ({ row }) => <Typography>{row.original.manufacturer_address}</Typography>
       }),
+      columnHelper.accessor('quantity', {
+        header: 'Quantity',
+        cell: ({ row }) => <Typography>{row.original.quantity}</Typography>
+      }),
+
+      // columnHelper.accessor('composition', {
+      //   header: 'Composition',
+      //   cell: ({ row }) => <Typography>{row.original.composition}</Typography>
+      // }),
+
       columnHelper.accessor('packing_type', {
         header: 'Packing Type',
         cell: ({ row }) => <Typography>{row.original.packing_type}</Typography>
@@ -346,19 +358,52 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
         header: 'Packaging',
         cell: ({ row }) => <Typography>{row.original.packaging}</Typography>
       }),
-      columnHelper.accessor('Schedule', {
-        header: 'Schedule',
-        cell: ({ row }) => <Typography>{row.original.Schedule}</Typography>
-      }),
-      columnHelper.accessor('usage', {
-        header: 'Usage',
-        cell: ({ row }) => <Typography>{row.original.usage}</Typography>
-      }),
-      columnHelper.accessor('about_salt', {
-        header: 'About Salt',
-        cell: ({ row }) => <Typography>{row.original.about_salt}</Typography>
+      columnHelper.accessor('alert_quantity', {
+        header: 'Alert Quantity',
+        cell: ({ row }) => <Typography>{row.original.alert_quantity ? row.original.alert_quantity : "NA"}</Typography>
       }),
 
+      // columnHelper.accessor('Schedule', {
+      //   header: 'Schedule',
+      //   cell: ({ row }) => <Typography>{row.original.Schedule}</Typography>
+      // }),
+      columnHelper.accessor('mrp', {
+        header: 'mrp',
+        cell: ({ row }) => <Typography>{row.original.mrp}</Typography>
+      }),
+      columnHelper.accessor('discount', {
+        header: 'Discount',
+        cell: ({ row }) => <Typography>{row.original.discount}</Typography>
+      }),
+
+      columnHelper.accessor('prescription_required', {
+        header: 'Prescription Require',
+        cell: ({ row }) => (
+          <div className='flex items-center  justify-center'>
+            <Chip
+              variant='tonal'
+              className='capitalize'
+              label={row.original.prescription_required ? 'Yes' : 'No'}
+              color={row.original.prescription_required ? 'success' : 'secondary'}
+              size='small'
+            />
+          </div>
+        )
+      }),
+      columnHelper.accessor('stock_management_required', {
+        header: 'Stock Management Require',
+        cell: ({ row }) => (
+          <div className='flex items-center  justify-center'>
+            <Chip
+              variant='tonal'
+              className='capitalize'
+              label={row.original.stock_management_required ? 'Yes' : 'No'}
+              color={row.original.stock_management_required ? 'success' : 'secondary'}
+              size='small'
+            />
+          </div>
+        )
+      }),
       columnHelper.accessor('status', {
         header: 'Status',
         cell: ({ row }) => (

@@ -61,7 +61,7 @@ const AddProductActions = () => {
     setValue,
     handleSubmit,
     formState: { errors }
-  } = useForm({
+  } = useForm<any>({
     resolver: yupResolver(productValidationSchema),
     defaultValues
   })
@@ -176,7 +176,7 @@ const AddProductActions = () => {
                     </MenuItem>
                   ))}
                 </Select>
-                <FormHelperText className='text-red-600'>{errors.category?.message}</FormHelperText>
+                <FormHelperText className='text-red-600'>{errors.category?.message as string}</FormHelperText>
               </FormControl>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -197,7 +197,7 @@ const AddProductActions = () => {
                     </MenuItem>
                   ))}
                 </Select>
-                <FormHelperText className='text-red-600'>{errors.sub_category?.message}</FormHelperText>
+                <FormHelperText className='text-red-600'>{errors.sub_category?.message as string}</FormHelperText>
               </FormControl>
             </Grid>
 
@@ -218,56 +218,56 @@ const AddProductActions = () => {
                     </MenuItem>
                   ))}
                 </Select>
-                <FormHelperText className='text-red-600'>{errors.vendor_id?.message}</FormHelperText>
+                <FormHelperText className='text-red-600'>{errors.vendor_id?.message as string}</FormHelperText>
               </FormControl>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField {...register('product_id')} fullWidth id='outlined-basic' label='Product ID' />
-              <FormHelperText className='text-red-600'>{errors.product_id?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.product_id?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Product Name' {...register('product_name')} />
-              <FormHelperText className='text-red-600'>{errors.product_name?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.product_name?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='MRP' {...register('mrp')} />
-              <FormHelperText className='text-red-600'>{errors.mrp?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.mrp?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='IGST' {...register('igst')} />
-              <FormHelperText className='text-red-600'>{errors.igst?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.igst?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='HSN' {...register('hsn')} />
-              <FormHelperText className='text-red-600'>{errors.hsn?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.hsn?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Manufacturer' {...register('manufacturer')} />
-              <FormHelperText className='text-red-600'>{errors.manufacturer?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.manufacturer?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Composition' {...register('composition')} />
-              <FormHelperText className='text-red-600'>{errors.composition?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.composition?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Packing Type' {...register('packing_type')} />
-              <FormHelperText className='text-red-600'>{errors.packing_type?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.packing_type?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Packaging' {...register('packaging')} />
-              <FormHelperText className='text-red-600'>{errors.packaging?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.packaging?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Schedule' {...register('Schedule')} />
-              <FormHelperText className='text-red-600'>{errors.Schedule?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.Schedule?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Usage' {...register('usage')} />
-              <FormHelperText className='text-red-600'>{errors.usage?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.usage?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='About Salt' {...register('about_salt')} />
-              <FormHelperText className='text-red-600'>{errors.about_salt?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.about_salt?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
@@ -276,31 +276,31 @@ const AddProductActions = () => {
                 label='Mechanism Of Action'
                 {...register('mechanism_of_action')}
               />
-              <FormHelperText className='text-red-600'>{errors.mechanism_of_action?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.mechanism_of_action?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Pharmacokinets' {...register('pharmacokinets')} />
-              <FormHelperText className='text-red-600'>{errors.pharmacokinets?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.pharmacokinets?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Onset of Action' {...register('onset_of_action')} />
-              <FormHelperText className='text-red-600'>{errors.onset_of_action?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.onset_of_action?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Duration of Action' {...register('duration_of_action')} />
-              <FormHelperText className='text-red-600'>{errors.duration_of_action?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.duration_of_action?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Half Life' {...register('half_life')} />
-              <FormHelperText className='text-red-600'>{errors.half_life?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.half_life?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Side Effects' {...register('side_effects')} />
-              <FormHelperText className='text-red-600'>{errors.side_effects?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.side_effects?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Contra-indications' {...register('contra_indications')} />
-              <FormHelperText className='text-red-600'>{errors.contra_indications?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.contra_indications?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
@@ -310,7 +310,7 @@ const AddProductActions = () => {
                 {...register('special_precautions_while_taking')}
               />
               <FormHelperText className='text-red-600'>
-                {errors.special_precautions_while_taking?.message}
+                {errors.special_precautions_while_taking?.message as string}
               </FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -320,7 +320,7 @@ const AddProductActions = () => {
                 label='Pregnancy Related Information'
                 {...register('pregnancy_related_information')}
               />
-              <FormHelperText className='text-red-600'>{errors.pregnancy_related_information?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.pregnancy_related_information?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
@@ -330,7 +330,7 @@ const AddProductActions = () => {
                 {...register('product_and_alcohol_interaction')}
               />
               <FormHelperText className='text-red-600'>
-                {errors.product_and_alcohol_interaction?.message}
+                {errors.product_and_alcohol_interaction?.message as string}
               </FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -340,7 +340,7 @@ const AddProductActions = () => {
                 label='Old Age Related Information'
                 {...register('old_age_related_information')}
               />
-              <FormHelperText className='text-red-600'>{errors.old_age_related_information?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.old_age_related_information?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
@@ -350,7 +350,7 @@ const AddProductActions = () => {
                 {...register('breast_feeding_related_information')}
               />
               <FormHelperText className='text-red-600'>
-                {errors.breast_feeding_related_information?.message}
+                {errors.breast_feeding_related_information?.message as string}
               </FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -360,19 +360,19 @@ const AddProductActions = () => {
                 label='Children Related Information'
                 {...register('children_related_information')}
               />
-              <FormHelperText className='text-red-600'>{errors.children_related_information?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.children_related_information?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Indications' {...register('indications')} />
-              <FormHelperText className='text-red-600'>{errors.indications?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.indications?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Interactions' {...register('interactions')} />
-              <FormHelperText className='text-red-600'>{errors.interactions?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.interactions?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Typical Dosage' {...register('typical_dosage')} />
-              <FormHelperText className='text-red-600'>{errors.typical_dosage?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.typical_dosage?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
@@ -381,7 +381,7 @@ const AddProductActions = () => {
                 label='Storage Requirements'
                 {...register('storage_requirements')}
               />
-              <FormHelperText className='text-red-600'>{errors.storage_requirements?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.storage_requirements?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
@@ -390,7 +390,7 @@ const AddProductActions = () => {
                 label='Effects of Missed Dosage'
                 {...register('effects_of_missed_dosage')}
               />
-              <FormHelperText className='text-red-600'>{errors.effects_of_missed_dosage?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.effects_of_missed_dosage?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
@@ -399,19 +399,19 @@ const AddProductActions = () => {
                 label='Effects of Overdose'
                 {...register('effects_of_overdose')}
               />
-              <FormHelperText className='text-red-600'>{errors.effects_of_overdose?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.effects_of_overdose?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Expert Advice' {...register('expert_advice')} />
-              <FormHelperText className='text-red-600'>{errors.expert_advice?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.expert_advice?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='How to Use' {...register('how_to_use')} />
-              <FormHelperText className='text-red-600'>{errors.how_to_use?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.how_to_use?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField fullWidth id='outlined-basic' label='Faqs' {...register('faqs')} />
-              <FormHelperText className='text-red-600'>{errors.faqs?.message}</FormHelperText>
+              <FormHelperText className='text-red-600'>{errors.faqs?.message as string}</FormHelperText>
             </Grid>
             <Grid item xs={12} md={12}>
               <InputLabel id='prod-image-select'>Select product image</InputLabel>
@@ -420,7 +420,7 @@ const AddProductActions = () => {
                   <FileUploaderSingle setValue={setValue} fieldName={'product_image'} />
                 </div>
 
-                <FormHelperText className='text-red-600'>{errors.product_image?.message}</FormHelperText>
+                <FormHelperText className='text-red-600'>{errors.product_image?.message as string}</FormHelperText>
               </FormControl>
             </Grid>
           </Grid>
