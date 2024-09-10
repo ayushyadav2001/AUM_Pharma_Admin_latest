@@ -130,6 +130,8 @@
     "categorys": "Categorys",
     "listCategorys": "List Categorys",
     "subCategorys": "Sub Categorys",
-    "listSubCategorys": "List Sub Categorys"
+    "listSubCategorys": "List Sub Categorys",
+    "formats": "Formats",
+    "excelFormats": "List Formats"
   }
 }

@@ -63,54 +63,39 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
 
-  const userPermissions = JSON.parse(localStorage.getItem('permissions') ?? '{}');
+  const userPermissions = JSON.parse(localStorage.getItem('permissions') ?? '{}')
 
   const isSuperAdmin = () => {
-    const userRole = localStorage.getItem('role_name') ?? '';
+    const userRole = localStorage.getItem('role_name') ?? ''
 
-    return userRole === 'Super Admin';
-  };
-
-
-
+    return userRole === 'Super Admin'
+  }
 
   const canShowMaster = (masterName: any) => {
-
     if (isSuperAdmin()) {
-      return true; // Super Admin sees everything
+      return true // Super Admin sees everything
     }
 
-    const masterPermission = userPermissions.find(
-      (perm: any) => perm.masterName === masterName
-    );
+    const masterPermission = userPermissions.find((perm: any) => perm.masterName === masterName)
 
-    return masterPermission ? masterPermission.visible : false;
-  };
-
+    return masterPermission ? masterPermission.visible : false
+  }
 
   const canShowSubmenu = (masterName: any, submenuName: any) => {
-
-
     if (isSuperAdmin()) {
-      return true; // Super Admin sees everything
+      return true // Super Admin sees everything
     }
 
-    const masterPermission = userPermissions.find(
-      (perm: any) => perm.masterName === masterName
-    );
+    const masterPermission = userPermissions.find((perm: any) => perm.masterName === masterName)
 
     if (!masterPermission || !masterPermission.visible) {
-      return false; // Master item is not visible
+      return false // Master item is not visible
     }
 
-    const submenuPermission = masterPermission.submenus.find(
-      (submenu: any) => submenu.submenuName === submenuName
-    );
+    const submenuPermission = masterPermission.submenus.find((submenu: any) => submenu.submenuName === submenuName)
 
-    return submenuPermission ? submenuPermission.visible : false;
-  };
-
-
+    return submenuPermission ? submenuPermission.visible : false
+  }
 
   return (
     // eslint-disable-next-line lines-around-comment
@@ -348,7 +333,6 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           </SubMenu>
         </MenuSection> */}
 
-
         {/* <MenuSection label={dictionary['navigation'].formsAndTables}>
           <MenuItem href={`/${locale}/forms/form-layouts`} icon={<i className='ri-layout-4-line' />}>
             {dictionary['navigation'].formLayouts}
@@ -448,13 +432,10 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
         {/* <MenuSection label={dictionary['navigation'].dashboard}> */}
 
-
         {canShowMaster('Home') && (
           <MenuItem href={`/${locale}/dashboards/crm`} icon={<i className=' ri-home-smile-line' />}>
             {dictionary['navigation'].home}
           </MenuItem>
-
-
         )}
 
         {/* </MenuSection> */}
@@ -463,32 +444,16 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             {dictionary['navigation'].products}
           </MenuItem> */}
 
-
-
         {canShowMaster('Users') && (
-          <SubMenu
-            label={dictionary['navigation'].user}
-            icon={<i className='ri-team-line' />}
-          >
-            {canShowSubmenu('Users', "List User") && (
-
-              <MenuItem href={`/${locale}/apps/users`}>
-                {dictionary['navigation'].userList}
-              </MenuItem>
+          <SubMenu label={dictionary['navigation'].user} icon={<i className='ri-team-line' />}>
+            {canShowSubmenu('Users', 'List User') && (
+              <MenuItem href={`/${locale}/apps/users`}>{dictionary['navigation'].userList}</MenuItem>
             )}
-            {canShowSubmenu('Users', "Roles") && (
-
-              <MenuItem href={`/${locale}/apps/roles`}>
-                {dictionary['navigation'].rolesList}
-              </MenuItem>
+            {canShowSubmenu('Users', 'Roles') && (
+              <MenuItem href={`/${locale}/apps/roles`}>{dictionary['navigation'].rolesList}</MenuItem>
             )}
-
-
           </SubMenu>
         )}
-
-
-
 
         {/* <SubMenu
           label={dictionary['navigation'].user}
@@ -506,293 +471,132 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
         </SubMenu> */}
 
-        <SubMenu
-          label={dictionary['navigation'].categorys}
-          icon={<i className='ri-archive-line' />}
-
-
-        >
-
-
-          <MenuItem href={`/${locale}/apps/category`} >
-            {dictionary['navigation'].listCategorys}
-          </MenuItem>
+        <SubMenu label={dictionary['navigation'].categorys} icon={<i className='ri-archive-line' />}>
+          <MenuItem href={`/${locale}/apps/category`}>{dictionary['navigation'].listCategorys}</MenuItem>
         </SubMenu>
 
-        <SubMenu
-          label={dictionary['navigation'].subCategorys}
-          icon={<i className='ri-archive-2-line' />}
-
-
-        >
-
-
-          <MenuItem href={`/${locale}/apps/sub-category`} >
-            {dictionary['navigation'].listSubCategorys}
-          </MenuItem>
+        <SubMenu label={dictionary['navigation'].subCategorys} icon={<i className='ri-archive-2-line' />}>
+          <MenuItem href={`/${locale}/apps/sub-category`}>{dictionary['navigation'].listSubCategorys}</MenuItem>
         </SubMenu>
 
 
+        <SubMenu label={dictionary['navigation'].formats} icon={<i className='lucide--file-spreadsheet' />}>
+          <MenuItem href={`/${locale}/apps/formats`}>{dictionary['navigation'].excelFormats}</MenuItem>
+        </SubMenu>
 
         {canShowMaster('Products') && (
-
           <SubMenu
             label={dictionary['navigation'].products}
             icon={<i className='ri-home-smile-line' />}
 
           // suffix={<Chip label='5' size='small' color='error' />}
           >
-
-            {canShowSubmenu('Products', "List Product") && (
-              <MenuItem href={`/${locale}/apps/products`}  >
-                {dictionary['navigation'].productsList}
-              </MenuItem>
-
+            {canShowSubmenu('Products', 'List Product') && (
+              <MenuItem href={`/${locale}/apps/products`}>{dictionary['navigation'].productsList}</MenuItem>
             )}
 
-
-            {canShowSubmenu('Products', "Add Product") && (
-              <MenuItem href={`/${locale}/apps/products/add`}  >
-                {dictionary['navigation'].addProducts}
-              </MenuItem>
-
+            {canShowSubmenu('Products', 'Add Product') && (
+              <MenuItem href={`/${locale}/apps/products/add`}>{dictionary['navigation'].addProducts}</MenuItem>
             )}
 
-
-            {canShowSubmenu('Products', "Import Product") && (
-              <MenuItem href={`/${locale}/apps/products/import`}  >
-                {dictionary['navigation'].importProducts}
-              </MenuItem>
-
+            {canShowSubmenu('Products', 'Import Product') && (
+              <MenuItem href={`/${locale}/apps/products/import`}>{dictionary['navigation'].importProducts}</MenuItem>
             )}
-
-
-
-
-
-
-
           </SubMenu>
-
         )}
 
         {canShowMaster('Vendors') && (
-
           <SubMenu
             label={dictionary['navigation'].vendor}
             icon={<i className='ri-group-3-line' />}
 
           // suffix={<Chip label='5' size='small' color='error' />}
           >
-
-
-            {canShowSubmenu('Vendors', "List Vendor") && (
-              <MenuItem href={`/${locale}/apps/vendors`} >
-                {dictionary['navigation'].vendorList}
-              </MenuItem>
-
+            {canShowSubmenu('Vendors', 'List Vendor') && (
+              <MenuItem href={`/${locale}/apps/vendors`}>{dictionary['navigation'].vendorList}</MenuItem>
             )}
 
-
-            {canShowSubmenu('Vendors', "Add Vendor") && (
-              <MenuItem href={`/${locale}/apps/vendors/add`} >
-                {dictionary['navigation'].vendorAdd}
-              </MenuItem>
-
+            {canShowSubmenu('Vendors', 'Add Vendor') && (
+              <MenuItem href={`/${locale}/apps/vendors/add`}>{dictionary['navigation'].vendorAdd}</MenuItem>
             )}
-
-
-
-
-
-
           </SubMenu>
-
         )}
 
-
         {canShowMaster('Purchases') && (
-
-          <SubMenu
-            label={dictionary['navigation'].purchases}
-            icon={<i className='ri-download-line' />}
-
-
-          >
-
-
-            {canShowSubmenu('Purchases', "List Purchase") && (
-              <MenuItem href={`/${locale}/apps/purchase-orders`}  >
-                {dictionary['navigation'].listPurchases}
-              </MenuItem>
-
+          <SubMenu label={dictionary['navigation'].purchases} icon={<i className='ri-download-line' />}>
+            {canShowSubmenu('Purchases', 'List Purchase') && (
+              <MenuItem href={`/${locale}/apps/purchase-orders`}>{dictionary['navigation'].listPurchases}</MenuItem>
             )}
 
-            {canShowSubmenu('Purchases', "Add Purchase") && (
-              <MenuItem href={`/${locale}/apps/purchase-orders/add`}  >
-                {dictionary['navigation'].addPurchases}
-              </MenuItem>
-
+            {canShowSubmenu('Purchases', 'Add Purchase') && (
+              <MenuItem href={`/${locale}/apps/purchase-orders/add`}>{dictionary['navigation'].addPurchases}</MenuItem>
             )}
-
-
-
-
-
-
           </SubMenu>
-
         )}
 
         {canShowMaster('Orders') && (
-
-
-          <SubMenu
-            label={dictionary['navigation'].orders}
-            icon={<i className='ri-shape-line' />}
-          >
-
-
-            {canShowSubmenu('Orders', "List Order") && (
-              <MenuItem href={`/${locale}/apps/user/list`}  >
-                {dictionary['navigation'].userList}
-              </MenuItem>
-
+          <SubMenu label={dictionary['navigation'].orders} icon={<i className='ri-shape-line' />}>
+            {canShowSubmenu('Orders', 'List Order') && (
+              <MenuItem href={`/${locale}/apps/user/list`}>{dictionary['navigation'].userList}</MenuItem>
             )}
-            {canShowSubmenu('Orders', "Add Order") && (
-              <MenuItem href={`/${locale}/apps/vendors/roles`}  >
-                {dictionary['navigation'].rolesList}
-              </MenuItem>
-
+            {canShowSubmenu('Orders', 'Add Order') && (
+              <MenuItem href={`/${locale}/apps/vendors/roles`}>{dictionary['navigation'].rolesList}</MenuItem>
             )}
-
-
           </SubMenu>
-
         )}
-
 
         {canShowMaster('Stocks') && (
-
-          <SubMenu
-            label={dictionary['navigation'].stock}
-            icon={<i className='ri-funds-box-line' />}
-          >
-
-
-            {canShowSubmenu('Stocks', "List Stock") && (
-              <MenuItem href={`/${locale}/apps/stock`}  >
-                {dictionary['navigation'].stockList}
-              </MenuItem>
-
+          <SubMenu label={dictionary['navigation'].stock} icon={<i className='ri-funds-box-line' />}>
+            {canShowSubmenu('Stocks', 'List Stock') && (
+              <MenuItem href={`/${locale}/apps/stock`}>{dictionary['navigation'].stockList}</MenuItem>
             )}
-
-
           </SubMenu>
-
         )}
 
-
         {canShowMaster('Stocks Adjustment') && (
-          <SubMenu
-            label={dictionary['navigation'].stockAdjustment}
-            icon={<i className='ri-database-2-line' />}
-          >
-
-
-            {canShowSubmenu('Stocks Adjustment', "List Stock Adjustment") && (
-              <MenuItem href={`/${locale}/apps/stock-adjustment`}  >
+          <SubMenu label={dictionary['navigation'].stockAdjustment} icon={<i className='ri-database-2-line' />}>
+            {canShowSubmenu('Stocks Adjustment', 'List Stock Adjustment') && (
+              <MenuItem href={`/${locale}/apps/stock-adjustment`}>
                 {dictionary['navigation'].listStockAdjustment}
               </MenuItem>
-
             )}
-            {canShowSubmenu('Stocks Adjustment', "Add Stock Adjustment") && (
-              <MenuItem href={`/${locale}/apps/stock-adjustment/add`}  >
+            {canShowSubmenu('Stocks Adjustment', 'Add Stock Adjustment') && (
+              <MenuItem href={`/${locale}/apps/stock-adjustment/add`}>
                 {dictionary['navigation'].addStockAdjustment}
               </MenuItem>
-
             )}
-
-
-
           </SubMenu>
-
-
         )}
 
         {canShowMaster('Reports') && (
-          <SubMenu
-            label={dictionary['navigation'].reports}
-            icon={<i className='ri-folder-chart-line' />}
-          >
-
-
-            {canShowSubmenu('Reports', "List Report") && (
-              <MenuItem href={`/${locale}/apps/user/list`}  >
-                {dictionary['navigation'].userList}
-              </MenuItem>
-
+          <SubMenu label={dictionary['navigation'].reports} icon={<i className='ri-folder-chart-line' />}>
+            {canShowSubmenu('Reports', 'List Report') && (
+              <MenuItem href={`/${locale}/apps/user/list`}>{dictionary['navigation'].userList}</MenuItem>
             )}
-
-
-
-
           </SubMenu>
-
-
         )}
-
-
-
 
         {canShowMaster('Notification Template') && (
-          <SubMenu
-            label={dictionary['navigation'].notificationTemplate}
-            icon={<i className='ri-mail-line' />}
-          >
-            {canShowSubmenu('Notification Template', "List Template") && (
-              <MenuItem href={`/${locale}/apps/user/list`}  >
-                {dictionary['navigation'].userList}
-              </MenuItem>
-
+          <SubMenu label={dictionary['navigation'].notificationTemplate} icon={<i className='ri-mail-line' />}>
+            {canShowSubmenu('Notification Template', 'List Template') && (
+              <MenuItem href={`/${locale}/apps/user/list`}>{dictionary['navigation'].userList}</MenuItem>
             )}
-
-
           </SubMenu>
-
         )}
-
 
         {canShowMaster('Settings') && (
-
-          <SubMenu
-            label={dictionary['navigation'].setting}
-            icon={<i className='ri-settings-5-line' />}
-          >
-
-            {canShowSubmenu('Settings', "General Settings") && (
-              <MenuItem href={`/${locale}/apps/user/list`}  >
-                {dictionary['navigation'].userList}
-              </MenuItem>
-
+          <SubMenu label={dictionary['navigation'].setting} icon={<i className='ri-settings-5-line' />}>
+            {canShowSubmenu('Settings', 'General Settings') && (
+              <MenuItem href={`/${locale}/apps/user/list`}>{dictionary['navigation'].userList}</MenuItem>
             )}
-
-
           </SubMenu>
         )}
-
 
         {canShowMaster('Customers') && (
           <MenuItem href={`/${locale}/apps/customers`} icon={<i className='ri-user-follow-line' />}>
             {dictionary['navigation'].customers}
           </MenuItem>
-
-
         )}
-
-
-
-
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 17 }}
