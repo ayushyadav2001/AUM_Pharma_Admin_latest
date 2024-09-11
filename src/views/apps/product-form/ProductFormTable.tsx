@@ -8,8 +8,6 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 // MUI Imports
-import Image from 'next/image'
-
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
@@ -44,14 +42,13 @@ import {
 import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
-import { CardHeader, Chip, Divider } from '@mui/material'
-
-import DefaultProductImage from "@assets/defaultImages/default-prod.webp"
-
 // Type Imports
 
 // import dayjs from 'dayjs'
 
+import { CardHeader, Chip, Divider } from '@mui/material'
+
+import dayjs from 'dayjs'
 
 import type { UsersType } from '@/types/apps/userTypes'
 import type { Locale } from '@configs/i18n'
@@ -66,7 +63,6 @@ import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
-
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -129,7 +125,7 @@ const DebouncedInput = ({
 // Column Definitions
 const columnHelper = createColumnHelper<any>()
 
-const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
+const PackageTypesTable = ({ tableData }: { tableData?: UsersType[] }) => {
   // States
   const [role, setRole] = useState<any['role']>('')
   const [rowSelection, setRowSelection] = useState({})
@@ -142,48 +138,22 @@ const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
-      columnHelper.accessor('image', {
-        header: 'Image',
-        cell: ({ row }) => {
-          const SubCategoryImage = row.original.image;
 
-          const imageUrl = SubCategoryImage
-            ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${SubCategoryImage}`
-            : DefaultProductImage;
-
-          return (
-
-            <div className="flex items-center justify-center w-12 h-12">
-              <Image
-                src={imageUrl}
-                alt="Sub Image"
-                width={50}
-                height={50}
-                className="object-cover"
-                priority
-              />
-            </div>
-          );
-        },
-      }),
-      columnHelper.accessor('category', {
-        header: 'Category Name',
-        cell: ({ row }) => <Typography>{row.original.category.name}</Typography>
-      }),
       columnHelper.accessor('name', {
-        header: 'Sub Category Name',
-        cell: ({ row }) => <Typography>{row.original.name != null ? row.original.name : "NA"}</Typography>
+        header: 'Name',
+        cell: ({ row }) => <Typography>{row.original.name}</Typography>
       }),
-      columnHelper.accessor('description', {
-        header: 'description',
-        cell: ({ row }) => <Typography>{row.original.description != null ? row.original.description : "NA"}</Typography>
-      }),
-      columnHelper.accessor('description', {
-        header: 'description',
-        cell: ({ row }) => <Typography>{row.original.description != null ? row.original.description : "NA"}</Typography>
-      }),
+      columnHelper.accessor('createdAt', {
+        header: 'Created Date',
+        enableSorting: true,
+        cell: ({ row }) => {
+          const formattedDate = row.original.createdAt
+            ? dayjs(row.original.createdAt).format('DD/MM/YYYY hh:mm A')
+            : 'N/A';
 
-
+          return <Typography className="cursor-pointer" >{formattedDate}</Typography>;
+        }
+      }),
       columnHelper.accessor('status', {
         header: 'Status',
         enableSorting: true,
@@ -289,12 +259,9 @@ const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
     setFilteredData(filteredData)
   }, [role, data, setFilteredData])
 
-
-
-
   return (
     <Card>
-      <CardHeader title='Sub Categories' className='pbe-4' />
+      <CardHeader title='Product Forms' className='pbe-4' />
 
       {/* <TableFilters setData={setData} tableData={tableData} /> */}
 
@@ -316,7 +283,7 @@ const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
             placeholder='Search User'
           />
 
-          <Link className='' href={`/${locale}/apps/sub-category/add`}>
+          <Link className='' href={`/${locale}/apps/product-form/add`}>
             <Button variant='contained' className='is-full sm:is-auto'>
               Add
             </Button>
@@ -415,4 +382,4 @@ const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
   )
 }
 
-export default SubCategoryTable
+export default PackageTypesTable

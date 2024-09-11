@@ -431,7 +431,7 @@ const ImportProduct = () => {
               </Grid>
               <Grid item xs={12} md={3} justifyContent="center" alignItems="center">
 
-                <Button onClick={() => exportToExcel(excelData, "products_sample")} startIcon={<i className='ri-download-2-line' />} className="cursor-pointer  w-full bg-gradient-to-r from-green-500 to-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-gradient-to-l hover:from-green-500 hover:to-green-500 transition duration-300" variant='contained' type='button'>
+                <Button onClick={() => exportToExcel(excelData, "products_sample")} startIcon={<i className='ri-download-2-line' />} className="cursor-pointer  w-full bg-primary text-white font-semibold py-2 px-4 rounded hover:bg-gradient-to-l hover:from-green-500 hover:to-green-500 transition duration-300" variant='contained' type='button'>
                   Download template file
                 </Button>
 

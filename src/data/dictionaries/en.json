@@ -132,6 +132,9 @@
     "listSubCategorys": "List Sub Categories",
     "formats": "Formats",
     "excelFormats": "List Formats",
-    "packagingType": "Packaging Type"
+    "packaging": "Packaging",
+    "packagingType": "Packaging Type",
+    "manufacturer": "Manufacturer",
+    "productForm": "Product Form"
   }
 }

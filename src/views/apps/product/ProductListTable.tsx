@@ -302,26 +302,24 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
           );
         },
       }),
-      columnHelper.accessor('category', {
-        header: 'Category',
-        cell: ({ row }) => <Typography>{row.original.category?.name || 'N/A'}</Typography>
-      }),
-      columnHelper.accessor('sub_category', {
-        header: 'Sub Category',
-        cell: ({ row }) => <Typography>{row.original.sub_category?.name || 'N/A'}</Typography>
-      }),
       columnHelper.accessor('product_code', {
         header: 'Product ID',
         cell: ({ row }) => <Typography>{row.original.product_code}</Typography>
       }),
+      columnHelper.accessor('categories', {
+        header: 'Category',
+        cell: ({ row }) => <Typography>{row.original.categories?.name || 'N/A'}</Typography>
+      }),
+      columnHelper.accessor('sub_categories', {
+        header: 'Sub Category',
+        cell: ({ row }) => <Typography>{row.original.sub_categories?.name || 'N/A'}</Typography>
+      }),
+
       columnHelper.accessor('product_name', {
         header: 'Product Name',
         cell: ({ row }) => <Typography>{row.original.product_name}</Typography>
       }),
-      columnHelper.accessor('mrp', {
-        header: 'MRP',
-        cell: ({ row }) => <Typography>{row.original.mrp}</Typography>
-      }),
+
 
       // columnHelper.accessor('igst', {
       //   header: 'IGST',
@@ -334,21 +332,12 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
       columnHelper.accessor('manufacturer', {
         header: 'Manufacturer',
-        cell: ({ row }) => <Typography>{row.original.manufacturer}</Typography>
-      }),
-      columnHelper.accessor('manufacturer_address', {
-        header: 'Manufacturer Address',
-        cell: ({ row }) => <Typography>{row.original.manufacturer_address}</Typography>
-      }),
-      columnHelper.accessor('quantity', {
-        header: 'Quantity',
-        cell: ({ row }) => <Typography>{row.original.quantity}</Typography>
+        cell: ({ row }) => <Typography>{row.original.manufacturer.name || "NA"}</Typography>
       }),
 
-      // columnHelper.accessor('composition', {
-      //   header: 'Composition',
-      //   cell: ({ row }) => <Typography>{row.original.composition}</Typography>
-      // }),
+
+
+
       columnHelper.accessor('packaging', {
         header: 'Packaging',
         cell: ({ row }) => <Typography>{row.original.packaging.name || "NA"}</Typography>
@@ -356,7 +345,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
       columnHelper.accessor('packing_type', {
         header: 'Packing Type',
-        cell: ({ row }) => <Typography>{row.original.packing_type}</Typography>
+        cell: ({ row }) => <Typography>{row.original.packing_type.name || "NA"}</Typography>
       }),
 
       columnHelper.accessor('alert_quantity', {

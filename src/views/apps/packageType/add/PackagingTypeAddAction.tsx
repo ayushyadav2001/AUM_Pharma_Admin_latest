@@ -52,7 +52,7 @@ import FileUploaderSingle from '../../customers/ProductFileUpload/FileUploaderSi
 import { setUsersData } from '@/redux-store/slices/userSlice'
 import { setPackagingTypeData } from '@/redux-store/slices/packagingType.Slice'
 
-const AddPackagingActions = () => {
+const AddPackageTypeActions = () => {
   // States
   const router = useRouter()
 
@@ -95,7 +95,7 @@ const AddPackagingActions = () => {
 
   const fetchPackagingType = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package/get-all-packaging`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package-type/get-all-packaging`, { withCredentials: true })
 
       dispatch(setPackagingTypeData(response.data.data)) // Ensure `setData` action is correctly set
     } catch (err) {
@@ -118,11 +118,11 @@ const AddPackagingActions = () => {
 
     try {
       const response = await axios
-        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package/add-packaging`, data, { withCredentials: true })
+        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package-type/add-package`, data, { withCredentials: true })
         .then(res => {
-          toast.success('Packaging  Added Successfully!')
+          toast.success('Packaging Types  Added Successfully!')
           fetchPackagingType()
-          router.push('/apps/packaging')
+          router.push('/apps/packaging-type')
         })
     } catch (error) {
       console.error('Error adding product:', error)
@@ -132,29 +132,12 @@ const AddPackagingActions = () => {
 
   // Fetch vendors when the component mounts
 
-  const fetchFormats = async () => {
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/role/get-roles`, { withCredentials: true })
 
-      const transformedRoles = response.data.roles.map((role: any) => ({
-        label: role.roleName,  // label as roleName
-        value: role._id,       // value as _id
-      }));
-
-      setRoleOptions(transformedRoles);  //
-    } catch (error) {
-      console.error('Error fetching vendors:', error)
-    }
-  }
-
-  useEffect(() => {
-    fetchFormats()
-  }, [])
 
   return (
     <Card>
       <CardHeader
-        title='Add Packaging'
+        title='Add Packaging Type'
         titleTypographyProps={{
           variant: 'h5',
           color: 'primary'
@@ -168,7 +151,7 @@ const AddPackagingActions = () => {
               <TextField
                 error={!!errors.name} // `error` expects a boolean
                 helperText={errors.name?.message?.toString() || ''}
-                {...register('name')} fullWidth id='outlined-basic' label='Packaging Name' />
+                {...register('name')} fullWidth id='outlined-basic' label='Packaging Type Name' />
 
             </Grid>
 
@@ -192,4 +175,4 @@ const AddPackagingActions = () => {
   )
 }
 
-export default AddPackagingActions
+export default AddPackageTypeActions

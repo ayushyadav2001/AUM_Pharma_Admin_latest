@@ -261,7 +261,7 @@ const PackagingTypesTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   return (
     <Card>
-      <CardHeader title='Packaging Types' className='pbe-4' />
+      <CardHeader title='Packaging' className='pbe-4' />
 
       {/* <TableFilters setData={setData} tableData={tableData} /> */}
 
@@ -283,7 +283,7 @@ const PackagingTypesTable = ({ tableData }: { tableData?: UsersType[] }) => {
             placeholder='Search User'
           />
 
-          <Link className='' href={`/${locale}/apps/packaginge-type/add`}>
+          <Link className='' href={`/${locale}/apps/packaging/add`}>
             <Button variant='contained' className='is-full sm:is-auto'>
               Add
             </Button>

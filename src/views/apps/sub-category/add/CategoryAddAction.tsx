@@ -127,7 +127,7 @@ const AddSubCategoryActions = () => {
   return (
     <Card>
       <CardHeader
-        title='Add User'
+        title='Add Sub Categories'
         titleTypographyProps={{
           variant: 'h5',
           color: 'primary'

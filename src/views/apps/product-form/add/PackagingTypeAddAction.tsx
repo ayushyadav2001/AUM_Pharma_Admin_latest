@@ -51,8 +51,9 @@ import createUserSchema from './create-form'
 import FileUploaderSingle from '../../customers/ProductFileUpload/FileUploaderSingle'
 import { setUsersData } from '@/redux-store/slices/userSlice'
 import { setPackagingTypeData } from '@/redux-store/slices/packagingType.Slice'
+import { setProductFormData } from '@/redux-store/slices/prductFormSlice'
 
-const AddPackagingActions = () => {
+const AddProductFormActions = () => {
   // States
   const router = useRouter()
 
@@ -95,11 +96,11 @@ const AddPackagingActions = () => {
 
   const fetchPackagingType = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package/get-all-packaging`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product-form/get-all-product-form`, { withCredentials: true })
 
-      dispatch(setPackagingTypeData(response.data.data)) // Ensure `setData` action is correctly set
+      dispatch(setProductFormData(response.data.data)) // Ensure `setData` action is correctly set
     } catch (err) {
-      console.error('Failed to fetch sub admins', err) // Log the error for debugging
+      console.error('Failed to fetch product-form', err) // Log the error for debugging
 
     } finally {
 
@@ -109,52 +110,28 @@ const AddPackagingActions = () => {
 
   const onSubmit = async (data: any) => {
 
-
-
-
-
-
-
-
     try {
       const response = await axios
-        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package/add-packaging`, data, { withCredentials: true })
+        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product-form/add-product-form`, data, { withCredentials: true })
         .then(res => {
-          toast.success('Packaging  Added Successfully!')
+          toast.success('Product Form Added Successfully!')
           fetchPackagingType()
-          router.push('/apps/packaging')
+          router.push('/apps/product-form')
         })
     } catch (error) {
-      console.error('Error adding product:', error)
+      console.error('Error adding product-form:', error)
       toast.error('Something went wrong!')
     }
   }
 
   // Fetch vendors when the component mounts
 
-  const fetchFormats = async () => {
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/role/get-roles`, { withCredentials: true })
 
-      const transformedRoles = response.data.roles.map((role: any) => ({
-        label: role.roleName,  // label as roleName
-        value: role._id,       // value as _id
-      }));
-
-      setRoleOptions(transformedRoles);  //
-    } catch (error) {
-      console.error('Error fetching vendors:', error)
-    }
-  }
-
-  useEffect(() => {
-    fetchFormats()
-  }, [])
 
   return (
     <Card>
       <CardHeader
-        title='Add Packaging'
+        title='Add Product Form'
         titleTypographyProps={{
           variant: 'h5',
           color: 'primary'
@@ -168,7 +145,7 @@ const AddPackagingActions = () => {
               <TextField
                 error={!!errors.name} // `error` expects a boolean
                 helperText={errors.name?.message?.toString() || ''}
-                {...register('name')} fullWidth id='outlined-basic' label='Packaging Name' />
+                {...register('name')} fullWidth id='outlined-basic' label='Product Form' placeholder='Enter your product Form' />
 
             </Grid>
 
@@ -192,4 +169,4 @@ const AddPackagingActions = () => {
   )
 }
 
-export default AddPackagingActions
+export default AddProductFormActions

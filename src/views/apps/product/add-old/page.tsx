@@ -23,6 +23,9 @@ import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 
+
+
+
 import type { StepperProps } from '@mui/material/Stepper'
 
 // Third-party Imports
@@ -34,7 +37,7 @@ import { valibotResolver } from '@hookform/resolvers/valibot'
 // Component Imports
 import axios from 'axios'
 
-import { Checkbox, FormControlLabel, IconButton, InputAdornment, Tooltip } from '@mui/material'
+import { Checkbox, Chip, FormControlLabel, IconButton, InputAdornment, Tooltip } from '@mui/material'
 
 import StepperWrapper from '@core/styles/stepper'
 import StepperCustomDot from '@components/stepper-dot'
@@ -89,8 +92,76 @@ const ProductStepperLinear = () => {
 
   const [stockAdjustment, setStockAdjustment] = useState(true)
   const [category, setCategory] = useState([])
-  const [packageType, setPackageType] = useState([])
+  const [packages, setPackage] = useState([])
+
+  const [productForms, setProductForms] = useState([])
+
+  const [packagingType, setPackagingType] = useState([])
+  const [manufacturers, setManufacturers] = useState([])
+
   const [subCategory, setSubCategory] = useState([])
+
+
+  const [categoryOptionValue, setCategoryOptionsValue] = useState<string[]>([]);
+  const [subCategoryOptionValue, setSubCategoryOptionValue] = useState<string[]>([])
+
+  console.log("categoryOptionValue", categoryOptionValue)
+
+  const handleChangeCategory = (event: any) => {
+    const {
+      target: { value },
+    } = event;
+
+
+
+    setCategoryOptionsValue(
+
+
+
+      typeof value === 'string' ? value.split(',') : value
+    );
+
+
+    const categoryOptionValueTwo = typeof value === 'string' ? value.split(',') : value;
+
+    basicSetValue("category", categoryOptionValueTwo)
+
+    fetchSubCategory(categoryOptionValueTwo)
+  };
+
+  const handleChangeSubCategory = (event: any) => {
+    const {
+      target: { value },
+    } = event;
+
+
+
+    setSubCategoryOptionValue(
+
+
+
+      typeof value === 'string' ? value.split(',') : value
+    );
+
+
+    const subcategoryOptionValueTwo = typeof value === 'string' ? value.split(',') : value;
+
+    basicSetValue("sub_category", subcategoryOptionValueTwo)
+  };
+
+  const getCategoryNameById = (id: string) => {
+    const categoryItem: any = category.find((item: any) => item._id === id);
+
+
+    return categoryItem ? categoryItem?.name : '';
+  };
+
+  const getSubCategoryNameById = (id: string) => {
+    const categoryItem: any = subCategory.find((item: any) => item._id === id);
+
+
+    return categoryItem ? categoryItem?.name : '';
+  };
 
 
 
@@ -208,16 +279,38 @@ const ProductStepperLinear = () => {
 
     const finalData = { ...formData, ...data };
 
-
+    const convertToArray = (str: string) => str.split(',').map(item => item.trim());
 
 
     const formDataObj = new FormData();
 
+    // for (const key in finalData) {
+
+    //   if (Object.hasOwnProperty.call(finalData, key)) {
+
+    //     formDataObj.append(key, finalData[key]);
+    //   }
+    // }
+
     for (const key in finalData) {
-
       if (Object.hasOwnProperty.call(finalData, key)) {
+        let value = finalData[key];
 
-        formDataObj.append(key, finalData[key]);
+        // Convert category and sub_category to arrays if they are strings
+        if (key === 'category' || key === 'sub_category') {
+          if (typeof value === 'string' && value.includes(',')) {
+            value = convertToArray(value);
+          } else {
+            value = value; // Ensure it is always an array
+          }
+        }
+
+        // Append to FormData, convert array to JSON string if necessary
+        if (Array.isArray(value)) {
+          formDataObj.append(key, JSON.stringify(value));
+        } else {
+          formDataObj.append(key, value);
+        }
       }
     }
 
@@ -278,23 +371,57 @@ const ProductStepperLinear = () => {
     }
   }
 
-  const fetchPackageType = async () => {
+  const fetchPackage = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packaging-type/get-all-packaging`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package/get-all-packaging`, { withCredentials: true })
 
-      setPackageType(response.data.data)
+      setPackage(response.data.data)
     } catch (error) {
       console.error('Error fetching vendors:', error)
     }
   }
 
-  const fetchSubCategory = async (id: any) => {
+  const fetchProductForms = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product-form/get-all-product-form`, { withCredentials: true })
+
+      setProductForms(response.data.data)
+    } catch (error) {
+      console.error('Error fetching vendors:', error)
+    }
+  }
+
+  const fetchPackageType = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package-type/get-all-packaging`, { withCredentials: true })
+
+      setPackagingType(response.data.data)
+    } catch (error) {
+      console.error('Error fetching vendors:', error)
+    }
+  }
+
+  const fetchManufacturer = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/manufacturer/get-all-manufacturer`, { withCredentials: true })
+
+      setManufacturers(response.data.data)
+    } catch (error) {
+      console.error('Error fetching vendors:', error)
+    }
+  }
+
+  const fetchSubCategory = async (idArray: any) => {
     try {
 
-      setSubCategory([])
 
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/sub-category/get-sub-category-by-category/${id}`, { withCredentials: true }
+
+      const data = {
+        category_ids: idArray
+      }
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/sub-category/get-sub-category-by-category`, data, { withCredentials: true }
       )
 
       setSubCategory(response.data.subCategories)
@@ -305,7 +432,10 @@ const ProductStepperLinear = () => {
 
   useEffect(() => {
     fetchCategory()
+    fetchPackage()
     fetchPackageType()
+    fetchManufacturer()
+    fetchProductForms()
 
   }, [])
 
@@ -375,110 +505,132 @@ const ProductStepperLinear = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} md={6}>
-                    <Controller
-                      name='category'
-                      control={basicInfoControl}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <FormControl fullWidth className='mbe-4'>
-                          <InputLabel id='category-select'>Select Category</InputLabel>
-                          <Select
-                            {...field}
-                            fullWidth
-                            label='Select Category'
-                            onChange={(e) => {
-                              field.onChange(e);
-                              fetchSubCategory(e.target?.value);
-                            }}
-                            labelId='category-select'
-                          >
-                            {category?.map((category: any) => (
-                              <MenuItem key={category?._id} value={category?._id}>
-                                {category?.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          {basicInfoErrors.category?.message && (
-                            <FormHelperText className='text-red-600'>
-                              {String(basicInfoErrors.category.message)}
-                            </FormHelperText>
-                          )}
-                        </FormControl>
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Controller
-                      name='sub_category'
-                      control={basicInfoControl}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <FormControl fullWidth className='mbe-4'>
-                          <InputLabel id='subcategory-select'>Select Sub Category</InputLabel>
-                          <Select
-                            {...field}
-                            fullWidth
-                            defaultValue=''
-                            label='Select Sub Category'
-                            onChange={(e) => field.onChange(e)}
-                            labelId='subcategory-select'
-                          >
-                            {subCategory?.map((category: any) => (
-                              <MenuItem key={category?._id} value={category?._id}>
-                                {category?.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
 
-                          {basicInfoErrors.sub_category?.message && (
-                            <FormHelperText className='text-red-600'>
-                              {String(basicInfoErrors.sub_category.message)}
-                            </FormHelperText>
-                          )}
-
-                        </FormControl>
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-multiple-chip-label">Select Category</InputLabel>
+                      <Select
+                        multiple
+                        label="Select Category"
+                        value={categoryOptionValue}
+                        onChange={handleChangeCategory}
+                        renderValue={(selected) => (
+                          <div className="flex flex-wrap gap-1">
+                            {selected.map((value: string) => (
+                              <Chip key={value} label={getCategoryNameById(value)} size="small" />
+                            ))}
+                          </div>
+                        )}
+                        labelId="demo-multiple-chip-label"
+                      >
+                        {category.map((item: any) => (
+                          <MenuItem key={item._id} value={item._id}>
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {basicInfoErrors.category?.message && (
+                        <FormHelperText className='text-red-600'>
+                          {String(basicInfoErrors.category.message)}
+                        </FormHelperText>
                       )}
-                    />
+                    </FormControl>
                   </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-multiple-chip-label">Select Sub Category</InputLabel>
+                      <Select
+                        multiple
+                        label="Select Sub Category"
+                        value={subCategoryOptionValue}
+                        onChange={handleChangeSubCategory}
+                        renderValue={(selected) => (
+                          <div className="flex flex-wrap gap-1">
+                            {selected.map((value: string) => (
+                              <Chip key={value} label={getSubCategoryNameById(value)} size="small" />
+                            ))}
+                          </div>
+                        )}
+                        labelId="demo-multiple-chip-label"
+                      >
+                        {subCategory.map((item: any) => (
+                          <MenuItem key={item._id} value={item._id}>
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+
+                      {basicInfoErrors.sub_category?.message && (
+                        <FormHelperText className='text-red-600'>
+                          {String(basicInfoErrors.sub_category.message)}
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+
+
                   <Grid item xs={12} md={6}>
                     <Controller
                       name='manufacturer'
                       control={basicInfoControl}
-                      rules={{ required: true }}
                       render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          id='outlined-basic'
-                          label='Manufacturer'
-                          placeholder='Enter manufacturer name'
-                          type='text'
-                          error={!!basicInfoErrors.manufacturer}
-                          helperText={typeof basicInfoErrors.manufacturer?.message === 'string' ? basicInfoErrors.manufacturer.message : ''}
-                        />
+                        <FormControl fullWidth>
+                          <InputLabel id='packing-type'>Select Manufacturer</InputLabel>
+                          <Select
+                            {...field}
+                            id='packing-type'
+                            label='Select Manufacturer'
+
+                            onChange={(e) => {
+
+
+                              field.onChange(e.target.value)
+                            }}
+
+                          >
+                            {manufacturers?.map((data: any) => (
+                              <MenuItem key={data?._id} value={data?._id}>
+                                {data?.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          <FormHelperText className='text-red-600'>{basicInfoErrors.manufacturer?.message as string}</FormHelperText>
+                        </FormControl>
                       )}
                     />
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Controller
-                      name='manufacturer_address'
+                      name='product_form'
                       control={basicInfoControl}
-                      rules={{ required: true }}
                       render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          id='outlined-basic'
-                          label='Manufacturer Address'
-                          placeholder='Enter manufacturer address'
-                          type='text'
-                          error={!!basicInfoErrors.manufacturer_address}
-                          helperText={typeof basicInfoErrors.manufacturer_address?.message === 'string' ? basicInfoErrors.manufacturer_address.message : ''}
-                        />
+                        <FormControl fullWidth>
+                          <InputLabel id='packing-type'>Select Product Form</InputLabel>
+                          <Select
+                            {...field}
+                            id='packing-type'
+                            label='Select Product Form'
+
+                            onChange={(e) => {
+
+
+                              field.onChange(e.target.value)
+                            }}
+
+                          >
+                            {productForms?.map((data: any) => (
+                              <MenuItem key={data?._id} value={data?._id}>
+                                {data?.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          <FormHelperText className='text-red-600'>{basicInfoErrors.product_form?.message as string}</FormHelperText>
+                        </FormControl>
                       )}
                     />
                   </Grid>
+
                   <Grid item xs={12} md={6}>
                     <Controller
                       name='packaging'
@@ -498,7 +650,7 @@ const ProductStepperLinear = () => {
                             }}
 
                           >
-                            {packageType?.map((data: any) => (
+                            {packages?.map((data: any) => (
                               <MenuItem key={data?._id} value={data?._id}>
                                 {data?.name}
                               </MenuItem>
@@ -509,27 +661,41 @@ const ProductStepperLinear = () => {
                       )}
                     />
                   </Grid>
+
+
                   <Grid item xs={12} md={6}>
                     <Controller
                       name='packing_type'
                       control={basicInfoControl}
-                      rules={{ required: true }}
                       render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          id='outlined-basic'
-                          label='Packaging Type'
-                          placeholder='Bottle of 500 ml syrup'
-                          type='text'
-                          error={!!basicInfoErrors.packing_type}
-                          helperText={typeof basicInfoErrors.packing_type?.message === 'string' ? basicInfoErrors.packing_type.message : ''}
-                        />
+                        <FormControl fullWidth>
+                          <InputLabel id='packing-type'>Packaging Type</InputLabel>
+                          <Select
+                            {...field}
+                            id='packing-type'
+                            label='Packaging Type'
+
+                            onChange={(e) => {
+
+
+                              field.onChange(e.target.value)
+                            }}
+
+                          >
+                            {packagingType?.map((data: any) => (
+                              <MenuItem key={data?._id} value={data?._id}>
+                                {data?.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          <FormHelperText className='text-red-600'>{basicInfoErrors.packing_type?.message as string}</FormHelperText>
+                        </FormControl>
                       )}
                     />
                   </Grid>
 
-                  <Grid item xs={12} md={4}>
+
+                  <Grid item xs={12} md={6}>
                     <Controller
                       name='mrp'
                       control={basicInfoControl}
@@ -548,7 +714,7 @@ const ProductStepperLinear = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12} md={4}>
+                  <Grid item xs={12} md={6}>
                     <Controller
                       name='discount'
                       control={basicInfoControl}

@@ -16,7 +16,8 @@ import Loader from '@/views/Loader/Loader'
 import Users from '@/views/apps/users'
 import { setUsersData } from '@/redux-store/slices/userSlice'
 import { setPackagingTypeData } from '@/redux-store/slices/packagingType.Slice'
-import PackagingTypes from '@/views/apps/packaging-type'
+
+import PackageTypes from '@/views/apps/packageType'
 
 
 const RolesApp = () => {
@@ -31,11 +32,11 @@ const RolesApp = () => {
   useEffect(() => {
     const fetchPackagingType = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packaging-type/get-all-packaging`, { withCredentials: true })
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package-type/get-all-packaging`, { withCredentials: true })
 
         dispatch(setPackagingTypeData(response.data.data)) // Ensure `setData` action is correctly set
       } catch (err) {
-        console.error('Failed to fetch sub admins', err) // Log the error for debugging
+        console.error('Failed to fetch Packing type', err) // Log the error for debugging
         setError('Failed to fetch Sub Admins')
       } finally {
         setLoading(false)
@@ -55,7 +56,7 @@ const RolesApp = () => {
 
 
 
-  return <PackagingTypes userData={data} />
+  return <PackageTypes userData={data} />
 }
 
 export default RolesApp

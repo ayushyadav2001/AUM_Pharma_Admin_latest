@@ -1,4 +1,17 @@
-import { object, string, pipe, nonEmpty, file, mimeType, maxSize, boolean, optional, nullable } from 'valibot'
+import {
+  object,
+  string,
+  pipe,
+  nonEmpty,
+  file,
+  mimeType,
+  maxSize,
+  boolean,
+  optional,
+  nullable,
+  minLength,
+  array
+} from 'valibot'
 
 const ImageSchema = pipe(
   file('Please select an image file.'),
@@ -6,14 +19,23 @@ const ImageSchema = pipe(
   maxSize(1024 * 1024 * 10, 'Please select a file smaller than 10 MB.')
 )
 
+const objectId = string()
+
+const ArrayLengthSchema = pipe(array(objectId), minLength(1, 'At least one item is required.'))
+
 const basicInfoSchema = object({
   product_code: pipe(string(), nonEmpty('Product Code is required')),
   product_image: ImageSchema, // Assuming ImageSchema is defined with appropriate rules
   product_name: pipe(string(), nonEmpty('Product Name is required')),
-  category: pipe(string(), nonEmpty('Category is required')),
-  sub_category: pipe(string(), nonEmpty('Sub-category is required')),
+
+  // category: pipe(string(), nonEmpty('Category is required')),
+  // sub_category: pipe(string(), nonEmpty('Sub-category is required')),
+
+  category: ArrayLengthSchema,
+  sub_category: ArrayLengthSchema,
   manufacturer: pipe(string(), nonEmpty('Manufacturer is required')),
-  manufacturer_address: pipe(string(), nonEmpty('Manufacturer address is required')),
+  product_form: pipe(string(), nonEmpty('Product Form is required')),
+
   packaging: pipe(string(), nonEmpty('Packaging is required')),
   packing_type: pipe(string(), nonEmpty('Packing Type is required')),
 
@@ -94,11 +116,9 @@ const basicInfoDefaultValues = {
   category: '',
   sub_category: '',
   manufacturer: '',
-  manufacturer_address: '',
-
+  product_form: '',
   packaging: '',
   packing_type: '',
-
   mrp: '',
   discount: null,
   prescription_required: false,

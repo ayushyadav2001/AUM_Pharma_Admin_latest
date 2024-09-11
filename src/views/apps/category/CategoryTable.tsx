@@ -283,7 +283,7 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   return (
     <Card>
-      <CardHeader title='Categorys' className='pbe-4' />
+      <CardHeader title='Categories' className='pbe-4' />
 
       {/* <TableFilters setData={setData} tableData={tableData} /> */}
 

@@ -128,7 +128,7 @@ const AddCategoryActions = () => {
   return (
     <Card>
       <CardHeader
-        title='Add User'
+        title='Add Category'
         titleTypographyProps={{
           variant: 'h5',
           color: 'primary'

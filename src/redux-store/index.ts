@@ -24,6 +24,8 @@ import categorySlice from './slices/categorySlice'
 import subCategorySlice from './slices/subCategorySlice'
 import formatsSlice from './slices/formatSlice'
 import packagingTypeSlice from './slices/packagingType.Slice'
+import manufacturerSlice from './slices/manufacturerSlice'
+import productFormSlice from './slices/prductFormSlice'
 
 export const store = configureStore({
   reducer: {
@@ -44,7 +46,9 @@ export const store = configureStore({
     category: categorySlice,
     subCategory: subCategorySlice,
     formats: formatsSlice,
-    packagingType: packagingTypeSlice
+    packagingType: packagingTypeSlice,
+    manufacturers: manufacturerSlice,
+    productForm: productFormSlice
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false })
 })
