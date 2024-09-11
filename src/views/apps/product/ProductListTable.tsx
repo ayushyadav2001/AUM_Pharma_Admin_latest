@@ -349,15 +349,16 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
       //   header: 'Composition',
       //   cell: ({ row }) => <Typography>{row.original.composition}</Typography>
       // }),
+      columnHelper.accessor('packaging', {
+        header: 'Packaging',
+        cell: ({ row }) => <Typography>{row.original.packaging.name || "NA"}</Typography>
+      }),
 
       columnHelper.accessor('packing_type', {
         header: 'Packing Type',
         cell: ({ row }) => <Typography>{row.original.packing_type}</Typography>
       }),
-      columnHelper.accessor('packaging', {
-        header: 'Packaging',
-        cell: ({ row }) => <Typography>{row.original.packaging}</Typography>
-      }),
+
       columnHelper.accessor('alert_quantity', {
         header: 'Alert Quantity',
         cell: ({ row }) => <Typography>{row.original.alert_quantity ? row.original.alert_quantity : "NA"}</Typography>
