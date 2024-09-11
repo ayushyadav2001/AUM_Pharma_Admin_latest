@@ -102,11 +102,6 @@ const ImportProduct = () => {
       "width": 20
     },
     {
-      "fieldName": "quantity",
-      "headerName": "Quantity",
-      "width": 15
-    },
-    {
       "fieldName": "mrp",
       "headerName": "MRP",
       "width": 15

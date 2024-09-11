@@ -471,18 +471,18 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
         </SubMenu> */}
 
-        <SubMenu label={dictionary['navigation'].categorys} icon={<i className='ri-archive-line' />}>
-          <MenuItem href={`/${locale}/apps/category`}>{dictionary['navigation'].listCategorys}</MenuItem>
+        <SubMenu label={dictionary['navigation'].masters} icon={<i className='ri-archive-line' />}>
+          <MenuItem href={`/${locale}/apps/category`}>{dictionary['navigation'].categorys}</MenuItem>
+          <MenuItem href={`/${locale}/apps/sub-category`}>{dictionary['navigation'].subCategorys}</MenuItem>
+          <MenuItem href={`/${locale}/apps/packaginge-type`}>{dictionary['navigation'].packagingType}</MenuItem>
+
         </SubMenu>
 
-        <SubMenu label={dictionary['navigation'].subCategorys} icon={<i className='ri-archive-2-line' />}>
-          <MenuItem href={`/${locale}/apps/sub-category`}>{dictionary['navigation'].listSubCategorys}</MenuItem>
-        </SubMenu>
+        {/* <SubMenu label={dictionary['navigation'].subCategorys} icon={<i className='ri-archive-2-line' />}>
+        </SubMenu> */}
 
 
-        <SubMenu label={dictionary['navigation'].formats} icon={<i className='lucide--file-spreadsheet' />}>
-          <MenuItem href={`/${locale}/apps/formats`}>{dictionary['navigation'].excelFormats}</MenuItem>
-        </SubMenu>
+
 
         {canShowMaster('Products') && (
           <SubMenu
@@ -512,6 +512,8 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
           // suffix={<Chip label='5' size='small' color='error' />}
           >
+            <MenuItem href={`/${locale}/apps/formats`}>{dictionary['navigation'].formats}</MenuItem>
+
             {canShowSubmenu('Vendors', 'List Vendor') && (
               <MenuItem href={`/${locale}/apps/vendors`}>{dictionary['navigation'].vendorList}</MenuItem>
             )}

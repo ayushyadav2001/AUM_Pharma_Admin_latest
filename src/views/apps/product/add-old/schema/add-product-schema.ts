@@ -16,7 +16,7 @@ const basicInfoSchema = object({
   manufacturer_address: pipe(string(), nonEmpty('Manufacturer address is required')),
   packaging: pipe(string(), nonEmpty('Packaging is required')),
   packing_type: pipe(string(), nonEmpty('Packing Type is required')),
-  quantity: pipe(string(), nonEmpty('Quantity Type is required')),
+
   mrp: pipe(string(), nonEmpty('MRP is required')),
 
   discount: optional(nullable(pipe(string(), nonEmpty('Discount is required')))),
@@ -98,13 +98,12 @@ const basicInfoDefaultValues = {
 
   packaging: '',
   packing_type: '',
-  quantity: '',
 
   mrp: '',
   discount: null,
   prescription_required: false,
-  stock_management_required: false,
-  alert_quantity: '0'
+  stock_management_required: true,
+  alert_quantity: ''
 }
 
 const additionalInfoSchema = object({

@@ -23,6 +23,7 @@ import usersSlice from './slices/userSlice'
 import categorySlice from './slices/categorySlice'
 import subCategorySlice from './slices/subCategorySlice'
 import formatsSlice from './slices/formatSlice'
+import packagingTypeSlice from './slices/packagingType.Slice'
 
 export const store = configureStore({
   reducer: {
@@ -42,7 +43,8 @@ export const store = configureStore({
     users: usersSlice,
     category: categorySlice,
     subCategory: subCategorySlice,
-    formats: formatsSlice
+    formats: formatsSlice,
+    packagingType: packagingTypeSlice
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false })
 })

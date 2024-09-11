@@ -127,11 +127,12 @@
     "home": "Home",
     "stock": "Stocks",
     "stockList": "List Stock",
-    "categorys": "Categorys",
-    "listCategorys": "List Categorys",
-    "subCategorys": "Sub Categorys",
-    "listSubCategorys": "List Sub Categorys",
+    "categorys": "Categories",
+    "listCategorys": "List Categories",
+    "subCategorys": "Sub Categories ",
+    "listSubCategorys": "List Sub Categories",
     "formats": "Formats",
-    "excelFormats": "List Formats"
+    "excelFormats": "List Formats",
+    "packagingType": "Packaging Type"
   }
 }

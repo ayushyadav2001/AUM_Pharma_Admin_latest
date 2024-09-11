@@ -87,8 +87,9 @@ const ProductStepperLinear = () => {
   // States
   const [activeStep, setActiveStep] = useState(0)
 
-  const [stockAdjustment, setStockAdjustment] = useState(false)
+  const [stockAdjustment, setStockAdjustment] = useState(true)
   const [category, setCategory] = useState([])
+  const [packageType, setPackageType] = useState([])
   const [subCategory, setSubCategory] = useState([])
 
 
@@ -277,6 +278,16 @@ const ProductStepperLinear = () => {
     }
   }
 
+  const fetchPackageType = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packaging-type/get-all-packaging`, { withCredentials: true })
+
+      setPackageType(response.data.data)
+    } catch (error) {
+      console.error('Error fetching vendors:', error)
+    }
+  }
+
   const fetchSubCategory = async (id: any) => {
     try {
 
@@ -294,6 +305,7 @@ const ProductStepperLinear = () => {
 
   useEffect(() => {
     fetchCategory()
+    fetchPackageType()
 
   }, [])
 
@@ -486,12 +498,11 @@ const ProductStepperLinear = () => {
                             }}
 
                           >
-                            <MenuItem value='strip'>Strip</MenuItem>
-                            <MenuItem value='bottle'>Bottle</MenuItem>
-                            <MenuItem value='packet'>Packet</MenuItem>
-                            <MenuItem value='prefilled syringe'>Prefilled Syringe</MenuItem>
-                            <MenuItem value='tube'>Tube</MenuItem>
-                            <MenuItem value='vial'>Vial</MenuItem>
+                            {packageType?.map((data: any) => (
+                              <MenuItem key={data?._id} value={data?._id}>
+                                {data?.name}
+                              </MenuItem>
+                            ))}
                           </Select>
                           <FormHelperText className='text-red-600'>{basicInfoErrors.packaging?.message as string}</FormHelperText>
                         </FormControl>
@@ -517,25 +528,7 @@ const ProductStepperLinear = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12} md={4}>
-                    <Controller
-                      name='quantity'
-                      control={basicInfoControl}
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          id='outlined-basic'
-                          label='Quantity'
-                          placeholder='200ml ,1.05Kg'
-                          type='text'
-                          error={!!basicInfoErrors.quantity}
-                          helperText={typeof basicInfoErrors.quantity?.message === 'string' ? basicInfoErrors.quantity.message : ''}
-                        />
-                      )}
-                    />
-                  </Grid>
+
                   <Grid item xs={12} md={4}>
                     <Controller
                       name='mrp'
@@ -621,6 +614,13 @@ const ProductStepperLinear = () => {
                                 onChange={(e) => {
                                   field.onChange(e.target.checked); // Update the form field's value
                                   setStockAdjustment(e.target.checked); // Update the local state
+
+                                  if (!e.target.checked) {
+
+                                    basicSetValue("alert_quantity", "0")
+                                  } else {
+                                    basicSetValue("alert_quantity", "")
+                                  }
                                 }}
                               />
                             }
