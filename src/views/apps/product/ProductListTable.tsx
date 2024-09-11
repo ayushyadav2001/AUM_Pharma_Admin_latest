@@ -306,14 +306,15 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
         header: 'Product ID',
         cell: ({ row }) => <Typography>{row.original.product_code}</Typography>
       }),
-      columnHelper.accessor('categories', {
-        header: 'Category',
-        cell: ({ row }) => <Typography>{row.original.categories?.name || 'N/A'}</Typography>
-      }),
-      columnHelper.accessor('sub_categories', {
-        header: 'Sub Category',
-        cell: ({ row }) => <Typography>{row.original.sub_categories?.name || 'N/A'}</Typography>
-      }),
+
+      // columnHelper.accessor('categories', {
+      //   header: 'Category',
+      //   cell: ({ row }) => <Typography>{row.original.categories?.name || 'N/A'}</Typography>
+      // }),
+      // columnHelper.accessor('sub_categories', {
+      //   header: 'Sub Category',
+      //   cell: ({ row }) => <Typography>{row.original.sub_categories?.name || 'N/A'}</Typography>
+      // }),
 
       columnHelper.accessor('product_name', {
         header: 'Product Name',
