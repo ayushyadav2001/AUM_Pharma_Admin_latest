@@ -17,9 +17,11 @@ import type { UsersType } from '@/types/apps/userTypes'
 // import RoleCards from './RoleCards'
 
 import Link from '@/components/Link'
+import SecondarySubCategory from './SecSubCategoryTable'
 
 
-import SubCategoryTable from './SubCategoryTable'
+
+
 
 const SecSubCategory = ({ userData }: { userData?: UsersType[] }) => {
 
@@ -27,18 +29,7 @@ const SecSubCategory = ({ userData }: { userData?: UsersType[] }) => {
 
   return (
     <Grid container spacing={6}>
-      {/* <Grid item xs={12}>
-        <Typography variant='h4' className='mbe-1'>
-          SecSubCategory List
-        </Typography>
-        <Typography>
-          A role provided access to predefined menus and features so that depending on assigned role an administrator
-          can have access to what he need
-        </Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <RoleCards />
-      </Grid> */}
+
       <Grid item xs={6} className='!pbs-12 hidden'>
         <Typography variant='h4' className='mbe-1'>
           Total users with their roles
@@ -55,7 +46,7 @@ const SecSubCategory = ({ userData }: { userData?: UsersType[] }) => {
         </Link>
       </Grid>
       <Grid item xs={12}>
-        <SubCategoryTable tableData={userData} />
+        <SecondarySubCategory tableData={userData} />
       </Grid>
     </Grid>
   )

@@ -475,6 +475,8 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <MenuItem href={`/${locale}/apps/category`}>{dictionary['navigation'].categorys}</MenuItem>
           {/* <MenuItem href={`/${locale}/apps/category/category-indexing`}>{dictionary['navigation'].indexingCategorys}</MenuItem> */}
           <MenuItem href={`/${locale}/apps/sub-category`}>{dictionary['navigation'].subCategorys}</MenuItem>
+
+          <MenuItem href={`/${locale}/apps/secondary-sub-category`}>{dictionary['navigation'].secondarySubCategories}</MenuItem>
           <MenuItem href={`/${locale}/apps/packaging`}>{dictionary['navigation'].packaging}</MenuItem>
           <MenuItem href={`/${locale}/apps/packaging-type`}>{dictionary['navigation'].packagingType}</MenuItem>
           <MenuItem href={`/${locale}/apps/manufacturer`}>{dictionary['navigation'].manufacturer}</MenuItem>

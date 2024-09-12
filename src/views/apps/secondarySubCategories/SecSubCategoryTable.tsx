@@ -129,7 +129,7 @@ const DebouncedInput = ({
 // Column Definitions
 const columnHelper = createColumnHelper<any>()
 
-const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
+const SecondarySubCategory = ({ tableData }: { tableData?: UsersType[] }) => {
   // States
   const [role, setRole] = useState<any['role']>('')
   const [rowSelection, setRowSelection] = useState({})
@@ -166,14 +166,15 @@ const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
           );
         },
       }),
-      columnHelper.accessor('category', {
-        header: 'Category Name',
-        cell: ({ row }) => <Typography>{row.original.category.name}</Typography>
+      columnHelper.accessor('subCategory', {
+        header: 'Sub Category Name',
+        cell: ({ row }) => <Typography>{row.original.subCategory.name || "NA"}</Typography>
       }),
       columnHelper.accessor('name', {
-        header: 'Sub Category Name',
-        cell: ({ row }) => <Typography>{row.original.name != null ? row.original.name : "NA"}</Typography>
+        header: 'Secondary Sub Category Name',
+        cell: ({ row }) => <Typography>{row.original.name || "NA"}</Typography>
       }),
+
       columnHelper.accessor('description', {
         header: 'description',
         cell: ({ row }) => <Typography>{row.original.description != null ? row.original.description : "NA"}</Typography>
@@ -290,7 +291,7 @@ const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   return (
     <Card>
-      <CardHeader title='Sub Categories' className='pbe-4' />
+      <CardHeader title='Secondary Sub Categories' className='pbe-4' />
 
       {/* <TableFilters setData={setData} tableData={tableData} /> */}
 
@@ -312,7 +313,7 @@ const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
             placeholder='Search User'
           />
 
-          <Link className='' href={`/${locale}/apps/sub-category/add`}>
+          <Link className='' href={`/${locale}/apps/secondary-sub-category/add`}>
             <Button variant='contained' className='is-full sm:is-auto'>
               Add
             </Button>
@@ -411,4 +412,4 @@ const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
   )
 }
 
-export default SubCategoryTable
+export default SecondarySubCategory
