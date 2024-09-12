@@ -143,10 +143,7 @@ const ManufacturerTable = ({ tableData }: { tableData?: UsersType[] }) => {
         header: 'Name',
         cell: ({ row }) => <Typography>{row.original.name}</Typography>
       }),
-      columnHelper.accessor('mobileNumber', {
-        header: 'Mobile Number',
-        cell: ({ row }) => <Typography>{row.original.mobileNumber}</Typography>
-      }),
+
       columnHelper.accessor('address', {
         header: 'Address',
         cell: ({ row }) => <Typography>{row.original.address}</Typography>

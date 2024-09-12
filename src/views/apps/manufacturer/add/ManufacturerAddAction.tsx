@@ -135,14 +135,7 @@ const ManufacturerActions = () => {
                 {...register('name')} fullWidth id='outlined-basic' label='Manufacturer Name' />
 
             </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                type="number"
-                error={!!errors.mobileNumber} // `error` expects a boolean
-                helperText={errors.mobileNumber?.message?.toString() || ''}
-                {...register('mobileNumber')} fullWidth id='outlined-basic' label='Mobile Number' />
 
-            </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 type="text"

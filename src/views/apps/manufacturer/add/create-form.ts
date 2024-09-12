@@ -3,10 +3,7 @@ import * as yup from 'yup'
 // Define Yup schema
 const userValidationSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
-  mobileNumber: yup
-    .string()
-    .matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits')
-    .required('Mobile number is required'),
+
   address: yup.string().required('Address is required'),
   city: yup.string().required('City is required'),
   state: yup.string().required('State is required'),

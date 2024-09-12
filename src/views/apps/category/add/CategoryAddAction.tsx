@@ -15,7 +15,9 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   Grid,
   IconButton,
@@ -147,6 +149,35 @@ const AddCategoryActions = () => {
                 multiline
                 minRows={1} id='outlined-basic' placeholder='Enter Category description' label='Category Description' {...register('description')} />
               <FormHelperText className='text-red-600'>{errors.description?.message as string}</FormHelperText>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <FormControl>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={(e) => setValue('add_to_header', e.target.checked)}
+
+                    />
+                  }
+                  label='Add to header'
+                />
+                <FormHelperText>
+                  Mark the checkbox if you want to display this category on the website header.
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <FormControl>
+                <FormControlLabel
+                  control={
+                    <Checkbox onChange={(e) => setValue('add_to_banner', e.target.checked)} />
+                  }
+                  label='Add to Banners'
+                />
+                <FormHelperText>
+                  Mark the checkbox if you want to display this category on the website popular categories.
+                </FormHelperText>
+              </FormControl>
             </Grid>
             <Grid item xs={12} md={12}>
               <InputLabel id='prod-image-select'>Choose Category Image</InputLabel>
