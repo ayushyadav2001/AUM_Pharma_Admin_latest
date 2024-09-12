@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 // React Imports
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 
 // Next Imports
 import Link from 'next/link'
@@ -46,6 +47,12 @@ import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 import { CardHeader, Chip, Divider } from '@mui/material'
 
+import axios from 'axios'
+
+import { useDispatch } from 'react-redux'
+
+import { toast } from 'react-toastify'
+
 import DefaultProductImage from "@assets/defaultImages/default-prod.webp"
 
 // Type Imports
@@ -57,7 +64,7 @@ import type { UsersType } from '@/types/apps/userTypes'
 import type { Locale } from '@configs/i18n'
 
 // Component Imports
-import OptionMenu from '@core/components/option-menu'
+// import OptionMenu from '@core/components/option-menu'
 
 
 // Util Imports
@@ -66,6 +73,10 @@ import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
+import ConfirmationDialogDelete from './DeleteCategoryModal'
+import { setCategoryData } from '@/redux-store/slices/categorySlice'
+import ConfirmationDialogStatusChange from './changeStatus'
+
 
 
 declare module '@tanstack/table-core' {
@@ -136,6 +147,76 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
   const [data, setData] = useState(...[tableData])
   const [filteredData, setFilteredData] = useState(data)
   const [globalFilter, setGlobalFilter] = useState('')
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [isActive, setIsActive] = useState<boolean | null>(null);
+
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+  const [confirmationStatusDialogOpen, setConfirmationStatusDialogOpen] = useState(false);
+
+
+
+
+
+
+  const dispatch = useDispatch()
+
+  const openConfirmationDialog = (id: string) => {
+    setSelectedItem(id);
+    setConfirmationDialogOpen(true);
+  };
+
+  const openConfirmationStatusDialog = (id: string) => {
+    setSelectedItem(id);
+    setConfirmationStatusDialogOpen(true);
+  };
+
+  const closeConfirmationDialog = () => {
+    setConfirmationDialogOpen(false);
+    setSelectedItem(null);
+  };
+
+  const closeConfirmationStatusDialog = () => {
+    setConfirmationStatusDialogOpen(false);
+    setSelectedItem(null);
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category`, { withCredentials: true })
+
+      dispatch(setCategoryData(response.data.categories))
+
+      setData(response.data.categories)
+    } catch (err) {
+      console.error('Failed to fetch category', err) // Log the error for debugging
+
+    }
+  }
+
+  const handleDelete = useCallback(async () => {
+    if (selectedItem) {
+      try {
+        await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/delete-category/${selectedItem}`, { withCredentials: true });
+        await fetchProducts();
+        toast.success("Deleted Successfully!")
+      } catch (err) {
+        console.error('Failed to delete stock adjustment', err); // Log the error for debugging
+      }
+    }
+  }, [selectedItem]);
+
+
+  const handleStatusChange = useCallback(async () => {
+    if (selectedItem) {
+      try {
+        await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/change-status-category/${selectedItem}`, {}, { withCredentials: true });
+        await fetchProducts();
+        toast.success("Status Change Successfully!")
+      } catch (err) {
+        console.error('Failed to delete stock adjustment', err); // Log the error for debugging
+      }
+    }
+  }, [selectedItem]);
 
   // Hooks
   const { lang: locale } = useParams()
@@ -182,7 +263,7 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
         cell: ({ row }) => (
           <div className='flex items-center  justify-center'>
             <Chip
-
+              onClick={() => openConfirmationStatusDialog(row.original._id)}
               variant='tonal'
               className='capitalize cursor-pointer'
               label={
@@ -208,7 +289,11 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
         header: 'Actions',
         cell: ({ row }) => (
           <div className='flex items-center gap-0.5'>
-            <IconButton size='small' onClick={() => setData(data?.filter(product => product.id !== row.original.id))}>
+            <IconButton size='small' onClick={() => {
+
+              openConfirmationDialog(row.original._id)
+              setIsActive(row?.original?.status)
+            }}>
               <i className='ri-delete-bin-7-line text-textSecondary' />
             </IconButton>
             <IconButton size='small'>
@@ -216,7 +301,12 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
                 <i className='ri-eye-line text-textSecondary' />
               </Link>
             </IconButton>
-            <OptionMenu
+            <IconButton size='small'>
+              <Link href={getLocalizedUrl(`/apps/category/${row.original._id}`, locale as Locale)} className='flex'>
+                <i className='ri-edit-box-line text-textSecondary' />
+              </Link>
+            </IconButton>
+            {/* <OptionMenu
               iconClassName='text-textSecondary'
               options={[
                 {
@@ -230,7 +320,7 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
                   linkProps: { className: 'flex items-center' }
                 }
               ]}
-            />
+            /> */}
           </div>
         ),
         enableSorting: false
@@ -282,7 +372,7 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
   }, [role, data, setFilteredData])
 
   return (
-    <Card>
+    <><Card>
       <CardHeader title='Categories' className='pbe-4' />
 
       {/* <TableFilters setData={setData} tableData={tableData} /> */}
@@ -302,8 +392,7 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
             value={globalFilter ?? ''}
             className='max-sm:is-full min-is-[220px]'
             onChange={value => setGlobalFilter(String(value))}
-            placeholder='Search User'
-          />
+            placeholder='Search User' />
 
           <Link className='' href={`/${locale}/apps/category/add`}>
             <Button variant='contained' className='is-full sm:is-auto'>
@@ -398,9 +487,23 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
         onPageChange={(_, page) => {
           table.setPageIndex(page)
         }}
-        onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
-      />
+        onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))} />
     </Card>
+      <ConfirmationDialogDelete open={confirmationDialogOpen}
+        onClose={closeConfirmationDialog}
+        onConfirm={handleDelete}
+        itemName={selectedItem || ''} />
+
+      <ConfirmationDialogStatusChange open={confirmationStatusDialogOpen}
+        onClose={closeConfirmationStatusDialog}
+        onConfirm={handleStatusChange}
+        itemName={selectedItem || ''}
+        isActive={isActive || false}
+      />
+
+
+
+    </>
   )
 }
 

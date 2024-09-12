@@ -16,7 +16,9 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   Grid,
   IconButton,
@@ -53,16 +55,12 @@ import FileUploaderSingle from '../../customers/ProductFileUpload/FileUploaderSi
 import { setUsersData } from '@/redux-store/slices/userSlice'
 import { setCategoryData } from '@/redux-store/slices/categorySlice'
 
-const AddSubCategoryActions = () => {
+const EditCategoryActions = ({ data, id }: { data?: any, id?: any }) => {
   // States
   const router = useRouter()
 
   const dispatch = useDispatch()
   const { categoryValidationSchema, defaultValues } = createUserSchema
-
-  const [categoryOptions, setCategoryOptions] = useState([])
-
-
 
   const {
     register,
@@ -72,9 +70,26 @@ const AddSubCategoryActions = () => {
     formState: { errors }
   } = useForm<any>({
     resolver: yupResolver(categoryValidationSchema),
-    defaultValues
+    defaultValues: {
+      name: data?.name || '', // Default value for category name
+      description: data?.description || '', // Default value for description
+      add_to_header: data?.add_to_header || false, // Checkbox default value
+      add_to_banner: data?.add_to_banner || false, // Checkbox default value
+
+    }
   })
 
+
+  useEffect(() => {
+    // Set default values when data is available
+    if (data) {
+      setValue('name', data.name)
+      setValue('description', data.description)
+      setValue('add_to_header', data.add_to_header)
+      setValue('add_to_banner', data.add_to_banner)
+
+    }
+  }, [data])
 
 
   const fetchCategory = async () => {
@@ -82,14 +97,6 @@ const AddSubCategoryActions = () => {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category-by-status`, { withCredentials: true })
 
       dispatch(setCategoryData(response.data.categories))
-
-
-      const transformedRoles = response.data.categories.map((role: any) => ({
-        label: role.name,
-        value: role._id,
-      }));
-
-      setCategoryOptions(transformedRoles);
     } catch (err) {
       console.error('Failed to fetch sub admins', err)
 
@@ -98,17 +105,21 @@ const AddSubCategoryActions = () => {
     }
   }
 
+
+
+
+
   const onSubmit = async (data: any) => {
     try {
       const response = await axios
-        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/sub-category/add-category`, data, {
+        .put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/update-category/${id}`, data, {
           withCredentials: true,
-          headers: { 'Content-Type': 'multipart/form-data' },
+
         })
         .then(res => {
-          toast.success('Sub Category Added Successfully!')
+          toast.success('Category Updated Successfully!')
           fetchCategory()
-          router.push('/apps/sub-category')
+          router.push('/apps/category')
         })
     } catch (error) {
       console.error('Error adding category:', error)
@@ -120,14 +131,10 @@ const AddSubCategoryActions = () => {
 
 
 
-  useEffect(() => {
-    fetchCategory()
-  }, [])
-
   return (
     <Card>
       <CardHeader
-        title='Add Sub Categories'
+        title='Edit Category'
         titleTypographyProps={{
           variant: 'h5',
           color: 'primary'
@@ -137,45 +144,51 @@ const AddSubCategoryActions = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={6}>
 
+            <Grid item xs={12} md={4}>
+              <TextField InputLabelProps={{
+                shrink: !!data?.name // Shrink the label if there is a value in the data
+              }} defaultValue={data?.name} placeholder='Enter category name' {...register('name')} fullWidth id='outlined-basic' label='Category name' />
+              <FormHelperText className='text-red-600'>{errors.name?.message as string}</FormHelperText>
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <TextField fullWidth
+                multiline
+                InputLabelProps={{
+                  shrink: !!data?.description // Shrink the label if there is a value in the data
+                }}
+                minRows={1} id='outlined-basic' placeholder='Enter Category description' label='Category Description' {...register('description')} />
+              <FormHelperText className='text-red-600'>{errors.description?.message as string}</FormHelperText>
+            </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth className='mbe-4'>
-                <InputLabel id='role-select'>Select Category</InputLabel>
-                <Select
-                  fullWidth
-                  defaultValue=''
-                  label='Select Category'
-                  onChange={(e: any) => {
+              <FormControl>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      defaultChecked={!!data?.add_to_header}
 
+                      onChange={(e) => setValue('add_to_header', e.target.checked)}
 
-
-                    setValue('category', e.target?.value)
-                  }}
-                  labelId='role-select'
-                >
-                  {categoryOptions?.map((vendor: any) => (
-                    <MenuItem key={vendor.value} value={vendor.value}>
-                      {vendor.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-
-
-
-                <FormHelperText className='text-red-600'>
-                  {typeof errors?.category?.message === 'string' ? errors.category.message : null}
+                    />
+                  }
+                  label='Add to header'
+                />
+                <FormHelperText>
+                  Mark the checkbox if you want to display this category on the website header.
                 </FormHelperText>
               </FormControl>
             </Grid>
-
             <Grid item xs={12} md={6}>
-              <TextField placeholder='Enter category name' {...register('name')} fullWidth id='outlined-basic' label='Category name' />
-              <FormHelperText className='text-red-600'>{errors.name?.message as string}</FormHelperText>
-            </Grid>
-            <Grid item xs={12} md={12}>
-              <TextField fullWidth
-                multiline
-                minRows={1} id='outlined-basic' placeholder='Enter Category description' label='Category Description' {...register('description')} />
-              <FormHelperText className='text-red-600'>{errors.description?.message as string}</FormHelperText>
+              <FormControl>
+                <FormControlLabel
+                  control={
+                    <Checkbox defaultChecked={!!data?.add_to_banner} onChange={(e) => setValue('add_to_banner', e.target.checked)} />
+                  }
+                  label='Add to Banners'
+                />
+                <FormHelperText>
+                  Mark the checkbox if you want to display this category on the website popular categories.
+                </FormHelperText>
+              </FormControl>
             </Grid>
             <Grid item xs={12} md={12}>
               <InputLabel id='prod-image-select'>Choose Category Image</InputLabel>
@@ -194,7 +207,7 @@ const AddSubCategoryActions = () => {
 
           <div className='flex justify-end'>
             <Button type='submit' color='primary' variant='contained' className='capitalize'>
-              Save
+              Update
             </Button>
           </div>
         </form>
@@ -203,4 +216,4 @@ const AddSubCategoryActions = () => {
   )
 }
 
-export default AddSubCategoryActions
+export default EditCategoryActions

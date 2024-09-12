@@ -242,7 +242,7 @@ const ProductStepperLinear = () => {
 
   const fetchCategory = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category-by-status`, { withCredentials: true })
 
       setCategory(response.data.categories)
     } catch (error) {
