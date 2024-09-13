@@ -57,7 +57,7 @@ const DraggableRow = ({ category, index, moveRow }: any) => {
   );
 };
 
-const CategoryIndexing = ({ tableData }: { tableData?: any[] }) => {
+const BannerCategoryIndexing = ({ tableData }: { tableData?: any[] }) => {
   const [categories, setCategories] = useState(tableData || []);
 
   // Function to handle moving the rows
@@ -84,7 +84,7 @@ const CategoryIndexing = ({ tableData }: { tableData?: any[] }) => {
 
   const updateCategoryIndexes = async (updatedCategories: any[]) => {
     try {
-      await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/update-index-header`, { categories: updatedCategories }, {
+      await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/update-index-banner`, { categories: updatedCategories }, {
         withCredentials: true
       });
       console.log('Category indexes updated successfully');
@@ -100,7 +100,7 @@ const CategoryIndexing = ({ tableData }: { tableData?: any[] }) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div>
-        <h5> Change Listing Header Categories Positions</h5>
+        <h5> Change Listing Banner Categories Positions</h5>
         {categories.map((category, index) => (
           <DraggableRow
             key={category.slug}
@@ -114,4 +114,4 @@ const CategoryIndexing = ({ tableData }: { tableData?: any[] }) => {
   );
 };
 
-export default CategoryIndexing;
+export default BannerCategoryIndexing;

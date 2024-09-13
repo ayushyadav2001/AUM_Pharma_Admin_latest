@@ -254,7 +254,7 @@ const SubCategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
       }),
       columnHelper.accessor('category', {
         header: 'Category Name',
-        cell: ({ row }) => <Typography>{row.original.category.name}</Typography>
+        cell: ({ row }) => <Typography>{row.original?.category?.name}</Typography>
       }),
       columnHelper.accessor('name', {
         header: 'Sub Category Name',

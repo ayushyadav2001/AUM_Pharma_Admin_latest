@@ -19,6 +19,7 @@ import { setUsersData } from '@/redux-store/slices/userSlice'
 // import CategoryIndexing from '@/views/apps/category/category-indexing/CategoryIndexing'
 import { setCategoryData } from '@/redux-store/slices/categorySlice'
 import CategoryIndexing from '@/views/apps/category/category-indexing/CategoryIndexing'
+import BannerCategoryIndexing from '@/views/apps/category/banner-indexing/BannerCategoryIndexing'
 
 
 const CategoryIndex = () => {
@@ -33,7 +34,7 @@ const CategoryIndex = () => {
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category`, { withCredentials: true })
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-all-banner`, { withCredentials: true })
 
         dispatch(setCategoryData(response.data.categories))
       } catch (err) {
@@ -57,7 +58,7 @@ const CategoryIndex = () => {
 
 
 
-  return <CategoryIndexing tableData={data} />
+  return <BannerCategoryIndexing tableData={data} />
 }
 
 export default CategoryIndex

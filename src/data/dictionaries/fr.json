@@ -130,6 +130,8 @@
     "categorys": "Categories",
     "listCategorys": "List Categories",
     "indexingCategorys": "Categories Indexing",
+    "headerCategoryIndexing": "Header Categories",
+    "bannerCategoryIndexing": "Banner Categories",
     "subCategorys": "Sub Categories ",
     "listSubCategorys": "List Sub Categories",
     "secondarySubCategories": "Secondary Sub Categories",
