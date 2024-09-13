@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 // React Imports
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 
 // Next Imports
 import Link from 'next/link'
@@ -46,6 +47,12 @@ import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 import { CardHeader, Chip, Divider } from '@mui/material'
 
+import axios from 'axios'
+
+import { toast } from 'react-toastify'
+
+import { useDispatch } from 'react-redux'
+
 import DefaultProductImage from "@assets/defaultImages/default-prod.webp"
 
 // Type Imports
@@ -56,8 +63,7 @@ import DefaultProductImage from "@assets/defaultImages/default-prod.webp"
 import type { UsersType } from '@/types/apps/userTypes'
 import type { Locale } from '@configs/i18n'
 
-// Component Imports
-import OptionMenu from '@core/components/option-menu'
+
 
 
 // Util Imports
@@ -66,6 +72,11 @@ import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
+
+import { setSecondarySubCategoryData } from '@/redux-store/slices/SecondarySlice'
+import ConfirmationDialogDelete from './DeleteCategoryModal'
+import ConfirmationDialogStatusChange from './changeStatus'
+
 
 
 declare module '@tanstack/table-core' {
@@ -137,6 +148,83 @@ const SecondarySubCategory = ({ tableData }: { tableData?: UsersType[] }) => {
   const [filteredData, setFilteredData] = useState(data)
   const [globalFilter, setGlobalFilter] = useState('')
 
+
+
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [isActive, setIsActive] = useState<boolean | null>(null);
+
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+  const [confirmationStatusDialogOpen, setConfirmationStatusDialogOpen] = useState(false);
+
+
+
+
+
+
+  const dispatch = useDispatch()
+
+
+
+  const fetchSubCategory = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/secondary-sub-category/get-sub-category`, { withCredentials: true })
+
+      setData(response.data.subCategories)
+      dispatch(setSecondarySubCategoryData(response.data.subCategories))
+    } catch (err) {
+      console.error('Failed to fetch sub categories', err)
+
+    }
+  }
+
+
+  const openConfirmationDialog = (id: string) => {
+    setSelectedItem(id);
+    setConfirmationDialogOpen(true);
+  };
+
+  const openConfirmationStatusDialog = (id: string) => {
+    setSelectedItem(id);
+    setConfirmationStatusDialogOpen(true);
+  };
+
+  const closeConfirmationDialog = () => {
+    setConfirmationDialogOpen(false);
+    setSelectedItem(null);
+  };
+
+  const closeConfirmationStatusDialog = () => {
+    setConfirmationStatusDialogOpen(false);
+    setSelectedItem(null);
+  };
+
+
+
+  const handleDelete = useCallback(async () => {
+    if (selectedItem) {
+      try {
+        await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/secondary-sub-category/delete-sub-category/${selectedItem}`, { withCredentials: true });
+        await fetchSubCategory();
+        toast.success("Deleted Successfully!")
+      } catch (err) {
+        console.error('Failed to delete stock adjustment', err); // Log the error for debugging
+      }
+    }
+  }, [selectedItem]);
+
+
+  const handleStatusChange = useCallback(async () => {
+    if (selectedItem) {
+      try {
+        await axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/secondary-sub-category/update-status/${selectedItem}`, {}, { withCredentials: true });
+        await fetchSubCategory();
+        toast.success("Status Change Successfully!")
+      } catch (err) {
+        console.error('Failed to delete stock adjustment', err); // Log the error for debugging
+      }
+    }
+  }, [selectedItem]);
+
   // Hooks
   const { lang: locale } = useParams()
 
@@ -187,7 +275,7 @@ const SecondarySubCategory = ({ tableData }: { tableData?: UsersType[] }) => {
         cell: ({ row }) => (
           <div className='flex items-center  justify-center'>
             <Chip
-
+              onClick={() => openConfirmationStatusDialog(row.original._id)}
               variant='tonal'
               className='capitalize cursor-pointer'
               label={
@@ -213,7 +301,11 @@ const SecondarySubCategory = ({ tableData }: { tableData?: UsersType[] }) => {
         header: 'Actions',
         cell: ({ row }) => (
           <div className='flex items-center gap-0.5'>
-            <IconButton size='small' onClick={() => setData(data?.filter(product => product.id !== row.original.id))}>
+            <IconButton size='small' onClick={() => {
+
+              openConfirmationDialog(row.original._id)
+              setIsActive(row?.original?.status)
+            }}>
               <i className='ri-delete-bin-7-line text-textSecondary' />
             </IconButton>
             <IconButton size='small'>
@@ -221,21 +313,12 @@ const SecondarySubCategory = ({ tableData }: { tableData?: UsersType[] }) => {
                 <i className='ri-eye-line text-textSecondary' />
               </Link>
             </IconButton>
-            <OptionMenu
-              iconClassName='text-textSecondary'
-              options={[
-                {
-                  text: 'Download',
-                  icon: 'ri-download-line',
-                  menuItemProps: { className: 'flex items-center' }
-                },
-                {
-                  text: 'Edit',
-                  icon: 'ri-edit-box-line',
-                  linkProps: { className: 'flex items-center' }
-                }
-              ]}
-            />
+            <IconButton size='small'>
+              <Link href={getLocalizedUrl(`/apps/secondary-sub-category/${row.original._id}`, locale as Locale)} className='flex'>
+                <i className='ri-edit-box-line text-textSecondary' />
+              </Link>
+            </IconButton>
+
           </div>
         ),
         enableSorting: false
@@ -290,125 +373,141 @@ const SecondarySubCategory = ({ tableData }: { tableData?: UsersType[] }) => {
 
 
   return (
-    <Card>
-      <CardHeader title='Secondary Sub Categories' className='pbe-4' />
+    <>
+      <Card>
+        <CardHeader title='Secondary Sub Categories' className='pbe-4' />
 
-      {/* <TableFilters setData={setData} tableData={tableData} /> */}
+        {/* <TableFilters setData={setData} tableData={tableData} /> */}
 
-      <Divider />
-      <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-center max-sm:gap-4'>
-        <Button
-          variant='outlined'
-          color='secondary'
-          startIcon={<i className='ri-upload-2-line' />}
-          className='max-sm:is-full'
-        >
-          Export
-        </Button>
-        <div className='flex flex-col !items-start max-sm:is-full sm:flex-row sm:items-center gap-4'>
-          <DebouncedInput
-            value={globalFilter ?? ''}
-            className='max-sm:is-full min-is-[220px]'
-            onChange={value => setGlobalFilter(String(value))}
-            placeholder='Search User'
-          />
+        <Divider />
+        <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-center max-sm:gap-4'>
+          <Button
+            variant='outlined'
+            color='secondary'
+            startIcon={<i className='ri-upload-2-line' />}
+            className='max-sm:is-full'
+          >
+            Export
+          </Button>
+          <div className='flex flex-col !items-start max-sm:is-full sm:flex-row sm:items-center gap-4'>
+            <DebouncedInput
+              value={globalFilter ?? ''}
+              className='max-sm:is-full min-is-[220px]'
+              onChange={value => setGlobalFilter(String(value))}
+              placeholder='Search User'
+            />
 
-          <Link className='' href={`/${locale}/apps/secondary-sub-category/add`}>
-            <Button variant='contained' className='is-full sm:is-auto'>
-              Add
-            </Button>
-          </Link>
-          <FormControl size='small' className='max-sm:is-full hidden'>
-            <InputLabel id='roles-app-role-select-label'>Select Role</InputLabel>
-            <Select
-              value={role}
-              onChange={e => setRole(e.target.value)}
-              label='Select Role'
-              id='roles-app-role-select'
-              labelId='roles-app-role-select-label'
-              className='min-is-[150px]'
-            >
-              <MenuItem value=''>Select Role</MenuItem>
-              <MenuItem value='admin'>Admin</MenuItem>
-              <MenuItem value='author'>Author</MenuItem>
-              <MenuItem value='editor'>Editor</MenuItem>
-              <MenuItem value='maintainer'>Maintainer</MenuItem>
-              <MenuItem value='subscriber'>Subscriber</MenuItem>
-            </Select>
-          </FormControl>
+            <Link className='' href={`/${locale}/apps/secondary-sub-category/add`}>
+              <Button variant='contained' className='is-full sm:is-auto'>
+                Add
+              </Button>
+            </Link>
+            <FormControl size='small' className='max-sm:is-full hidden'>
+              <InputLabel id='roles-app-role-select-label'>Select Role</InputLabel>
+              <Select
+                value={role}
+                onChange={e => setRole(e.target.value)}
+                label='Select Role'
+                id='roles-app-role-select'
+                labelId='roles-app-role-select-label'
+                className='min-is-[150px]'
+              >
+                <MenuItem value=''>Select Role</MenuItem>
+                <MenuItem value='admin'>Admin</MenuItem>
+                <MenuItem value='author'>Author</MenuItem>
+                <MenuItem value='editor'>Editor</MenuItem>
+                <MenuItem value='maintainer'>Maintainer</MenuItem>
+                <MenuItem value='subscriber'>Subscriber</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </CardContent>
+        <div className='overflow-x-auto'>
+          <table className={tableStyles.table}>
+            <thead>
+              {table.getHeaderGroups().map(headerGroup => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map(header => (
+                    <th key={header.id}>
+                      {header.isPlaceholder ? null : (
+                        <>
+                          <div
+                            className={classnames({
+                              'flex items-center': header.column.getIsSorted(),
+                              'cursor-pointer select-none': header.column.getCanSort()
+                            })}
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {{
+                              asc: <i className='ri-arrow-up-s-line text-xl' />,
+                              desc: <i className='ri-arrow-down-s-line text-xl' />
+                            }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
+                          </div>
+                        </>
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            {table.getFilteredRowModel().rows.length === 0 ? (
+              <tbody>
+                <tr>
+                  <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
+                    No data available
+                  </td>
+                </tr>
+              </tbody>
+            ) : (
+              <tbody>
+                {table
+                  .getRowModel()
+                  .rows.slice(0, table.getState().pagination.pageSize)
+                  .map(row => {
+                    return (
+                      <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
+                        {row.getVisibleCells().map(cell => (
+                          <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                        ))}
+                      </tr>
+                    )
+                  })}
+              </tbody>
+            )}
+          </table>
         </div>
-      </CardContent>
-      <div className='overflow-x-auto'>
-        <table className={tableStyles.table}>
-          <thead>
-            {table.getHeaderGroups().map(headerGroup => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <th key={header.id}>
-                    {header.isPlaceholder ? null : (
-                      <>
-                        <div
-                          className={classnames({
-                            'flex items-center': header.column.getIsSorted(),
-                            'cursor-pointer select-none': header.column.getCanSort()
-                          })}
-                          onClick={header.column.getToggleSortingHandler()}
-                        >
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                          {{
-                            asc: <i className='ri-arrow-up-s-line text-xl' />,
-                            desc: <i className='ri-arrow-down-s-line text-xl' />
-                          }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
-                        </div>
-                      </>
-                    )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          {table.getFilteredRowModel().rows.length === 0 ? (
-            <tbody>
-              <tr>
-                <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
-                  No data available
-                </td>
-              </tr>
-            </tbody>
-          ) : (
-            <tbody>
-              {table
-                .getRowModel()
-                .rows.slice(0, table.getState().pagination.pageSize)
-                .map(row => {
-                  return (
-                    <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
-                      {row.getVisibleCells().map(cell => (
-                        <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-                      ))}
-                    </tr>
-                  )
-                })}
-            </tbody>
-          )}
-        </table>
-      </div>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 50]}
-        component='div'
-        className='border-bs'
-        count={table.getFilteredRowModel().rows.length}
-        rowsPerPage={table.getState().pagination.pageSize}
-        page={table.getState().pagination.pageIndex}
-        SelectProps={{
-          inputProps: { 'aria-label': 'rows per page' }
-        }}
-        onPageChange={(_, page) => {
-          table.setPageIndex(page)
-        }}
-        onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50]}
+          component='div'
+          className='border-bs'
+          count={table.getFilteredRowModel().rows.length}
+          rowsPerPage={table.getState().pagination.pageSize}
+          page={table.getState().pagination.pageIndex}
+          SelectProps={{
+            inputProps: { 'aria-label': 'rows per page' }
+          }}
+          onPageChange={(_, page) => {
+            table.setPageIndex(page)
+          }}
+          onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
+        />
+      </Card>
+
+
+
+      <ConfirmationDialogDelete open={confirmationDialogOpen}
+        onClose={closeConfirmationDialog}
+        onConfirm={handleDelete}
+        itemName={selectedItem || ''} />
+
+      <ConfirmationDialogStatusChange open={confirmationStatusDialogOpen}
+        onClose={closeConfirmationStatusDialog}
+        onConfirm={handleStatusChange}
+        itemName={selectedItem || ''}
+        isActive={isActive || false}
       />
-    </Card>
+    </>
   )
 }
 

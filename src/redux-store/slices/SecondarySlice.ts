@@ -25,12 +25,12 @@ const secondarySubCategorySlice = createSlice({
 
     // Set edit data
 
-    setEditData: (state, action: PayloadAction<[]>) => {
+    setEditDataSecondarySubCategory: (state, action: PayloadAction<[]>) => {
       state.editData = action.payload
     }
   }
 })
 
 // Export actions and reducer
-export const { setSecondarySubCategoryData, setEditData } = secondarySubCategorySlice.actions
+export const { setSecondarySubCategoryData, setEditDataSecondarySubCategory } = secondarySubCategorySlice.actions
 export default secondarySubCategorySlice.reducer
