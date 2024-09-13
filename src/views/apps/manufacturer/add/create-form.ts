@@ -15,10 +15,10 @@ const defaultValues = {
   name: '',
   mobileNumber: '',
   address: '',
-  city: '',
-  state: '',
+  city: null,
+  state: null,
   postal_code: '',
-  country: ''
+  country: 'India'
 }
 
 const createUserSchema = {
