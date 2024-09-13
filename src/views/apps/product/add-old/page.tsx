@@ -23,16 +23,12 @@ import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 
-
-
-
 import type { StepperProps } from '@mui/material/Stepper'
 
 // Third-party Imports
 import { toast } from 'react-toastify'
 import { Controller, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-
 
 // Component Imports
 import axios from 'axios'
@@ -54,7 +50,7 @@ const steps = [
   {
     title: 'Product Details',
     subtitle: 'Detailed Specifications'
-  },
+  }
 
   // {
   //   title: 'Health Information',
@@ -82,10 +78,6 @@ const Stepper = styled(MuiStepper)<StepperProps>(({ theme }) => ({
   }
 }))
 
-
-
-
-
 const ProductStepperLinear = () => {
   // States
   const [activeStep, setActiveStep] = useState(0)
@@ -101,79 +93,77 @@ const ProductStepperLinear = () => {
 
   const [subCategory, setSubCategory] = useState([])
 
+  const [secSubCategory, setSecSubCategory] = useState([])
 
-  const [categoryOptionValue, setCategoryOptionsValue] = useState<string[]>([]);
+  const [categoryOptionValue, setCategoryOptionsValue] = useState<string[]>([])
   const [subCategoryOptionValue, setSubCategoryOptionValue] = useState<string[]>([])
 
-  console.log("categoryOptionValue", categoryOptionValue)
+  const [secondarySubCategoryOptionValue, setSecondarySubCategoryOptionValue] = useState<string[]>([])
 
   const handleChangeCategory = (event: any) => {
     const {
-      target: { value },
-    } = event;
+      target: { value }
+    } = event
 
+    setCategoryOptionsValue(typeof value === 'string' ? value.split(',') : value)
 
+    const categoryOptionValueTwo = typeof value === 'string' ? value.split(',') : value
 
-    setCategoryOptionsValue(
-
-
-
-      typeof value === 'string' ? value.split(',') : value
-    );
-
-
-    const categoryOptionValueTwo = typeof value === 'string' ? value.split(',') : value;
-
-    basicSetValue("category", categoryOptionValueTwo)
+    basicSetValue('category', categoryOptionValueTwo)
 
     fetchSubCategory(categoryOptionValueTwo)
-  };
+
+  }
 
   const handleChangeSubCategory = (event: any) => {
     const {
-      target: { value },
-    } = event;
+      target: { value }
+    } = event
+
+    setSubCategoryOptionValue(typeof value === 'string' ? value.split(',') : value)
+
+    const subcategoryOptionValueTwo = typeof value === 'string' ? value.split(',') : value
+
+    basicSetValue('sub_category', subcategoryOptionValueTwo)
+    fetchSecondarySubCategory(subcategoryOptionValueTwo)
+  }
 
 
+  const handleChangeSecondarySubCategory = (event: any) => {
+    const {
+      target: { value }
+    } = event
 
-    setSubCategoryOptionValue(
+    setSecondarySubCategoryOptionValue(typeof value === 'string' ? value.split(',') : value)
 
+    const subcategoryOptionValueTwo = typeof value === 'string' ? value.split(',') : value
 
-
-      typeof value === 'string' ? value.split(',') : value
-    );
-
-
-    const subcategoryOptionValueTwo = typeof value === 'string' ? value.split(',') : value;
-
-    basicSetValue("sub_category", subcategoryOptionValueTwo)
-  };
+    basicSetValue('sec_sub_categories', subcategoryOptionValueTwo)
+  }
 
   const getCategoryNameById = (id: string) => {
-    const categoryItem: any = category.find((item: any) => item._id === id);
+    const categoryItem: any = category.find((item: any) => item._id === id)
 
-
-    return categoryItem ? categoryItem?.name : '';
-  };
+    return categoryItem ? categoryItem?.name : ''
+  }
 
   const getSubCategoryNameById = (id: string) => {
-    const categoryItem: any = subCategory.find((item: any) => item._id === id);
+    const categoryItem: any = subCategory.find((item: any) => item._id === id)
 
+    return categoryItem ? categoryItem?.name : ''
+  }
 
-    return categoryItem ? categoryItem?.name : '';
-  };
+  const getSecondarySubCategoryNameById = (id: string) => {
+    const categoryItem: any = secSubCategory.find((item: any) => item._id === id)
 
+    return categoryItem ? categoryItem?.name : ''
+  }
 
+  const { basicInfoSchema, productDetailsSchema } = createProductSchema
 
+  const { basicInfoDefaultValues, productDetailsDefaultValues } = createProductSchema
 
-  const { basicInfoSchema, productDetailsSchema, } = createProductSchema
-
-  const { basicInfoDefaultValues, productDetailsDefaultValues, } =
-    createProductSchema
-
-  const [formData, setFormData] = useState<any>({});
-
-
+  const [formData, setFormData] = useState<any>({})
 
   // Hooks
   const {
@@ -186,8 +176,6 @@ const ProductStepperLinear = () => {
     resolver: valibotResolver(basicInfoSchema),
     defaultValues: basicInfoDefaultValues
   })
-
-
 
   const {
     reset: productDetailsReset,
@@ -209,13 +197,7 @@ const ProductStepperLinear = () => {
   //   defaultValues: healthDetailsDefaultValues
   // })
 
-
   // here
-
-
-
-
-
 
   // const {
   //   reset: additionalDetailsReset,
@@ -239,50 +221,42 @@ const ProductStepperLinear = () => {
 
   const fetchProducts = async () => {
     try {
-      await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true });
-
-
+      await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true })
     } catch (err) {
-      console.error('Failed to fetch products', err);
+      console.error('Failed to fetch products', err)
     }
-  };
-
-
+  }
 
   const handleNext = () => {
     if (activeStep === 0) {
       // First step: validate and save the first step's data
       handleBasicInfoSubmit(data => {
-        setFormData((prev: any) => ({ ...prev, ...data })); // Save the first step's data
-        setActiveStep(prevActiveStep => prevActiveStep + 1); // Move to the next step
-      })();
+        setFormData((prev: any) => ({ ...prev, ...data })) // Save the first step's data
+        setActiveStep(prevActiveStep => prevActiveStep + 1) // Move to the next step
+      })()
     } else if (activeStep === 1) {
       // Second step: validate and handle the final submission in one go
       handleProductDetailSubmit(data => {
         setFormData((prev: any) => {
-          const updatedFormData = { ...prev, ...data }; // Merge second step data into formData
+          const updatedFormData = { ...prev, ...data } // Merge second step data into formData
 
           if (activeStep === steps.length - 1) {
             // If on the last step, make the API call directly after saving
-            onSubmit(updatedFormData); // Submit the complete formData to the API
+            onSubmit(updatedFormData) // Submit the complete formData to the API
           }
 
-          return updatedFormData;
-        });
-      })();
+          return updatedFormData
+        })
+      })()
     }
-  };
+  }
 
   const onSubmit = async (data: any) => {
+    const finalData = { ...formData, ...data }
 
+    const convertToArray = (str: string) => str.split(',').map(item => item.trim())
 
-
-    const finalData = { ...formData, ...data };
-
-    const convertToArray = (str: string) => str.split(',').map(item => item.trim());
-
-
-    const formDataObj = new FormData();
+    const formDataObj = new FormData()
 
     // for (const key in finalData) {
 
@@ -294,22 +268,22 @@ const ProductStepperLinear = () => {
 
     for (const key in finalData) {
       if (Object.hasOwnProperty.call(finalData, key)) {
-        let value = finalData[key];
+        let value = finalData[key]
 
         // Convert category and sub_category to arrays if they are strings
         if (key === 'category' || key === 'sub_category') {
           if (typeof value === 'string' && value.includes(',')) {
-            value = convertToArray(value);
+            value = convertToArray(value)
           } else {
-            value = value; // Ensure it is always an array
+            value = value // Ensure it is always an array
           }
         }
 
         // Append to FormData, convert array to JSON string if necessary
         if (Array.isArray(value)) {
-          formDataObj.append(key, JSON.stringify(value));
+          formDataObj.append(key, JSON.stringify(value))
         } else {
-          formDataObj.append(key, value);
+          formDataObj.append(key, value)
         }
       }
     }
@@ -319,19 +293,15 @@ const ProductStepperLinear = () => {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
-        withCredentials: true,
-      });
+        withCredentials: true
+      })
 
-
-
-
-
-      toast.success('Product Added Successfully!');
-      fetchProducts();
-      router.push('/apps/products');
+      toast.success('Product Added Successfully!')
+      fetchProducts()
+      router.push('/apps/products')
     } catch (error) {
-      console.error('Error adding product:', error);
-      toast.error('Something went wrong!');
+      console.error('Error adding product:', error)
+      toast.error('Something went wrong!')
     }
 
     // setFormData((prevData) => ({
@@ -342,14 +312,10 @@ const ProductStepperLinear = () => {
     // setActiveStep(prevActiveStep => prevActiveStep + 1)
 
     if (activeStep === steps.length - 1) {
-
-
-
       // collectFormData();
-
       // toast.success('Form Submitted')
     } else {
-      setActiveStep((prevStep) => prevStep + 1);
+      setActiveStep(prevStep => prevStep + 1)
     }
   }
 
@@ -357,13 +323,11 @@ const ProductStepperLinear = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1)
   }
 
-
-
-
-
   const fetchCategory = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category-by-status`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category-by-status`, {
+        withCredentials: true
+      })
 
       setCategory(response.data.categories)
     } catch (error) {
@@ -373,7 +337,9 @@ const ProductStepperLinear = () => {
 
   const fetchPackage = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package/get-all-packaging`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package/get-all-active-packaging`, {
+        withCredentials: true
+      })
 
       setPackage(response.data.data)
     } catch (error) {
@@ -383,7 +349,9 @@ const ProductStepperLinear = () => {
 
   const fetchProductForms = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product-form/get-all-product-form`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product-form/get-all-active-product-form`, {
+        withCredentials: true
+      })
 
       setProductForms(response.data.data)
     } catch (error) {
@@ -393,7 +361,9 @@ const ProductStepperLinear = () => {
 
   const fetchPackageType = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package-type/get-all-packaging`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/package-type/get-all-active-packaging`, {
+        withCredentials: true
+      })
 
       setPackagingType(response.data.data)
     } catch (error) {
@@ -403,7 +373,9 @@ const ProductStepperLinear = () => {
 
   const fetchManufacturer = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/manufacturer/get-all-manufacturer`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/manufacturer/get-all-active-manufacturer`, {
+        withCredentials: true
+      })
 
       setManufacturers(response.data.data)
     } catch (error) {
@@ -413,18 +385,35 @@ const ProductStepperLinear = () => {
 
   const fetchSubCategory = async (idArray: any) => {
     try {
-
-
-
       const data = {
         category_ids: idArray
       }
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/sub-category/get-sub-category-by-category`, data, { withCredentials: true }
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/sub-category/get-sub-category-by-category`,
+        data,
+        { withCredentials: true }
       )
 
       setSubCategory(response.data.subCategories)
+    } catch (error) {
+      console.error('Error fetching vendors:', error)
+    }
+  }
+
+  const fetchSecondarySubCategory = async (idArray: any) => {
+    try {
+      const data = {
+        category_ids: idArray
+      }
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/secondary-sub-category/get-sub-category-by-category`,
+        data,
+        { withCredentials: true }
+      )
+
+      setSecSubCategory(response.data.subCategories)
     } catch (error) {
       console.error('Error fetching vendors:', error)
     }
@@ -436,9 +425,7 @@ const ProductStepperLinear = () => {
     fetchPackageType()
     fetchManufacturer()
     fetchProductForms()
-
   }, [])
-
 
   const handleReset = () => {
     setActiveStep(0)
@@ -447,7 +434,6 @@ const ProductStepperLinear = () => {
 
     // healthInfoDetailsReset(healthDetailsDefaultValues)
     // additionalDetailsReset(additionalInfoDefaultValues)
-
   }
 
   const renderStepContent = (activeStep: number) => {
@@ -477,10 +463,12 @@ const ProductStepperLinear = () => {
                           id='outlined-basic'
                           label='Product Code'
                           placeholder='Enter Product Code'
-
                           error={!!basicInfoErrors.product_code}
-                          helperText={typeof basicInfoErrors.product_code?.message === 'string' ? basicInfoErrors.product_code.message : ''}
-
+                          helperText={
+                            typeof basicInfoErrors.product_code?.message === 'string'
+                              ? basicInfoErrors.product_code.message
+                              : ''
+                          }
                         />
                       )}
                     />
@@ -497,31 +485,33 @@ const ProductStepperLinear = () => {
                           id='outlined-basic'
                           label='Product Name'
                           placeholder='Enter Product Name'
-
                           error={!!basicInfoErrors.product_name}
-                          helperText={typeof basicInfoErrors.product_name?.message === 'string' ? basicInfoErrors.product_name.message : ''}
+                          helperText={
+                            typeof basicInfoErrors.product_name?.message === 'string'
+                              ? basicInfoErrors.product_name.message
+                              : ''
+                          }
                         />
                       )}
                     />
                   </Grid>
 
-
                   <Grid item xs={12} md={6}>
                     <FormControl fullWidth>
-                      <InputLabel id="demo-multiple-chip-label">Select Category</InputLabel>
+                      <InputLabel id='demo-multiple-chip-label'>Select Category</InputLabel>
                       <Select
                         multiple
-                        label="Select Category"
+                        label='Select Category'
                         value={categoryOptionValue}
                         onChange={handleChangeCategory}
-                        renderValue={(selected) => (
-                          <div className="flex flex-wrap gap-1">
+                        renderValue={selected => (
+                          <div className='flex flex-wrap gap-1'>
                             {selected.map((value: string) => (
-                              <Chip key={value} label={getCategoryNameById(value)} size="small" />
+                              <Chip key={value} label={getCategoryNameById(value)} size='small' />
                             ))}
                           </div>
                         )}
-                        labelId="demo-multiple-chip-label"
+                        labelId='demo-multiple-chip-label'
                       >
                         {category.map((item: any) => (
                           <MenuItem key={item._id} value={item._id}>
@@ -539,20 +529,20 @@ const ProductStepperLinear = () => {
 
                   <Grid item xs={12} md={6}>
                     <FormControl fullWidth>
-                      <InputLabel id="demo-multiple-chip-label">Select Sub Category</InputLabel>
+                      <InputLabel id='demo-multiple-chip-label'>Select Sub Category</InputLabel>
                       <Select
                         multiple
-                        label="Select Sub Category"
+                        label='Select Sub Category'
                         value={subCategoryOptionValue}
                         onChange={handleChangeSubCategory}
-                        renderValue={(selected) => (
-                          <div className="flex flex-wrap gap-1">
+                        renderValue={selected => (
+                          <div className='flex flex-wrap gap-1'>
                             {selected.map((value: string) => (
-                              <Chip key={value} label={getSubCategoryNameById(value)} size="small" />
+                              <Chip key={value} label={getSubCategoryNameById(value)} size='small' />
                             ))}
                           </div>
                         )}
-                        labelId="demo-multiple-chip-label"
+                        labelId='demo-multiple-chip-label'
                       >
                         {subCategory.map((item: any) => (
                           <MenuItem key={item._id} value={item._id}>
@@ -569,6 +559,37 @@ const ProductStepperLinear = () => {
                     </FormControl>
                   </Grid>
 
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth>
+                      <InputLabel id='demo-multiple-chip-label'>Select Sub Category</InputLabel>
+                      <Select
+                        multiple
+                        label='Select Secondary Sub Category'
+                        value={secondarySubCategoryOptionValue}
+                        onChange={handleChangeSecondarySubCategory}
+                        renderValue={selected => (
+                          <div className='flex flex-wrap gap-1'>
+                            {selected.map((value: string) => (
+                              <Chip key={value} label={getSecondarySubCategoryNameById(value)} size='small' />
+                            ))}
+                          </div>
+                        )}
+                        labelId='demo-multiple-chip-label'
+                      >
+                        {secSubCategory.map((item: any) => (
+                          <MenuItem key={item._id} value={item._id}>
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+
+                      {basicInfoErrors.sub_category?.message && (
+                        <FormHelperText className='text-red-600'>
+                          {String(basicInfoErrors.sub_category.message)}
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
 
                   <Grid item xs={12} md={6}>
                     <Controller
@@ -581,13 +602,9 @@ const ProductStepperLinear = () => {
                             {...field}
                             id='packing-type'
                             label='Select Manufacturer'
-
-                            onChange={(e) => {
-
-
+                            onChange={e => {
                               field.onChange(e.target.value)
                             }}
-
                           >
                             {manufacturers?.map((data: any) => (
                               <MenuItem key={data?._id} value={data?._id}>
@@ -595,7 +612,9 @@ const ProductStepperLinear = () => {
                               </MenuItem>
                             ))}
                           </Select>
-                          <FormHelperText className='text-red-600'>{basicInfoErrors.manufacturer?.message as string}</FormHelperText>
+                          <FormHelperText className='text-red-600'>
+                            {basicInfoErrors.manufacturer?.message as string}
+                          </FormHelperText>
                         </FormControl>
                       )}
                     />
@@ -611,13 +630,9 @@ const ProductStepperLinear = () => {
                             {...field}
                             id='packing-type'
                             label='Select Product Form'
-
-                            onChange={(e) => {
-
-
+                            onChange={e => {
                               field.onChange(e.target.value)
                             }}
-
                           >
                             {productForms?.map((data: any) => (
                               <MenuItem key={data?._id} value={data?._id}>
@@ -625,7 +640,9 @@ const ProductStepperLinear = () => {
                               </MenuItem>
                             ))}
                           </Select>
-                          <FormHelperText className='text-red-600'>{basicInfoErrors.product_form?.message as string}</FormHelperText>
+                          <FormHelperText className='text-red-600'>
+                            {basicInfoErrors.product_form?.message as string}
+                          </FormHelperText>
                         </FormControl>
                       )}
                     />
@@ -642,13 +659,9 @@ const ProductStepperLinear = () => {
                             {...field}
                             id='packing-type'
                             label='Packaging'
-
-                            onChange={(e) => {
-
-
+                            onChange={e => {
                               field.onChange(e.target.value)
                             }}
-
                           >
                             {packages?.map((data: any) => (
                               <MenuItem key={data?._id} value={data?._id}>
@@ -656,12 +669,13 @@ const ProductStepperLinear = () => {
                               </MenuItem>
                             ))}
                           </Select>
-                          <FormHelperText className='text-red-600'>{basicInfoErrors.packaging?.message as string}</FormHelperText>
+                          <FormHelperText className='text-red-600'>
+                            {basicInfoErrors.packaging?.message as string}
+                          </FormHelperText>
                         </FormControl>
                       )}
                     />
                   </Grid>
-
 
                   <Grid item xs={12} md={6}>
                     <Controller
@@ -674,13 +688,9 @@ const ProductStepperLinear = () => {
                             {...field}
                             id='packing-type'
                             label='Packaging Type'
-
-                            onChange={(e) => {
-
-
+                            onChange={e => {
                               field.onChange(e.target.value)
                             }}
-
                           >
                             {packagingType?.map((data: any) => (
                               <MenuItem key={data?._id} value={data?._id}>
@@ -688,12 +698,13 @@ const ProductStepperLinear = () => {
                               </MenuItem>
                             ))}
                           </Select>
-                          <FormHelperText className='text-red-600'>{basicInfoErrors.packing_type?.message as string}</FormHelperText>
+                          <FormHelperText className='text-red-600'>
+                            {basicInfoErrors.packing_type?.message as string}
+                          </FormHelperText>
                         </FormControl>
                       )}
                     />
                   </Grid>
-
 
                   <Grid item xs={12} md={6}>
                     <Controller
@@ -709,7 +720,9 @@ const ProductStepperLinear = () => {
                           placeholder='Enter MRP'
                           type='number'
                           error={!!basicInfoErrors.mrp}
-                          helperText={typeof basicInfoErrors.mrp?.message === 'string' ? basicInfoErrors.mrp.message : ''}
+                          helperText={
+                            typeof basicInfoErrors.mrp?.message === 'string' ? basicInfoErrors.mrp.message : ''
+                          }
                         />
                       )}
                     />
@@ -728,12 +741,15 @@ const ProductStepperLinear = () => {
                           placeholder='Enter Discount eg.25 %'
                           type='number'
                           error={!!basicInfoErrors.discount}
-                          helperText={typeof basicInfoErrors.discount?.message === 'string' ? basicInfoErrors.discount.message : ''}
+                          helperText={
+                            typeof basicInfoErrors.discount?.message === 'string'
+                              ? basicInfoErrors.discount.message
+                              : ''
+                          }
                         />
                       )}
                     />
                   </Grid>
-
 
                   <Grid item xs={12} md={4}>
                     <Controller
@@ -747,7 +763,6 @@ const ProductStepperLinear = () => {
                               <Checkbox
                                 {...field}
                                 checked={field.value} // Bind the checked state
-
                               />
                             }
                             label='Prescription Required'
@@ -776,16 +791,14 @@ const ProductStepperLinear = () => {
                               <Checkbox
                                 {...field}
                                 checked={field.value}
-
-                                onChange={(e) => {
-                                  field.onChange(e.target.checked); // Update the form field's value
-                                  setStockAdjustment(e.target.checked); // Update the local state
+                                onChange={e => {
+                                  field.onChange(e.target.checked) // Update the form field's value
+                                  setStockAdjustment(e.target.checked) // Update the local state
 
                                   if (!e.target.checked) {
-
-                                    basicSetValue("alert_quantity", "0")
+                                    basicSetValue('alert_quantity', '0')
                                   } else {
-                                    basicSetValue("alert_quantity", "")
+                                    basicSetValue('alert_quantity', '')
                                   }
                                 }}
                               />
@@ -829,12 +842,15 @@ const ProductStepperLinear = () => {
                               )
                             }}
                             error={!!basicInfoErrors.alert_quantity}
-                            helperText={typeof basicInfoErrors.alert_quantity?.message === 'string' ? basicInfoErrors.alert_quantity.message : ''}
+                            helperText={
+                              typeof basicInfoErrors.alert_quantity?.message === 'string'
+                                ? basicInfoErrors.alert_quantity.message
+                                : ''
+                            }
                           />
                         )}
                       />
                     </Grid>
-
                   )}
 
                   <Grid item xs={12} md={12}>
@@ -847,7 +863,9 @@ const ProductStepperLinear = () => {
                           <div id='prod-image-select'>
                             <FileUploaderSingle setValue={basicSetValue} fieldName={'product_image'} />
                           </div>
-                          <FormHelperText className='text-red-600'>{basicInfoErrors.product_image?.message as string}</FormHelperText>
+                          <FormHelperText className='text-red-600'>
+                            {basicInfoErrors.product_image?.message as string}
+                          </FormHelperText>
                         </FormControl>
                       )}
                     />
@@ -878,7 +896,6 @@ const ProductStepperLinear = () => {
                   {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
                 </Button>
               </Grid>
-
             </Grid>
           </form>
         )
@@ -906,12 +923,13 @@ const ProductStepperLinear = () => {
                       type='text'
                       label='Introduction'
                       placeholder='Enter product introduction'
-
-                      {...(productDetailsErrors.introduction && { error: true, helperText: productDetailsErrors.introduction.message })}
+                      {...(productDetailsErrors.introduction && {
+                        error: true,
+                        helperText: productDetailsErrors.introduction.message
+                      })}
                     />
                   )}
                 />
-
               </Grid>
               <Grid item xs={12} md={6}>
                 <Controller
@@ -925,7 +943,10 @@ const ProductStepperLinear = () => {
                       minRows={2}
                       label='Description'
                       placeholder='Enter product description'
-                      {...(productDetailsErrors.description && { error: true, helperText: productDetailsErrors.description.message })}
+                      {...(productDetailsErrors.description && {
+                        error: true,
+                        helperText: productDetailsErrors.description.message
+                      })}
                     />
                   )}
                 />
@@ -941,7 +962,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Salt Composition'
                       placeholder='Enter product Packaging'
-                      {...(productDetailsErrors.salt_composition && { error: true, helperText: productDetailsErrors.salt_composition.message })}
+                      {...(productDetailsErrors.salt_composition && {
+                        error: true,
+                        helperText: productDetailsErrors.salt_composition.message
+                      })}
                     />
                   )}
                 />
@@ -958,7 +982,10 @@ const ProductStepperLinear = () => {
                       minRows={2}
                       label='Benefits'
                       placeholder='Enter product schedule'
-                      {...(productDetailsErrors.benefits && { error: true, helperText: productDetailsErrors.benefits.message })}
+                      {...(productDetailsErrors.benefits && {
+                        error: true,
+                        helperText: productDetailsErrors.benefits.message
+                      })}
                     />
                   )}
                 />
@@ -975,7 +1002,10 @@ const ProductStepperLinear = () => {
                       minRows={2}
                       label='Use of'
                       placeholder='Enter product use of'
-                      {...(productDetailsErrors.use_of && { error: true, helperText: productDetailsErrors.use_of.message })}
+                      {...(productDetailsErrors.use_of && {
+                        error: true,
+                        helperText: productDetailsErrors.use_of.message
+                      })}
                     />
                   )}
                 />
@@ -992,7 +1022,10 @@ const ProductStepperLinear = () => {
                       minRows={2}
                       label='Enter product how to use'
                       placeholder='Enter mechanism of action'
-                      {...(productDetailsErrors.how_to_use && { error: true, helperText: productDetailsErrors.how_to_use.message })}
+                      {...(productDetailsErrors.how_to_use && {
+                        error: true,
+                        helperText: productDetailsErrors.how_to_use.message
+                      })}
                     />
                   )}
                 />
@@ -1009,7 +1042,10 @@ const ProductStepperLinear = () => {
                       minRows={2}
                       label='Safety Advice'
                       placeholder='Enter product safety advice'
-                      {...(productDetailsErrors.safety_advice && { error: true, helperText: productDetailsErrors.safety_advice.message })}
+                      {...(productDetailsErrors.safety_advice && {
+                        error: true,
+                        helperText: productDetailsErrors.safety_advice.message
+                      })}
                     />
                   )}
                 />
@@ -1024,7 +1060,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Ingredients'
                       placeholder='Enter product ingredients'
-                      {...(productDetailsErrors.ingredients && { error: true, helperText: productDetailsErrors.ingredients.message })}
+                      {...(productDetailsErrors.ingredients && {
+                        error: true,
+                        helperText: productDetailsErrors.ingredients.message
+                      })}
                     />
                   )}
                 />
@@ -1039,7 +1078,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Primary Use'
                       placeholder='Enter product primary use'
-                      {...(productDetailsErrors.primary_use && { error: true, helperText: productDetailsErrors.primary_use.message })}
+                      {...(productDetailsErrors.primary_use && {
+                        error: true,
+                        helperText: productDetailsErrors.primary_use.message
+                      })}
                     />
                   )}
                 />
@@ -1054,7 +1096,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Storage'
                       placeholder='Enter product storage'
-                      {...(productDetailsErrors.storage && { error: true, helperText: productDetailsErrors.storage.message })}
+                      {...(productDetailsErrors.storage && {
+                        error: true,
+                        helperText: productDetailsErrors.storage.message
+                      })}
                     />
                   )}
                 />
@@ -1069,7 +1114,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Common Side Effects'
                       placeholder='Enter product common side effects'
-                      {...(productDetailsErrors.common_side_effects && { error: true, helperText: productDetailsErrors.common_side_effects.message })}
+                      {...(productDetailsErrors.common_side_effects && {
+                        error: true,
+                        helperText: productDetailsErrors.common_side_effects.message
+                      })}
                     />
                   )}
                 />
@@ -1084,7 +1132,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Alcohol Interaction'
                       placeholder='Enter product alcohol interaction'
-                      {...(productDetailsErrors.alcohol_interaction && { error: true, helperText: productDetailsErrors.alcohol_interaction.message })}
+                      {...(productDetailsErrors.alcohol_interaction && {
+                        error: true,
+                        helperText: productDetailsErrors.alcohol_interaction.message
+                      })}
                     />
                   )}
                 />
@@ -1099,7 +1150,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Pregnancy Interaction'
                       placeholder='Enter product pregnancy interaction'
-                      {...(productDetailsErrors.pregnancy_interaction && { error: true, helperText: productDetailsErrors.pregnancy_interaction.message })}
+                      {...(productDetailsErrors.pregnancy_interaction && {
+                        error: true,
+                        helperText: productDetailsErrors.pregnancy_interaction.message
+                      })}
                     />
                   )}
                 />
@@ -1114,7 +1168,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Lactation Interaction'
                       placeholder='Enter product lactation interaction'
-                      {...(productDetailsErrors.lactation_interaction && { error: true, helperText: productDetailsErrors.lactation_interaction.message })}
+                      {...(productDetailsErrors.lactation_interaction && {
+                        error: true,
+                        helperText: productDetailsErrors.lactation_interaction.message
+                      })}
                     />
                   )}
                 />
@@ -1129,7 +1186,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Driving Interaction'
                       placeholder='Enter product driving interaction'
-                      {...(productDetailsErrors.driving_interaction && { error: true, helperText: productDetailsErrors.driving_interaction.message })}
+                      {...(productDetailsErrors.driving_interaction && {
+                        error: true,
+                        helperText: productDetailsErrors.driving_interaction.message
+                      })}
                     />
                   )}
                 />
@@ -1144,7 +1204,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Kidney Interaction'
                       placeholder='Enter product Kidney interaction'
-                      {...(productDetailsErrors.kidney_interaction && { error: true, helperText: productDetailsErrors.kidney_interaction.message })}
+                      {...(productDetailsErrors.kidney_interaction && {
+                        error: true,
+                        helperText: productDetailsErrors.kidney_interaction.message
+                      })}
                     />
                   )}
                 />
@@ -1159,7 +1222,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Liver Interaction'
                       placeholder='Enter product liver interaction'
-                      {...(productDetailsErrors.liver_interaction && { error: true, helperText: productDetailsErrors.liver_interaction.message })}
+                      {...(productDetailsErrors.liver_interaction && {
+                        error: true,
+                        helperText: productDetailsErrors.liver_interaction.message
+                      })}
                     />
                   )}
                 />
@@ -1174,7 +1240,10 @@ const ProductStepperLinear = () => {
                       fullWidth
                       label='Country of Origin'
                       placeholder='Enter product country of origin'
-                      {...(productDetailsErrors.country_of_origin && { error: true, helperText: productDetailsErrors.country_of_origin.message })}
+                      {...(productDetailsErrors.country_of_origin && {
+                        error: true,
+                        helperText: productDetailsErrors.country_of_origin.message
+                      })}
                     />
                   )}
                 />
@@ -1216,7 +1285,6 @@ const ProductStepperLinear = () => {
           </form>
         )
 
-
       default:
         return <Typography color='text.primary'>Unknown stepIndex</Typography>
     }
@@ -1253,7 +1321,7 @@ const ProductStepperLinear = () => {
                     basicInfoErrors.product_image) &&
                   activeStep === 0
                 ) {
-                  labelProps.error = true;
+                  labelProps.error = true
                 }
 
                 // Product Details Step (Step 1)
@@ -1279,11 +1347,8 @@ const ProductStepperLinear = () => {
                     productDetailsErrors.faqs) &&
                   activeStep === 1
                 ) {
-                  labelProps.error = true;
+                  labelProps.error = true
                 }
-
-
-
               }
 
               return (

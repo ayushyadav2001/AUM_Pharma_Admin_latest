@@ -53,7 +53,7 @@ import { setUsersData } from '@/redux-store/slices/userSlice'
 import { setPackagingTypeData } from '@/redux-store/slices/packagingType.Slice'
 import { setManufacturersData } from '@/redux-store/slices/manufacturerSlice'
 
-const ManufacturerActions = () => {
+const EditManufacturerActions = ({ data, id }: { data?: any, id?: any }) => {
   // States
   const router = useRouter()
 
@@ -67,11 +67,19 @@ const ManufacturerActions = () => {
     register,
 
     setValue,
+    reset,
     handleSubmit,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(userValidationSchema),
-    defaultValues
+    defaultValues: {
+      name: data.name,
+      address: data?.address,
+      city: data?.city,
+      state: data?.state,
+      postal_code: data?.postal_code,
+      country: data?.country
+    }
   })
 
 
@@ -90,18 +98,11 @@ const ManufacturerActions = () => {
 
   const onSubmit = async (data: any) => {
 
-
-
-
-
-
-
-
     try {
       const response = await axios
-        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/manufacturer/add-manufacturer`, data, { withCredentials: true })
+        .put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/manufacturer/update-manufacturer/${id}`, data, { withCredentials: true })
         .then(res => {
-          toast.success('Manufacturer Added Successfully!')
+          toast.success('Manufacturer Updated Successfully!')
           fetchLatestData()
           router.push('/apps/manufacturer')
         })
@@ -113,12 +114,23 @@ const ManufacturerActions = () => {
 
   // Fetch vendors when the component mounts
 
-
+  useEffect(() => {
+    if (data) {
+      reset({
+        name: data?.name || "",
+        address: data?.address || "",
+        city: data?.city || "",
+        state: data?.state || "",
+        postal_code: data?.postal_code || "",
+        country: data?.country || ""
+      });
+    }
+  }, [data, reset]);
 
   return (
     <Card>
       <CardHeader
-        title='Add Manufacturer'
+        title='Edit Manufacturer'
         titleTypographyProps={{
           variant: 'h5',
           color: 'primary'
@@ -130,14 +142,21 @@ const ManufacturerActions = () => {
 
             <Grid item xs={12} md={6}>
               <TextField
+
                 error={!!errors.name} // `error` expects a boolean
                 helperText={errors.name?.message?.toString() || ''}
+                InputLabelProps={{
+                  shrink: !!data?.name
+                }} defaultValue={data?.name}
                 {...register('name')} fullWidth id='outlined-basic' label='Manufacturer Name' />
 
             </Grid>
 
             <Grid item xs={12} md={6}>
               <TextField
+                InputLabelProps={{
+                  shrink: !!data?.address
+                }} defaultValue={data?.address}
                 type="text"
                 error={!!errors.address} // `error` expects a boolean
                 helperText={errors.address?.message?.toString() || ''}
@@ -148,6 +167,9 @@ const ManufacturerActions = () => {
             <Grid item xs={12} md={4}>
               <TextField
                 type="number"
+                InputLabelProps={{
+                  shrink: !!data?.postal_code
+                }} defaultValue={data?.postal_code}
                 error={!!errors.postal_code} // `error` expects a boolean
                 helperText={errors.postal_code?.message?.toString() || ''}
                 {...register('postal_code')} fullWidth id='outlined-basic' label='Postal Code' />
@@ -155,6 +177,9 @@ const ManufacturerActions = () => {
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
+                InputLabelProps={{
+                  shrink: !!data?.city
+                }} defaultValue={data?.city}
                 type="text"
                 error={!!errors.city} // `error` expects a boolean
                 helperText={errors.city?.message?.toString() || ''}
@@ -163,6 +188,9 @@ const ManufacturerActions = () => {
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
+                InputLabelProps={{
+                  shrink: !!data?.state
+                }} defaultValue={data?.state}
                 type="text"
                 error={!!errors.state} // `error` expects a boolean
                 helperText={errors.state?.message?.toString() || ''}
@@ -173,6 +201,9 @@ const ManufacturerActions = () => {
             <Grid item xs={12} md={4}>
               <TextField
                 type="text"
+                InputLabelProps={{
+                  shrink: !!data?.country
+                }} defaultValue={data?.country}
                 error={!!errors.country} // `error` expects a boolean
                 helperText={errors.country?.message?.toString() || ''}
                 {...register('country')} fullWidth id='outlined-basic' label='Country' />
@@ -190,7 +221,7 @@ const ManufacturerActions = () => {
           </Grid>
           <div className='flex justify-center mt-4'>
             <Button type='submit' color='primary' variant='contained' className='capitalize'>
-              Save
+              Update
             </Button>
           </div>
         </form>
@@ -199,4 +230,4 @@ const ManufacturerActions = () => {
   )
 }
 
-export default ManufacturerActions
+export default EditManufacturerActions

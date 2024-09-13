@@ -25,12 +25,12 @@ const manufacturerSlice = createSlice({
 
     // Set edit data
 
-    setEditData: (state, action: PayloadAction<[]>) => {
+    setManufacturersEditData: (state, action: PayloadAction<[]>) => {
       state.editData = action.payload
     }
   }
 })
 
 // Export actions and reducer
-export const { setManufacturersData, setEditData } = manufacturerSlice.actions
+export const { setManufacturersData, setManufacturersEditData } = manufacturerSlice.actions
 export default manufacturerSlice.reducer

@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography'
 
 // Third-party Imports
 import { useDropzone } from 'react-dropzone'
+import { IconButton } from '@mui/material'
 
 type FileProp = {
   name: string
@@ -50,13 +51,32 @@ const FileUploaderSingle = ({ setValue, fieldName }: any) => {
   //   }
   // }
 
+
+  const handleRemoveFile = () => {
+    setFiles([])
+    setValue(fieldName, null)
+  }
+
   const img = files.map((file: FileProp) => (
-    <img
-      key={file.name}
-      alt={file.name}
-      className='single-file-image w-full h-full max-h-[150px] object-cover'
-      src={URL.createObjectURL(file as any)}
-    />
+
+    <div key={file.name} className='relative w-full h-full'>
+      <img
+        key={files[0].name}
+        alt={files[0].name}
+        className='single-file-image w-full h-full max-h-[150px] object-contain'
+        src={URL.createObjectURL(files[0] as any)}
+      />
+      <IconButton
+        className='absolute top-0 right-0'
+        aria-label='remove'
+        onClick={(e: any) => {
+          e.stopPropagation() // Prevent triggering the file input click
+          handleRemoveFile()
+        }}
+      >
+        <i className="ri-delete-bin-line"></i>
+      </IconButton>
+    </div>
   ))
 
   return (

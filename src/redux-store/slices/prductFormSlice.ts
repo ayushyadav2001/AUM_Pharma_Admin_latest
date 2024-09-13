@@ -25,12 +25,12 @@ const productFormSlice = createSlice({
 
     // Set edit data
 
-    setEditPackagingTypeData: (state, action: PayloadAction<[]>) => {
+    setEditProductFormData: (state, action: PayloadAction<[]>) => {
       state.editData = action.payload
     }
   }
 })
 
 // Export actions and reducer
-export const { setProductFormData, setEditPackagingTypeData } = productFormSlice.actions
+export const { setProductFormData, setEditProductFormData } = productFormSlice.actions
 export default productFormSlice.reducer

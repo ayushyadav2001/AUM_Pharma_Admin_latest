@@ -33,6 +33,7 @@ const basicInfoSchema = object({
 
   category: ArrayLengthSchema,
   sub_category: ArrayLengthSchema,
+  sec_sub_categories: ArrayLengthSchema,
   manufacturer: pipe(string(), nonEmpty('Manufacturer is required')),
   product_form: pipe(string(), nonEmpty('Product Form is required')),
 
@@ -113,8 +114,9 @@ const basicInfoDefaultValues = {
   product_code: '',
   product_image: null,
   product_name: '',
-  category: '',
-  sub_category: '',
+  category: [],
+  sub_category: [],
+  sec_sub_categories: [],
   manufacturer: '',
   product_form: '',
   packaging: '',
