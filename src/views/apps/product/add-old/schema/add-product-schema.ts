@@ -13,6 +13,12 @@ import {
   array
 } from 'valibot'
 
+// const ImageSchema = pipe(
+//   file('Please select an image file.'),
+//   mimeType(['image/jpeg', 'image/png'], 'Please select a JPEG or PNG file.'),
+//   maxSize(1024 * 1024 * 10, 'Please select a file smaller than 10 MB.')
+// )
+
 const ImageSchema = pipe(
   file('Please select an image file.'),
   mimeType(['image/jpeg', 'image/png'], 'Please select a JPEG or PNG file.'),
@@ -25,12 +31,11 @@ const ArrayLengthSchema = pipe(array(objectId), minLength(1, 'At least one item 
 
 const basicInfoSchema = object({
   product_code: pipe(string(), nonEmpty('Product Code is required')),
-  product_image: ImageSchema, // Assuming ImageSchema is defined with appropriate rules
+  product_image: pipe(
+    array(ImageSchema), // Expect an array of image files
+    minLength(1, 'At least one product image is required.')
+  ), // Assuming ImageSchema is defined with appropriate rules
   product_name: pipe(string(), nonEmpty('Product Name is required')),
-
-  // category: pipe(string(), nonEmpty('Category is required')),
-  // sub_category: pipe(string(), nonEmpty('Sub-category is required')),
-
   category: ArrayLengthSchema,
   sub_category: ArrayLengthSchema,
   sec_sub_categories: ArrayLengthSchema,

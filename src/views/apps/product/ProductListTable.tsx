@@ -281,7 +281,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
       columnHelper.accessor('product_image', {
         header: 'Product Image',
         cell: ({ row }) => {
-          const productImage = row.original.product_image;
+          const productImage = row.original.product_images[0];
 
           const imageUrl = productImage
             ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${productImage}`

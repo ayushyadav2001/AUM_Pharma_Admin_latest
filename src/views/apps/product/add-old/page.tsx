@@ -39,7 +39,11 @@ import StepperWrapper from '@core/styles/stepper'
 import StepperCustomDot from '@components/stepper-dot'
 import DirectionalIcon from '@components/DirectionalIcon'
 import createProductSchema from './schema/add-product-schema'
-import FileUploaderSingle from '../ProductFileUpload/FileUploaderSingle'
+
+
+// import FileUploaderSingle from '../ProductFileUpload/FileUploaderSingle'
+
+import FileUploaderMultiple from '../ProductFileUpload/FileUploaderMultiple'
 
 // Vars
 const steps = [
@@ -258,13 +262,7 @@ const ProductStepperLinear = () => {
 
     const formDataObj = new FormData()
 
-    // for (const key in finalData) {
 
-    //   if (Object.hasOwnProperty.call(finalData, key)) {
-
-    //     formDataObj.append(key, finalData[key]);
-    //   }
-    // }
 
     for (const key in finalData) {
       if (Object.hasOwnProperty.call(finalData, key)) {
@@ -279,8 +277,14 @@ const ProductStepperLinear = () => {
           }
         }
 
+        if (key === 'product_image' && Array.isArray(value)) {
+          value.forEach((file: File) => {
+            formDataObj.append('product_image', file); // Append each image file
+          });
+        }
+
         // Append to FormData, convert array to JSON string if necessary
-        if (Array.isArray(value)) {
+        else if (Array.isArray(value)) {
           formDataObj.append(key, JSON.stringify(value))
         } else {
           formDataObj.append(key, value)
@@ -290,9 +294,7 @@ const ProductStepperLinear = () => {
 
     try {
       await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/add-product`, formDataObj, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
+
         withCredentials: true
       })
 
@@ -426,6 +428,8 @@ const ProductStepperLinear = () => {
     fetchManufacturer()
     fetchProductForms()
   }, [])
+
+  console.log("basicInfoErrors", basicInfoErrors)
 
   const handleReset = () => {
     setActiveStep(0)
@@ -861,7 +865,9 @@ const ProductStepperLinear = () => {
                         <FormControl fullWidth className='mbe-4'>
                           <InputLabel id='prod-image-select'>Select Product Image</InputLabel>
                           <div id='prod-image-select'>
-                            <FileUploaderSingle setValue={basicSetValue} fieldName={'product_image'} />
+                            {/* <FileUploaderSingle setValue={basicSetValue} fieldName={'product_image'} /> */}
+
+                            <FileUploaderMultiple setValue={basicSetValue} fieldName={'product_image'} />
                           </div>
                           <FormHelperText className='text-red-600'>
                             {basicInfoErrors.product_image?.message as string}
