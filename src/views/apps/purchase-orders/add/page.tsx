@@ -34,6 +34,10 @@ import {
   Typography
 } from '@mui/material'
 
+
+
+
+
 // MUI Imports
 // Third-party Imports
 
@@ -61,6 +65,7 @@ import createPurchaseOrderSchema from './create-form'
 import PurchaseOrderListPreviewTable from '../purchase-order-table/PurchaseOrderPreviewTable'
 
 import PurchaseOrderListErrorTable from '../product-error-table/PurchaseOrderErrorTable'
+import AddPurchaseOrderAction from '../ProductSelectTable'
 
 // import { TextFieldProps } from '@mui/material';
 
@@ -139,9 +144,13 @@ const AddPurchaseOrderActions = () => {
 
   const [vendorOptions, setVendorFormats] = useState([])
 
+
+
   const [importedData, setImportedData] = useState([])
 
-  // const [importedUpdatedData, setImportedDataUpdatedData] = useState([])
+
+
+
 
   const setImportedDataUpdatedData = (data: any) => {
     setImportedData(data)
@@ -151,11 +160,11 @@ const AddPurchaseOrderActions = () => {
     setValue('items', data)
   }
 
-  // const [vendorData, setVendorData] = useState(null)
+
 
   const [vendorData, setVendorData] = useState<VendorData | null>(null)
 
-  // const [dateTime, setDateTime] = useState<Date | null>(null);
+
   const [dateTime, setDateTime] = useState<Date | null>(new Date())
 
   const [selectedStatus, setSelectedStatus] = useState<string>('')
@@ -249,7 +258,7 @@ const AddPurchaseOrderActions = () => {
     defaultValues
   })
 
-
+  console.log("errors", errors)
 
   const importProductSchema = yup.object().shape({
     product_excel: yup.mixed().required('Excel is required')
@@ -271,6 +280,8 @@ const AddPurchaseOrderActions = () => {
 
 
   const onSubmit = async (data: any) => {
+    console.log("data", data)
+
 
 
     const formData = new FormData()
@@ -378,15 +389,28 @@ const AddPurchaseOrderActions = () => {
     }
   }
 
+
+
+
+
+
+
+
+
   useEffect(() => {
     fetchVendors()
+
     setValue('purchase_date', dateTime)
   }, [])
 
 
 
+
+
   return (
     <div>
+
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader
@@ -461,7 +485,7 @@ const AddPurchaseOrderActions = () => {
                 />
                 <FormHelperText className='text-red-600'>{errors.purchase_date?.message as string}</FormHelperText>
               </Grid>
-              <Grid item xs={12} md={4}>
+              {/* <Grid item xs={12} md={4}>
                 <h3>Address</h3>
                 {vendorData && vendorData?.address ? (
                   <div>
@@ -470,8 +494,8 @@ const AddPurchaseOrderActions = () => {
                 ) : (
                   <p></p>
                 )}
-              </Grid>
-              <Grid item xs={12} md={4}>
+              </Grid> */}
+              {/* <Grid item xs={12} md={4}>
                 <FormControl fullWidth className='mbe-4'>
                   <InputLabel id='status-select'>Purchase Status </InputLabel>
 
@@ -496,9 +520,9 @@ const AddPurchaseOrderActions = () => {
                   </Select>
                   <FormHelperText className='text-red-600'>{errors.purchaseStatus?.message as string}</FormHelperText>
                 </FormControl>
-              </Grid>
+              </Grid> */}
 
-              <Grid item xs={12} md={4}>
+              {/* <Grid item xs={12} md={4}>
                 <FormControl fullWidth>
                   <TextField
                     fullWidth
@@ -539,12 +563,12 @@ const AddPurchaseOrderActions = () => {
                   <FormHelperText className='text-red-600'>{errors.payTermNumber?.message as string}</FormHelperText>
                   <FormHelperText className='text-red-600'>{errors.payTermUnit?.message as string}</FormHelperText>
                 </FormControl>
-              </Grid>
+              </Grid> */}
             </Grid>
           </CardContent>
         </Card>
         <br />
-        <Card>
+        {/* <Card>
           <CardHeader
             title='Import Products'
             titleTypographyProps={{
@@ -553,20 +577,17 @@ const AddPurchaseOrderActions = () => {
             }}
           />
           <Divider />
+
           <CardContent className='sm:!p-12'>
-            <div className='flex justify-end gap-4 p-4 flex-col items-start sm:flex-row sm:items-center'>
-              <div className='flex justify-end gap-4 flex-col items-start sm:flex-row sm:items-center'>
-                <Button variant='contained' onClick={OpenImportModel} className='is-full sm:is-auto'>
-                  Import Products
-                </Button>
-              </div>
-            </div>
+
 
             <PurchaseOrderListPreviewTable
               tableData={importedData}
               setImportedDataUpdatedData={setImportedDataUpdatedData}
+              OpenImportModel={OpenImportModel}
             />
             <br />
+
 
             <div className='flex flex-col items-end space-y-2'>
               <div className='flex items-center'>
@@ -580,7 +601,14 @@ const AddPurchaseOrderActions = () => {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
+        <br />
+
+
+        <AddPurchaseOrderAction tableData={importedData}
+          setImportedDataUpdatedData={setImportedDataUpdatedData}
+          setImportedDataFormik={setImportedDataFormik}
+          OpenImportModel={OpenImportModel} />
         <br />
         <div className='flex justify-center'>
           <Button type='submit' color='primary' variant='contained' className='capitalize'>

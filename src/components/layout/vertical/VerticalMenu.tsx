@@ -471,11 +471,15 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
         </SubMenu> */}
 
+        <SubMenu label={dictionary['navigation'].homeMasters} icon={<i className='ri-home-smile-2-line' />}>
+          <MenuItem href={`/${locale}/apps/category/header-category-indexing`}>{dictionary['navigation'].headerCategoryIndexing}</MenuItem>
+          <MenuItem href={`/${locale}/apps/category/banner-category-indexing`}>{dictionary['navigation'].bannerCategoryIndexing}</MenuItem>
+
+
+        </SubMenu>
         <SubMenu label={dictionary['navigation'].masters} icon={<i className='ri-archive-line' />}>
           <MenuItem href={`/${locale}/apps/category`}>{dictionary['navigation'].categorys}</MenuItem>
 
-          <MenuItem href={`/${locale}/apps/category/header-category-indexing`}>{dictionary['navigation'].headerCategoryIndexing}</MenuItem>
-          <MenuItem href={`/${locale}/apps/category/banner-category-indexing`}>{dictionary['navigation'].bannerCategoryIndexing}</MenuItem>
 
           <MenuItem href={`/${locale}/apps/sub-category`}>{dictionary['navigation'].subCategorys}</MenuItem>
 

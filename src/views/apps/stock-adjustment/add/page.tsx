@@ -115,12 +115,6 @@ const AddStockAdjustmentAction = () => {
 
   const onSubmit = async (data: any) => {
 
-
-
-
-
-
-
     try {
       const response = await axios
         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/stock-adjust/add-adjustment`, data, {
@@ -224,18 +218,7 @@ const AddStockAdjustmentAction = () => {
 
   console.log("tableRows", tableRows)
 
-  // const handleInputChange = (index: any, field: any, value: any) => {
-  //   const updatedRows = [...tableRows];
 
-  //   updatedRows[index][field] = value;
-
-  //   if (field === 'quantity' || field === 'unitPrice') {
-  //     updatedRows[index].subtotal = updatedRows[index].quantity * updatedRows[index].unitPrice;
-  //   }
-
-  //   setTableRows(updatedRows);
-  //   setValue('productDetails', tableRows);
-  // };
 
   const handleInputChange = (index: number, field: string, value: number) => {
     setTableRows((prevRows: any) => {

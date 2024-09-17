@@ -123,14 +123,14 @@
     "reports": "Reports",
     "notificationTemplate": "Notification Template",
     "setting": "Settings",
-    "home": "Home",
+    "home": "Dashboard",
     "stock": "Stocks",
     "stockList": "List Stock",
     "categorys": "Categories",
     "listCategorys": "List Categories",
     "indexingCategorys": "Categories Indexing",
     "headerCategoryIndexing": "Header Categories",
-    "bannerCategoryIndexing": "Banner Categories",
+    "bannerCategoryIndexing": "Shop By Categories",
     "subCategorys": "Sub Categories ",
     "listSubCategorys": "List Sub Categories",
     "secondarySubCategories": "Sec Sub Categories",
@@ -139,6 +139,7 @@
     "packaging": "Packaging",
     "packagingType": "Packaging Type",
     "manufacturer": "Manufacturer",
-    "productForm": "Product Form"
+    "productForm": "Product Form",
+    "homeMasters": "Home"
   }
 }

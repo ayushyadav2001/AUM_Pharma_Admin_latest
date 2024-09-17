@@ -140,6 +140,7 @@
     "packaging": "Packaging",
     "packagingType": "Packaging Type",
     "manufacturer": "Manufacturer",
-    "productForm": "Product Form"
+    "productForm": "Product Form",
+    "homeMasters": "Home"
   }
 }

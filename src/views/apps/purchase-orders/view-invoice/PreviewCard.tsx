@@ -213,7 +213,7 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
               <table className={`${tableStyles.table}`}>
                 <thead>
                   <tr className='border-b bg-primary text-white'>
-                    <th className='!bg-transparent'>HSN</th>
+
                     <th className='!bg-transparent'>Item Name</th>
                     {/* <th className='!bg-transparent'>MFG Date</th> */}
                     <th className='!bg-transparent'>Pack</th>
@@ -233,10 +233,11 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
                 </thead>
                 <tbody>
                   {invoiceData.items.map((item: any, index: any) => {
-                    const netRate = calculateNetRate(item.mrp, item.dis);
-                    const taxableAmount = calculateTaxableAmount(item.qty, netRate);
-                    const gstAmount = calculateGSTAmount(taxableAmount, item.sgst, item.cgst);
-                    const finalAmount = calculateFinalAmount(taxableAmount, gstAmount);
+
+                    // const netRate = calculateNetRate(item.mrp, item.dis);
+                    // const taxableAmount = calculateTaxableAmount(item.qty, netRate);
+                    // const gstAmount = calculateGSTAmount(taxableAmount, item.sgst, item.cgst);
+                    // const finalAmount = calculateFinalAmount(taxableAmount, gstAmount);
 
 
 
@@ -245,12 +246,10 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
                         <td style={{ width: '50px' }}>
                           <Typography color='text.primary'>{item.hsn_code || '-'}</Typography>
                         </td>
-                        <td>
+                        {/* <td>
                           <Typography color='text.primary'>{item.item_name || '-'}</Typography>
                         </td>
-                        {/* <td>
-                          <Typography color='text.primary'>{`${item.date}` || '-'}</Typography>
-                        </td> */}
+
                         <td>
                           <Typography color='text.primary'>{item.pack || '-'}</Typography>
                         </td>
@@ -264,10 +263,10 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
                           <Typography color='text.primary'>{item.qty || '-'}</Typography>
                         </td>
                         <td>
-                          <Typography color='text.primary'>{item.mrp.toFixed(2) || '-'}</Typography>
+                          <Typography color='text.primary'>{item.mrp || '-'}</Typography>
                         </td>
                         <td>
-                          <Typography color='text.primary'>{item.srate.toFixed(2) || '-'}</Typography>
+                          <Typography color='text.primary'>{item.srate  || '-'}</Typography>
                         </td>
                         <td>
                           <Typography color='text.primary'>{item.dis.toFixed(2) || '-'}</Typography>
@@ -289,7 +288,7 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
                         </td>
                         <td>
                           <Typography color='text.primary'>{finalAmount.toFixed(2) || '-'}</Typography>
-                        </td>
+                        </td> */}
                       </tr>
                     );
                   })}

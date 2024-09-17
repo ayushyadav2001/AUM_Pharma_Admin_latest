@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 // React Imports
@@ -20,7 +21,7 @@ import IconButton from '@mui/material/IconButton'
 
 import TablePagination from '@mui/material/TablePagination'
 
-
+import ReactSelect from 'react-select';
 
 
 
@@ -52,6 +53,10 @@ import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Type Imports
 // import type { ThemeColor } from '@core/types'
+import { Button, FormControl } from '@mui/material'
+
+import axios from 'axios'
+
 import type { UsersType } from '@/types/apps/userTypes'
 
 // import type { Locale } from '@configs/i18n'
@@ -117,15 +122,24 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 // Column Definitions
 const columnHelper = createColumnHelper<any>()
 
-const PurchaseOrderListPreviewTable = ({ tableData, setImportedDataUpdatedData }: { tableData?: any, setImportedDataUpdatedData: (data: UsersType[]) => void; }) => {
+const PurchaseOrderListPreviewTable = ({ tableData, setImportedDataUpdatedData, OpenImportModel }: { tableData?: any, setImportedDataUpdatedData: (data: UsersType[]) => void, OpenImportModel: () => void; }) => {
   // States
 
 
 
   const [rowSelection, setRowSelection] = useState({})
+
+  const [productOption, setProductOptions] = useState([])
+
+  const [productValue, setProductValue] = useState([])
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [data, setData] = useState(...[tableData])
   const [globalFilter, setGlobalFilter] = useState('')
+
+  const [tableRowsProduct, setTableRowsProduct] = useState<any>([]);
+
+  const [tableRows, setTableRows] = useState<any>([]);
 
 
 
@@ -289,13 +303,110 @@ const PurchaseOrderListPreviewTable = ({ tableData, setImportedDataUpdatedData }
   //   }
   // }
 
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true })
 
+
+      const transformedProducts = response.data.products.map((item: any) => ({
+        ...item,  // Spread all properties of the original item
+        label: item.product_name,  // Add the label field (Product name)
+        value: item._id,    // Add the value field (Product id)
+      }));
+
+      setProductOptions(transformedProducts);
+
+
+    } catch (error) {
+      console.error('Error fetching vendors:', error)
+
+
+    }
+  }
+
+  useEffect(() => {
+
+    fetchProducts()
+
+  }, [])
+
+
+  const handleProductChange = async (selectedOption: any) => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-stock-data/${selectedOption.value}`, { withCredentials: true });
+      const productData = response.data.data;
+
+      const newRow = {
+        product: productData.name,
+        quantity: 1,
+        unitPrice: productData.mrp,
+        subtotal: productData.mrp
+      };
+
+      const newRowTwo = {
+        product: productData._id,
+        quantity: 1,
+        unitPrice: productData.mrp,
+        subtotal: productData.mrp
+      };
+
+
+      setTableRows((prevRows: any) => {
+        const updatedRows = [...prevRows, newRow];
+
+        // setValue('productDetails', updatedRows);
+
+        return updatedRows;
+      });
+
+      setTableRowsProduct((prevRows: any) => {
+        const updatedRows = [...prevRows, newRowTwo];
+
+        // setValue('productDetails', updatedRows);
+
+        return updatedRows;
+      });
+
+
+
+    } catch (error) {
+      console.error('Error fetching product data:', error);
+    }
+  };
 
 
 
 
   return (
     <>
+
+      <div className='flex justify-end  gap-4 p-4 flex-col items-start sm:flex-row sm:items-center'>
+
+        <div>
+          <FormControl fullWidth className=''>
+
+            <ReactSelect
+              id='adjustment-due-select'
+              options={productOption}
+              value={productValue}
+
+              onChange={handleProductChange}
+
+              placeholder='Search Products for Purchase Order'
+
+            />
+
+
+          </FormControl>
+        </div>
+        <div className='flex justify-end gap-4 flex-col items-start sm:flex-row sm:items-center'>
+          <Button variant='contained' onClick={() => {
+            OpenImportModel()
+          }} className='is-full sm:is-auto'>
+            Import Products
+          </Button>
+        </div>
+      </div>
 
 
       <div className='overflow-x-auto'>
