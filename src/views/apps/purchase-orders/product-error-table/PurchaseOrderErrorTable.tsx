@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
@@ -42,6 +43,8 @@ import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Type Imports
 // import type { ThemeColor } from '@core/types'
+
+import { toast } from 'react-toastify'
 
 import type { UsersType } from '@/types/apps/userTypes'
 
@@ -127,7 +130,7 @@ const PurchaseOrderListErrorTable = ({
 
   const [selectedItems, setSelectedItems] = useState<any[]>([])
 
-
+  console.log("selectedItems", selectedItems)
 
   useEffect(() => {
     if (tableData) {
@@ -135,8 +138,6 @@ const PurchaseOrderListErrorTable = ({
     }
   }, [tableData])
 
-  // Hooks
-  // const { lang: locale } = useParams()
 
 
   const handleCheckboxChange = (rowId: string, event: React.ChangeEvent<HTMLInputElement>, row: any) => {
@@ -145,15 +146,32 @@ const PurchaseOrderListErrorTable = ({
     let updatedData: any;
 
 
+
+
+
     if (event.target.checked) {
 
 
+
+      const updatedDataRow = data.map((item: any) => {
+
+        return { ...item, rowId };
+
+
+        return item;
+      });
+
+      setData(updatedDataRow);
+
+
       updatedData = importedData.map((item: any) => {
-        if (item.item_name === row.original.file_item_name) {
+
+
+        if (item.product === row.original.file_item_name) {
           const updatedItem = {
             ...item,
             rowId,
-            item_name: row.original.item_name
+            product: row.original.item_name
           }
 
           // Add the updated item to selectedItems
@@ -171,7 +189,26 @@ const PurchaseOrderListErrorTable = ({
 
       // setImportedDataUpdatedData(updatedData)
     } else {
+
+
+
+
+      // Remove rowId from data
+      const updatedDataRow = data.map((item: any) => {
+        if (item.rowId === rowId) {
+          const { rowId, ...rest } = item; // Remove rowId from item
+
+          return rest;
+        }
+
+        return item;
+      });
+
+      setData(updatedDataRow);
+
       setSelectedItems((prevSelectedItems: any) => prevSelectedItems.filter((item: any) => item.rowId !== rowId))
+
+
 
       // If needed, revert the item_name to the original value in importedData
       updatedData = importedData.map((item: any) => {
@@ -184,7 +221,7 @@ const PurchaseOrderListErrorTable = ({
 
         return item
       })
-
+      console.log("updatedData", updatedData)
       setImportedDataUpdatedData(updatedData)
     }
 
@@ -266,11 +303,7 @@ const PurchaseOrderListErrorTable = ({
         )
       },
 
-      // {
-      //   id: 'sno',
-      //   header: 'SNo',
-      //   cell: ({ row }) => <Typography>{row.index + 1}</Typography>, // Displays sequential number starting from 1
-      // },
+
 
       columnHelper.accessor('file_item_name', {
         header: 'File Item name',
@@ -305,7 +338,7 @@ const PurchaseOrderListErrorTable = ({
         )
       })
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [data]
   )
 
@@ -338,12 +371,38 @@ const PurchaseOrderListErrorTable = ({
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
 
-  const handleUpdate = () => {
+  // const handleUpdate = () => {
 
-    setImportedDataUpdatedData(selectedItems)
-    setImportedDataFormik(selectedItems)
-    setShowImportError()
-  }
+  //   setImportedDataUpdatedData(selectedItems)
+  //   setImportedDataFormik(selectedItems)
+  //   setShowImportError()
+  // }
+
+
+
+  const handleUpdate = () => {
+    // Check if all items are selected
+    const totalItems = data;
+    const selectedItemsCount = selectedItems.length;
+
+
+
+    // Verify that all selected items have a valid rowId
+    const allItemsHaveRowId = data.every((item: any) => item.rowId);
+
+    if (allItemsHaveRowId) {
+      // All items are selected and have rowId
+      setImportedDataUpdatedData(selectedItems);
+      setImportedDataFormik(selectedItems);
+      setShowImportError();
+    } else if (!allItemsHaveRowId) {
+      // Some selected items are missing rowId
+      toast.error('Please ensure all selected items have a valid rowId before updating.');
+    } else {
+      // Not all items are selected
+      toast.error('Please select all checkboxes before updating.');
+    }
+  };
 
 
   return (
@@ -383,7 +442,7 @@ const PurchaseOrderListErrorTable = ({
               </tr>
             ))}
           </thead>
-          {table.getFilteredRowModel().rows.length === 0 ? (
+          {table?.getFilteredRowModel().rows.length === 0 ? (
             <tbody>
               <tr>
                 <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
@@ -83,6 +84,75 @@ const AddPurchaseOrderAction = ({ tableData, setImportedDataUpdatedData, OpenImp
   const [loading, setLoading] = useState(true)
 
 
+
+  // useEffect(() => {
+
+
+  //   setTableRows(tableData)
+
+
+
+  // }, [tableData])
+
+  useEffect(() => {
+    if (tableData && tableData.length > 0) {
+      // Create a function to apply the calculation logic to all rows
+      const calculateRows = (rows: any[]) => {
+        return rows.map((row, index) => {
+          const updatedRow = { ...row };
+
+          // Retrieve and calculate values for the current row
+          const quantity = Number(updatedRow.quantity) || 1;
+          const purchase_to_retailer = Number(updatedRow.purchase_to_retailer) || 0;
+          const discountPercentage = Number(updatedRow.discount_percentage) || 0;
+          const gstPercent = Number(updatedRow.gst_percent) || 0;
+
+          // Calculate Discount Amount (PTR * Quantity * Discount Percentage)
+          const discountAmount = (purchase_to_retailer * quantity * discountPercentage) / 100;
+
+          updatedRow.discount_amount = isNaN(discountAmount) ? 0 : discountAmount;
+
+          // Calculate Base (PTR * Quantity - Discount Amount)
+          const base = (purchase_to_retailer * quantity) - updatedRow.discount_amount;
+
+          updatedRow.base = isNaN(base) ? 0 : base;
+
+          // Calculate GST Amount (Base * GST%)
+          const gstAmount = (base * gstPercent) / 100;
+
+          updatedRow.gst_amount = isNaN(gstAmount) ? 0 : gstAmount;
+
+          // Calculate Amount (Base + GST Amount)
+          const amount = base + gstAmount;
+
+          updatedRow.amount = isNaN(amount) ? 0 : amount;
+
+          // Calculate Last Purchase
+          const discountPerQuantity = discountAmount / quantity;
+          const purchasePrice = purchase_to_retailer - discountPerQuantity;
+          const lastPriceGst = (purchasePrice * gstPercent) / 100;
+
+          const lastPurchase = discountPercentage > 0
+            ? purchasePrice + lastPriceGst
+            : purchase_to_retailer + lastPriceGst;
+
+          updatedRow.last_price = isNaN(lastPurchase) ? 0 : lastPurchase;
+
+          const totalRoundOff = Math.round(amount);
+
+          updatedRow.tcs_amount = isNaN(totalRoundOff) ? 0 : totalRoundOff;
+
+          return updatedRow;
+        });
+      };
+
+      // Apply the calculation logic and update the rows
+      const updatedRows = calculateRows(tableData);
+
+      setTableRows(updatedRows);
+      setImportedDataFormik(updatedRows);
+    }
+  }, [tableData]);
   interface CustomInputProps {
     value?: Date | null // Add value prop here
     label?: string
@@ -109,29 +179,6 @@ const AddPurchaseOrderAction = ({ tableData, setImportedDataUpdatedData, OpenImp
 
 
 
-  const onSubmit = async (data: any) => {
-
-    return false
-
-    try {
-      const response = await axios
-        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/stock-adjust/add-adjustment`, data, {
-
-          withCredentials: true,
-        })
-        .then(res => {
-          toast.success('Stock Adjustment Added  Successfully!')
-
-          // fetchStocks()
-          setTimeout(() => {
-            router.push('/apps/stock-adjustment');
-          }, 2000);
-        })
-    } catch (error) {
-      console.error('Error adding stock:', error)
-      toast.error('Something went wrong!')
-    }
-  }
 
 
 
@@ -172,23 +219,7 @@ const AddPurchaseOrderAction = ({ tableData, setImportedDataUpdatedData, OpenImp
       // Ensure valid numeric fields for calculations
       const mrp = Number(productData.mrp) || 0;
 
-      // const newRow = {
-      //   product: productData.product_name,
-      //   unit: 1,
-      //   batch_no: productData.batch_no || "",
-      //   expiry_date: "", // User input
-      //   mrp: mrp,
-      //   quantity: 1, // Default value
-      //   free_quantity: 0,
-      //   purchase_to_retailer: 0, // User input
-      //   discount_percentage: 0, // User input
-      //   discount_amount: 0, // Auto-calculated
-      //   base: 0, // Auto-calculated
-      //   gst_percent: 0, // User input
-      //   gst_amount: 0, // Auto-calculated
-      //   amount: 0, // Auto-calculated (Base + GST)
-      //   last_price: 0, // Auto-calculated (PTR + GST + Discount Amount)
-      // };
+
 
 
       const newRow = {
@@ -254,7 +285,7 @@ const AddPurchaseOrderAction = ({ tableData, setImportedDataUpdatedData, OpenImp
       const quantity = Number(updatedRows[index].quantity) || 1;
       const purchase_to_retailer = Number(updatedRows[index].purchase_to_retailer) || 0;
       const discountPercentage = Number(updatedRows[index].discount_percentage) || 0;
-      const gstPercent = Number(updatedRows[index].gst) || 0;
+      const gstPercent = Number(updatedRows[index].gst_percent) || 0;
 
       // Calculate Discount Amount (PTR * Quantity * Discount Percentage)
       const discountAmount = (purchase_to_retailer * quantity * discountPercentage) / 100;
@@ -283,9 +314,7 @@ const AddPurchaseOrderAction = ({ tableData, setImportedDataUpdatedData, OpenImp
       const purchasePrice = purchase_to_retailer - discountPerQuantity;
       const lastPriceGst = (purchasePrice * gstPercent) / 100;
 
-      console.log("lastPurchase.discountPerQuantity", discountPerQuantity)
-      console.log("lastPurchase.purchasePrice", purchasePrice)
-      console.log("lastPurchase.lastPriceGst", lastPriceGst)
+
 
       const lastPurchase = discountPercentage > 0
         ? purchasePrice + lastPriceGst
@@ -450,8 +479,8 @@ const AddPurchaseOrderAction = ({ tableData, setImportedDataUpdatedData, OpenImp
                         const discountAmt = (row.purchase_to_retailer * row.quantity * row.discount_percentage) / 100 || 0.00;
                         const base = row.purchase_to_retailer * row.quantity - discountAmt || 0.00;
 
-                        // const amount = base + discountAmt + row.gst || 0.00;
-                        const amount = base + ((base) * (row.gst / 100)) || 0.00;
+                        // const amount = base + discountAmt + row.gst_percent || 0.00;
+                        const amount = base + ((base) * (row.gst_percent / 100)) || 0.00;
 
 
                         return (
@@ -552,8 +581,8 @@ const AddPurchaseOrderAction = ({ tableData, setImportedDataUpdatedData, OpenImp
                               <TextField
                                 className="min-w-[60px]"
                                 type="number"
-                                value={row.gst}
-                                onChange={(e) => handleInputChange(index, 'gst', parseFloat(e.target.value))}
+                                value={row.gst_percent}
+                                onChange={(e) => handleInputChange(index, 'gst_percent', parseFloat(e.target.value))}
                               />
                             </TableCell>
 

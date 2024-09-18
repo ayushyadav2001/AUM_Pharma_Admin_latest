@@ -337,12 +337,12 @@ const AddPurchaseOrderActions = () => {
             withCredentials: true
           })
           .then((res: any) => {
-            if (res.data && res.data.purchaseOrderProducts && res.data.matchedProducts.length == 0) {
-              setImportedData(res.data.purchaseOrderProducts)
+            if (res.data && res.data.formattedData && res.data.matchedProducts.length == 0) {
+              setImportedData(res.data.formattedData)
 
               setTotalItems(res.data.total_items)
               setNetTotalAmount(res.data.net_total_amount)
-              setValue('items', res.data.purchaseOrderProducts)
+              setValue('items', res.data.formattedData)
 
               toast.success('Data Imported Successfully !')
               setImportModel(false)
@@ -350,7 +350,7 @@ const AddPurchaseOrderActions = () => {
               setShowImportError(true)
               setTotalItems(res.data.total_items)
               setNetTotalAmount(res.data.net_total_amount)
-              setShowImportModifiedData(res?.data?.purchaseOrderProducts)
+              setShowImportModifiedData(res?.data?.formattedData)
 
               setShowImportErrorData(res.data.itemComparisons)
             }
