@@ -309,7 +309,7 @@ const HomeSectionTable = ({ tableData }: { tableData?: UsersType[] }) => {
             placeholder='Search Section'
           />
 
-          <Link className='' href={`/${locale}/apps/roles/add`}>
+          <Link className='' href={`/${locale}/apps/homeSections/add`}>
             <Button variant='contained' className='is-full sm:is-auto'>
               Add
             </Button>
