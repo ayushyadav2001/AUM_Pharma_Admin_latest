@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { Button, Card, CardContent, CardHeader, Checkbox, Divider, FormControlLabel, TextField, IconButton } from '@mui/material';
+import { Button, Card, CardContent, CardHeader, Checkbox, Divider, FormControlLabel, TextField, IconButton, FormHelperText } from '@mui/material';
 // eslint-disable-next-line import/no-unresolved
 
 // eslint-disable-next-line import/no-unresolved
@@ -20,6 +20,8 @@ import sectionSchema from './schema';
 
 // Define the schema and default values
 const { sectionValidationSchema, defaultValues } = sectionSchema;
+
+
 
 const HomeSectionAdd = () => {
   const dispatch = useDispatch();
@@ -163,16 +165,23 @@ const HomeSectionAdd = () => {
             <br />
             {selectedOption === 'banner' && (
               <>
-                {bannerFields.map((field, index) => {
+                {bannerFields.map((field: any, index: any) => {
                   return (
                     <div key={field.id} className='flex items-center gap-4 mb-4'>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        label="Banner File"
-                        type="file"
-                        {...register(`banners.${index}.imageUrl` as const)}
-                        fullWidth
-                      />
+                      <div>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          label="Banner File"
+                          type="file"
+                          {...register(`banners.${index}.imageUrl` as const)}
+                          fullWidth
+
+                        // error={Boolean(errors?.banners?.[index]?.imageUrl)}
+                        // helperText={errors?.banners?.[index]?.imageUrl?.message as string}
+                        />
+
+
+                      </div>
                       <TextField
                         label="Banner Link"
                         {...register(`banners.${index}.linkUrl` as string)}
@@ -223,6 +232,7 @@ const HomeSectionAdd = () => {
 
                 // {...register('products')}
                 />
+                <div className="text-red-500 text-xs mt-2">{errors?.products?.message as string}</div>
               </div>
             )}
             <div className='flex justify-center items-center mt-[100px]'>
