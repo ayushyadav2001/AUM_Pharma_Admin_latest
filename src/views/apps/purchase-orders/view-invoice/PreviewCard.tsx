@@ -31,10 +31,17 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
 
   const formattedCurrentDate = dayjs().format('DD/MM/YYYY hh:mm A');
 
-  const calculateNetRate = (mrp: any, dis: any) => mrp - (mrp * dis) / 100;
-  const calculateTaxableAmount = (qty: any, netRate: any) => qty * netRate;
-  const calculateGSTAmount = (taxableAmount: any, sgst: any, cgst: any) => taxableAmount * (sgst + cgst) / 100;
-  const calculateFinalAmount = (taxableAmount: any, gstAmount: any) => taxableAmount + gstAmount;
+  const calculateNetRate = (mrp: number, discountPercentage: number) =>
+    mrp - (mrp * discountPercentage) / 100;
+
+  const calculateTaxableAmount = (quantity: number, netRate: number) =>
+    quantity * netRate;
+
+  const calculateGSTAmount = (taxableAmount: number, gstPercentage: number) =>
+    taxableAmount * gstPercentage / 100;
+
+  const calculateFinalAmount = (taxableAmount: number, gstAmount: number) =>
+    taxableAmount + gstAmount;
 
   const calculateTotals = (items: any) => {
     let subtotal = 0;
@@ -43,21 +50,27 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
     let total = 0;
 
     items.forEach((item: any) => {
-      const netRate = calculateNetRate(item.mrp, item.dis);
-      const taxableAmount = calculateTaxableAmount(item.qty, netRate);
-      const gstAmount = calculateGSTAmount(taxableAmount, item.sgst, item.cgst);
+      const mrp = parseFloat(item.mrp);
+      const discountPercentage = parseFloat(item.discount_percentage);
+      const quantity = parseFloat(item.quantity);
+      const gstPercentage = parseFloat(item.gst_percent);
+
+      const netRate = calculateNetRate(mrp, discountPercentage);
+      const taxableAmount = calculateTaxableAmount(quantity, netRate);
+      const gstAmount = calculateGSTAmount(taxableAmount, gstPercentage);
       const finalAmount = calculateFinalAmount(taxableAmount, gstAmount);
 
-      console.log("netRate", netRate)
-      console.log("taxableAmount", taxableAmount)
-      console.log("gstAmount", gstAmount)
-      console.log("finalAmount", finalAmount)
       subtotal += taxableAmount;
-      discount += (item.mrp * item.qty) - taxableAmount;
+      discount += (mrp * quantity) - taxableAmount; // Discount amount
       tax += gstAmount;
       total += finalAmount;
 
-      console.log("total", total)
+      // Optional: Console logs for debugging
+      console.log("netRate", netRate);
+      console.log("taxableAmount", taxableAmount);
+      console.log("gstAmount", gstAmount);
+      console.log("finalAmount", finalAmount);
+      console.log("total", total);
     });
 
     return {
@@ -68,7 +81,10 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
     };
   };
 
+  // Example usage
   const { subtotal, discount, tax, total } = calculateTotals(invoiceData.items);
+
+
 
   return (
     <Card className='previewCard'>
@@ -183,7 +199,7 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
                   <div>
                     <div className='flex items-center gap-4'>
                       <Typography className='min-is-[100px]'>Total Due:</Typography>
-                      <Typography>₹ {invoiceData?.totalAmount}</Typography>
+                      <Typography>₹ {parseFloat(invoiceData?.totalAmount)?.toFixed(2)}</Typography>
                     </div>
                     <div className='flex items-center gap-4'>
                       <Typography className='min-is-[100px]'>Bank name:</Typography>
@@ -214,21 +230,18 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
                 <thead>
                   <tr className='border-b bg-primary text-white'>
 
-                    <th className='!bg-transparent'>Item Name</th>
-                    {/* <th className='!bg-transparent'>MFG Date</th> */}
-                    <th className='!bg-transparent'>Pack</th>
-                    <th className='!bg-transparent'>Batch No</th>
-                    <th className='!bg-transparent'>Exp Dt</th>
-                    <th className='!bg-transparent'>Qty</th>
+                    <th className='!bg-transparent'>Product Name</th>
+
+                    <th className='!bg-transparent'>Quantity</th>
+                    <th className='!bg-transparent'>Expiry</th>
+                    <th className='!bg-transparent'>Free Qty</th>
+                    <th className='!bg-transparent'>BASE</th>
                     <th className='!bg-transparent'>MRP</th>
-                    <th className='!bg-transparent'>S.Rate</th>
-                    <th className='!bg-transparent'>Di%</th>
-                    <th className='!bg-transparent'>Net Rate</th>
-                    <th className='!bg-transparent'>Taxable Amt</th>
-                    <th className='!bg-transparent'>SGST</th>
-                    <th className='!bg-transparent'>CGST</th>
-                    <th className='!bg-transparent'>GST </th>
-                    <th className='!bg-transparent'>Final Amount</th>
+                    <th className='!bg-transparent'>Dis %</th>
+                    <th className='!bg-transparent'>GST %</th>
+                    <th className='!bg-transparent'>LP</th>
+                    <th className='!bg-transparent'>Amount</th>
+
                   </tr>
                 </thead>
                 <tbody>
@@ -244,51 +257,43 @@ const PreviewCard = ({ invoiceData, }: { invoiceData?: any; id: string }) => {
                     return (
                       <tr key={index}>
                         <td style={{ width: '50px' }}>
-                          <Typography color='text.primary'>{item.hsn_code || '-'}</Typography>
+                          <Typography color='text.primary'>{item.product?.product_name || '-'}</Typography>
                         </td>
-                        {/* <td>
-                          <Typography color='text.primary'>{item.item_name || '-'}</Typography>
+                        <td>
+                          <Typography color='text.primary'>{item.quantity || '-'}</Typography>
                         </td>
 
                         <td>
-                          <Typography color='text.primary'>{item.pack || '-'}</Typography>
+                          <Typography color='text.primary'>{item.expiry_date || '-'}</Typography>
                         </td>
                         <td>
-                          <Typography color='text.primary'>{item.batch || '-'}</Typography>
+                          <Typography color='text.primary'>{item.free_quantity || '-'}</Typography>
                         </td>
                         <td>
-                          <Typography color='text.primary'>{`${item.exp_month}/${item.exp_year}` || '-'}</Typography>
+                          <Typography color='text.primary'>{parseFloat(item.base).toFixed(2) || '-'}</Typography>
                         </td>
                         <td>
-                          <Typography color='text.primary'>{item.qty || '-'}</Typography>
+                          <Typography color='text.primary'>{parseFloat(item.mrp).toFixed(2) || '-'}</Typography>
                         </td>
                         <td>
-                          <Typography color='text.primary'>{item.mrp || '-'}</Typography>
+                          <Typography color='text.primary'>{`${item.discount_percentage}` || '-'}</Typography>
                         </td>
                         <td>
-                          <Typography color='text.primary'>{item.srate  || '-'}</Typography>
+                          <Typography color='text.primary'>{item.gst_percent || '-'}</Typography>
                         </td>
                         <td>
-                          <Typography color='text.primary'>{item.dis.toFixed(2) || '-'}</Typography>
+                          <Typography color='text.primary'>{parseFloat(item.last_price)?.toFixed(2) || '-'}</Typography>
                         </td>
                         <td>
-                          <Typography color='text.primary'>{netRate.toFixed(2) || '-'}</Typography>
+                          <Typography color='text.primary'>{parseFloat(item.amount).toFixed(2) || '-'}</Typography>
                         </td>
-                        <td>
-                          <Typography color='text.primary'>{taxableAmount.toFixed(2) || '-'}</Typography>
-                        </td>
-                        <td>
-                          <Typography color='text.primary'>{item.sgst.toFixed(2) || '-'}</Typography>
-                        </td>
-                        <td>
-                          <Typography color='text.primary'>{item.cgst.toFixed(2) || '-'}</Typography>
-                        </td>
-                        <td>
-                          <Typography color='text.primary'>{gstAmount.toFixed(2) || '-'}</Typography>
-                        </td>
-                        <td>
-                          <Typography color='text.primary'>{finalAmount.toFixed(2) || '-'}</Typography>
-                        </td> */}
+
+
+
+
+
+
+
                       </tr>
                     );
                   })}

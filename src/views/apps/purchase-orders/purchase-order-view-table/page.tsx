@@ -120,6 +120,7 @@ const columnHelper = createColumnHelper<any>()
 const PurchasedOrderViewTable = ({ tableData }: { tableData?: any, }) => {
   // States
 
+  console.log("tableData1212", tableData)
 
 
   const [rowSelection, setRowSelection] = useState({})
@@ -150,60 +151,87 @@ const PurchasedOrderViewTable = ({ tableData }: { tableData?: any, }) => {
         cell: ({ row }) => <Typography>{row.index + 1}</Typography>, // Displays sequential number starting from 1
       },
 
-      columnHelper.accessor('item_name', {
+      columnHelper.accessor('product', {
         header: 'Product Name',
 
-        cell: ({ row }) => <Typography>{row.original.item_name || 'N/A'}</Typography>
-      }),
-      columnHelper.accessor('company', {
-        header: 'Company',
-        cell: ({ row }) => <Typography>{row.original.company || 'N/A'}</Typography>
+        cell: ({ row }) => <Typography>{row.original.product?.product_name || 'N/A'}</Typography>
       }),
 
-      columnHelper.accessor('pack', {
-        header: 'Pack',
-        cell: ({ row }) => <Typography>{row.original.pack}</Typography>
-      }),
-      columnHelper.accessor('qty', {
+
+      columnHelper.accessor('quantity', {
         header: 'Purchase Quantity',
-        cell: ({ row }) => <Typography>{row.original.qty} Pc(s)</Typography>
+        cell: ({ row }) => <Typography>{row.original.quantity} Pc(s)</Typography>
+      }),
+      columnHelper.accessor('free_quantity', {
+        header: 'Free Qty',
+        cell: ({ row }) => <Typography>{row.original.free_quantity}</Typography>
       }),
 
+      // columnHelper.accessor('base', {
+      //   header: 'BASE',
+
+      //   cell: ({ row }) => {
+
+      //     const totalAmount = parseFloat(row.original.base);
+      //     const formattedAmount = totalAmount ? totalAmount.toFixed(2) : '0.00';
+
+      //     return (
+      //       <Typography className="cursor-pointer">
+      //         ₹ {formattedAmount}
+      //       </Typography>
+      //     );
+
+      //   }
+      // }),
       columnHelper.accessor('mrp', {
         header: 'MRP',
         cell: ({ row }) => <Typography>{row.original.mrp}</Typography>
       }),
 
+
+      columnHelper.accessor('discount_percentage', {
+        header: 'Discount %',
+        cell: ({ row }) => <Typography>{row.original.discount_percentage}</Typography>
+      }),
+
+
+      columnHelper.accessor('gst_percent', {
+        header: 'GST %',
+        cell: ({ row }) => <Typography>{row.original.gst_percent}</Typography>
+      }),
+      columnHelper.accessor('last_price', {
+        header: 'LP',
+
+        cell: ({ row }) => {
+
+          const totalAmount = parseFloat(row.original.last_price);
+          const formattedAmount = totalAmount ? totalAmount.toFixed(2) : '0.00';
+
+          return (
+            <Typography className="cursor-pointer">
+              ₹ {formattedAmount}
+            </Typography>
+          );
+
+        }
+      }),
+
+
       columnHelper.accessor('amount', {
         header: 'Amount',
-        cell: ({ row }) => <Typography>{row.original.amount}</Typography>
-      }),
-      columnHelper.accessor('dis', {
-        header: 'Discount',
-        cell: ({ row }) => <Typography>{row.original.dis}</Typography>
-      }),
-      columnHelper.accessor('inv_amt', {
-        header: 'INV Amount',
-        cell: ({ row }) => <Typography>{row.original.inv_amt}</Typography>
-      }),
-      columnHelper.accessor('cgst', {
-        header: 'CGST',
-        cell: ({ row }) => <Typography>{row.original.cgst}</Typography>
-      }),
-      columnHelper.accessor('sgst', {
-        header: 'SGST',
-        cell: ({ row }) => <Typography>{row.original.sgst}</Typography>
-      }),
-      columnHelper.accessor('igst', {
-        header: 'IGST',
-        cell: ({ row }) => <Typography>{row.original.igst}</Typography>
-      }),
-      columnHelper.accessor('psr_lno', {
-        header: 'PSRL NO',
-        cell: ({ row }) => <Typography>{row.original.psr_lno}</Typography>
-      }),
+        cell: ({ row }) => {
 
+          const totalAmount = parseFloat(row.original.amount);
+          const formattedAmount = totalAmount ? totalAmount.toFixed(2) : '0.00';
 
+          return (
+            <Typography className="cursor-pointer">
+              ₹ {formattedAmount}
+            </Typography>
+          );
+
+        }
+      }),
 
 
 

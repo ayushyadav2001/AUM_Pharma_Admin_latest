@@ -141,6 +141,8 @@
     "packagingType": "Packaging Type",
     "manufacturer": "Manufacturer",
     "productForm": "Product Form",
-    "homeMasters": "Home"
+    "homeMasters": "Home",
+    "homeSection": "Home Section",
+    "homeSectionIndexing": "Home Sec Indexing"
   }
 }

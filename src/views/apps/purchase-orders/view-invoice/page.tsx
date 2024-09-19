@@ -12,9 +12,35 @@ import PreviewCard from './PreviewCard'
 
 const PreviewInvoice = ({ invoiceData, id }: { invoiceData?: any; id: string }) => {
   // Handle Print Button Click
+  // const handleButtonClick = () => {
+  //   window.print()
+  // }
   const handleButtonClick = () => {
-    window.print()
-  }
+    // Apply the landscape style before triggering print
+    const style = document.createElement('style');
+
+    style.innerHTML = `
+    @media print {
+      @page {
+        size: A4; /* Use 'A4 landscape' for landscape orientation or 'A4' for portrait */
+        margin: 1cm; /* Adjust margins as needed */
+      }
+
+      /* Additional print styles can be included here */
+      body {
+        font-size: 12pt; /* Adjust font size or other styles if needed */
+      }
+    }
+  `;
+    document.head.appendChild(style);
+
+    // Trigger the print dialog
+    window.print();
+
+    // Remove the style after printing
+    document.head.removeChild(style);
+  };
+
 
   const handleButtonClickPDF = () => {
     // Apply the landscape style before triggering print
@@ -23,7 +49,7 @@ const PreviewInvoice = ({ invoiceData, id }: { invoiceData?: any; id: string }) 
     style.innerHTML = `
     @media print {
       @page {
-        size: landscape;
+        size: A4;
         margin: 0;
       }
     }

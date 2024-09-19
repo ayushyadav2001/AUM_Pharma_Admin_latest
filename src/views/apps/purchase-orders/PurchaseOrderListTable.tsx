@@ -309,7 +309,18 @@ const PurchaseOrderListTable = ({ tableData }: { tableData?: UsersType[] }) => {
       columnHelper.accessor('totalAmount', {
         header: 'Grand Total',
         enableSorting: true,
-        cell: ({ row }) => <Typography className="cursor-pointer" >₹ {row.original.totalAmount}</Typography>
+        cell: ({ row }) => {
+
+          const totalAmount = row.original.totalAmount;
+          const formattedAmount = totalAmount ? totalAmount.toFixed(2) : '0.00';
+
+          return (
+            <Typography className="cursor-pointer">
+              ₹ {formattedAmount}
+            </Typography>
+          );
+
+        }
       }),
 
 
