@@ -103,7 +103,7 @@ const BannerCategoryIndexing = ({ tableData }: { tableData?: any[] }) => {
         <h5> Change Listing Banner Categories Positions</h5>
         {categories.map((category, index) => (
           <DraggableRow
-            key={category.slug}
+            key={category.index}
             category={category}
             index={index}
             moveRow={moveRow}
