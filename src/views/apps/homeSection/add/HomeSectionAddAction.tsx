@@ -121,9 +121,19 @@ const HomeSectionAdd = () => {
                 <Checkbox
                   checked={selectedOption === 'banner'}
                   onChange={() => {
-                    setSelectedOption(selectedOption === 'banner' ? null : 'banner')
-                    setValue("products", [])
-                    setValue("type", "banner")
+
+
+                    if (selectedOption !== 'banner') {
+
+                      // setSelectedOption(selectedOption === 'banner' ? null : 'banner')
+
+                      setValue("products", [])
+                      setValue("type", "banner")
+                      setValue("banners", [{ imageUrl: null, linkUrl: '' }])
+                      setSelectedOption('banner');
+
+                    }
+
                   }}
                 />
               }
@@ -134,9 +144,16 @@ const HomeSectionAdd = () => {
                 <Checkbox
                   checked={selectedOption === 'product_slider'}
                   onChange={() => {
-                    setSelectedOption(selectedOption === 'product_slider' ? null : 'product_slider')
-                    setValue("banners", [])
-                    setValue("type", "product_slider")
+
+                    if (selectedOption !== 'product_slider') {
+
+                      setSelectedOption('product_slider');
+
+                      // setSelectedOption(selectedOption === 'product_slider' ? null : 'product_slider')
+                      setValue("banners", [])
+                      setValue("type", "product_slider")
+                    }
+
                   }}
                 />
               }
