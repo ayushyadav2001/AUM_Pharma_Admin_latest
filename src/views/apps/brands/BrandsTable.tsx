@@ -45,34 +45,33 @@ import {
 import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
+// Type Imports
+
+// import dayjs from 'dayjs'
+
 import { CardHeader, Chip, Divider } from '@mui/material'
+
+import { toast } from 'react-toastify'
 
 import axios from 'axios'
 
 import { useDispatch } from 'react-redux'
 
-import { toast } from 'react-toastify'
-
-import DefaultProductImage from '@assets/defaultImages/default-prod.webp'
-
-// Type Imports
-
-// import dayjs from 'dayjs'
-
 import type { UsersType } from '@/types/apps/userTypes'
 import type { Locale } from '@configs/i18n'
-
-// Component Imports
-// import OptionMenu from '@core/components/option-menu'
 
 // Util Imports
 
 import { getLocalizedUrl } from '@/utils/i18n'
 
+import DefaultProductImage from '@assets/defaultImages/default-prod.webp'
+
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
+
+import { setBrandsData } from '@/redux-store/slices/brandsSlice'
+
 import ConfirmationDialogDelete from './DeleteCategoryModal'
-import { setCategoryData } from '@/redux-store/slices/categorySlice'
 import ConfirmationDialogStatusChange from './changeStatus'
 
 declare module '@tanstack/table-core' {
@@ -131,13 +130,14 @@ const DebouncedInput = ({
 // Column Definitions
 const columnHelper = createColumnHelper<any>()
 
-const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
+const BrandsTable = ({ tableData }: { tableData?: UsersType[] }) => {
   // States
   const [role, setRole] = useState<any['role']>('')
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState(...[tableData])
   const [filteredData, setFilteredData] = useState(data)
   const [globalFilter, setGlobalFilter] = useState('')
+
   const [selectedItem, setSelectedItem] = useState<string | null>(null)
   const [isActive, setIsActive] = useState<boolean | null>(null)
 
@@ -166,27 +166,26 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
     setSelectedItem(null)
   }
 
-  const fetchProducts = async () => {
+  const fetchData = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/get-category`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/brands/get-all-brand`, {
         withCredentials: true
       })
 
-      dispatch(setCategoryData(response.data.categories))
-
-      setData(response.data.categories)
+      setData(response.data.brands)
+      dispatch(setBrandsData(response.data.brands)) // Ensure `setData` action is correctly set
     } catch (err) {
-      console.error('Failed to fetch category', err) // Log the error for debugging
+      console.error('Failed to fetch Brands', err) // Log the error for debugging
     }
   }
 
   const handleDelete = useCallback(async () => {
     if (selectedItem) {
       try {
-        await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category/delete-category/${selectedItem}`, {
+        await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/brands/delete-brand/${selectedItem}`, {
           withCredentials: true
         })
-        await fetchProducts()
+        await fetchData()
         toast.success('Deleted Successfully!')
       } catch (err) {
         console.error('Failed to delete stock adjustment', err) // Log the error for debugging
@@ -198,11 +197,11 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
     if (selectedItem) {
       try {
         await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/category/change-status-category/${selectedItem}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/brands/update-status-brand/${selectedItem}`,
           {},
           { withCredentials: true }
         )
-        await fetchProducts()
+        await fetchData()
         toast.success('Status Change Successfully!')
       } catch (err) {
         console.error('Failed to delete stock adjustment', err) // Log the error for debugging
@@ -215,27 +214,24 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
+      columnHelper.accessor('name', {
+        header: 'Brand Name',
+        cell: ({ row }) => <Typography>{row.original.name}</Typography>
+      }),
+
       columnHelper.accessor('image', {
-        header: 'Image',
+        header: 'Logo',
         cell: ({ row }) => {
           const productImage = row.original.image
 
           const imageUrl = productImage ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${productImage}` : DefaultProductImage
 
           return (
-            <div className='flex items-center justify-center w-12 h-12'>
-              <Image src={imageUrl} alt='Category Image' width={50} height={50} className='object-cover' priority />
+            <div className='flex items-center justify-center '>
+              <Image src={imageUrl} alt='Product Image' width={50} height={50} className='object-contain' priority />
             </div>
           )
         }
-      }),
-      columnHelper.accessor('name', {
-        header: 'Name',
-        cell: ({ row }) => <Typography>{row.original.name != null ? row.original.name : 'NA'}</Typography>
-      }),
-      columnHelper.accessor('description', {
-        header: 'description',
-        cell: ({ row }) => <Typography>{row.original.description != null ? row.original.description : 'NA'}</Typography>
       }),
 
       columnHelper.accessor('status', {
@@ -327,126 +323,125 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
   }, [role, data, setFilteredData])
 
   return (
-    <>
-      <Card>
-        <CardHeader title='Categories' className='pbe-4' />
+    <Card>
+      <CardHeader title='Brands' className='pbe-4' />
 
-        {/* <TableFilters setData={setData} tableData={tableData} /> */}
+      {/* <TableFilters setData={setData} tableData={tableData} /> */}
 
-        <Divider />
-        <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-center max-sm:gap-4'>
-          <Button
-            variant='outlined'
-            color='secondary'
-            startIcon={<i className='ri-upload-2-line' />}
-            className='max-sm:is-full'
-          >
-            Export
-          </Button>
-          <div className='flex flex-col !items-start max-sm:is-full sm:flex-row sm:items-center gap-4'>
-            <DebouncedInput
-              value={globalFilter ?? ''}
-              className='max-sm:is-full min-is-[220px]'
-              onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search User'
-            />
+      <Divider />
+      <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-center max-sm:gap-4'>
+        <Button
+          variant='outlined'
+          color='secondary'
+          startIcon={<i className='ri-upload-2-line' />}
+          className='max-sm:is-full'
+        >
+          Export
+        </Button>
+        <div className='flex flex-col !items-start max-sm:is-full sm:flex-row sm:items-center gap-4'>
+          <DebouncedInput
+            value={globalFilter ?? ''}
+            className='max-sm:is-full min-is-[220px]'
+            onChange={value => setGlobalFilter(String(value))}
+            placeholder='Search Brand'
+          />
 
-            <Link className='' href={`/${locale}/apps/category/add`}>
-              <Button variant='contained' className='is-full sm:is-auto'>
-                Add
-              </Button>
-            </Link>
-            <FormControl size='small' className='max-sm:is-full hidden'>
-              <InputLabel id='roles-app-role-select-label'>Select Role</InputLabel>
-              <Select
-                value={role}
-                onChange={e => setRole(e.target.value)}
-                label='Select Role'
-                id='roles-app-role-select'
-                labelId='roles-app-role-select-label'
-                className='min-is-[150px]'
-              >
-                <MenuItem value=''>Select Role</MenuItem>
-                <MenuItem value='admin'>Admin</MenuItem>
-                <MenuItem value='author'>Author</MenuItem>
-                <MenuItem value='editor'>Editor</MenuItem>
-                <MenuItem value='maintainer'>Maintainer</MenuItem>
-                <MenuItem value='subscriber'>Subscriber</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-        </CardContent>
-        <div className='overflow-x-auto'>
-          <table className={tableStyles.table}>
-            <thead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <th key={header.id}>
-                      {header.isPlaceholder ? null : (
-                        <>
-                          <div
-                            className={classnames({
-                              'flex items-center': header.column.getIsSorted(),
-                              'cursor-pointer select-none': header.column.getCanSort()
-                            })}
-                            onClick={header.column.getToggleSortingHandler()}
-                          >
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                            {{
-                              asc: <i className='ri-arrow-up-s-line text-xl' />,
-                              desc: <i className='ri-arrow-down-s-line text-xl' />
-                            }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
-                          </div>
-                        </>
-                      )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            {table.getFilteredRowModel().rows.length === 0 ? (
-              <tbody>
-                <tr>
-                  <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
-                    No data available
-                  </td>
-                </tr>
-              </tbody>
-            ) : (
-              <tbody>
-                {table
-                  .getRowModel()
-                  .rows.slice(0, table.getState().pagination.pageSize)
-                  .map(row => {
-                    return (
-                      <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
-                        {row.getVisibleCells().map(cell => (
-                          <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-                        ))}
-                      </tr>
-                    )
-                  })}
-              </tbody>
-            )}
-          </table>
+          <Link className='' href={`/${locale}/apps/brands/add`}>
+            <Button variant='contained' className='is-full sm:is-auto'>
+              Add
+            </Button>
+          </Link>
+          <FormControl size='small' className='max-sm:is-full hidden'>
+            <InputLabel id='roles-app-role-select-label'>Select Role</InputLabel>
+            <Select
+              value={role}
+              onChange={e => setRole(e.target.value)}
+              label='Select Role'
+              id='roles-app-role-select'
+              labelId='roles-app-role-select-label'
+              className='min-is-[150px]'
+            >
+              <MenuItem value=''>Select Role</MenuItem>
+              <MenuItem value='admin'>Admin</MenuItem>
+              <MenuItem value='author'>Author</MenuItem>
+              <MenuItem value='editor'>Editor</MenuItem>
+              <MenuItem value='maintainer'>Maintainer</MenuItem>
+              <MenuItem value='subscriber'>Subscriber</MenuItem>
+            </Select>
+          </FormControl>
         </div>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50]}
-          component='div'
-          className='border-bs'
-          count={table.getFilteredRowModel().rows.length}
-          rowsPerPage={table.getState().pagination.pageSize}
-          page={table.getState().pagination.pageIndex}
-          SelectProps={{
-            inputProps: { 'aria-label': 'rows per page' }
-          }}
-          onPageChange={(_, page) => {
-            table.setPageIndex(page)
-          }}
-          onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
-        />
-      </Card>
+      </CardContent>
+      <div className='overflow-x-auto'>
+        <table className={tableStyles.table}>
+          <thead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <th key={header.id}>
+                    {header.isPlaceholder ? null : (
+                      <>
+                        <div
+                          className={classnames({
+                            'flex items-center': header.column.getIsSorted(),
+                            'cursor-pointer select-none': header.column.getCanSort()
+                          })}
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          {{
+                            asc: <i className='ri-arrow-up-s-line text-xl' />,
+                            desc: <i className='ri-arrow-down-s-line text-xl' />
+                          }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
+                        </div>
+                      </>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          {table.getFilteredRowModel().rows.length === 0 ? (
+            <tbody>
+              <tr>
+                <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
+                  No data available
+                </td>
+              </tr>
+            </tbody>
+          ) : (
+            <tbody>
+              {table
+                .getRowModel()
+                .rows.slice(0, table.getState().pagination.pageSize)
+                .map(row => {
+                  return (
+                    <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
+                      {row.getVisibleCells().map(cell => (
+                        <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                      ))}
+                    </tr>
+                  )
+                })}
+            </tbody>
+          )}
+        </table>
+      </div>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component='div'
+        className='border-bs'
+        count={table.getFilteredRowModel().rows.length}
+        rowsPerPage={table.getState().pagination.pageSize}
+        page={table.getState().pagination.pageIndex}
+        SelectProps={{
+          inputProps: { 'aria-label': 'rows per page' }
+        }}
+        onPageChange={(_, page) => {
+          table.setPageIndex(page)
+        }}
+        onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
+      />
+
       <ConfirmationDialogDelete
         open={confirmationDialogOpen}
         onClose={closeConfirmationDialog}
@@ -461,8 +456,8 @@ const CategoryTable = ({ tableData }: { tableData?: UsersType[] }) => {
         itemName={selectedItem || ''}
         isActive={isActive || false}
       />
-    </>
+    </Card>
   )
 }
 
-export default CategoryTable
+export default BrandsTable

@@ -103,13 +103,13 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
     <ScrollWrapper
       {...(isBreakpointReached
         ? {
-          className: 'bs-full overflow-y-auto overflow-x-hidden',
-          onScroll: container => scrollMenu(container, false)
-        }
+            className: 'bs-full overflow-y-auto overflow-x-hidden',
+            onScroll: container => scrollMenu(container, false)
+          }
         : {
-          options: { wheelPropagation: false, suppressScrollX: true },
-          onScrollY: container => scrollMenu(container, true)
-        })}
+            options: { wheelPropagation: false, suppressScrollX: true },
+            onScrollY: container => scrollMenu(container, true)
+          })}
     >
       {/* Incase you also want to scroll NavHeader to scroll with Vertical Menu, remove NavHeader from above and paste it below this comment */}
       {/* Vertical Menu */}
@@ -472,43 +472,42 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         </SubMenu> */}
 
         <SubMenu label={dictionary['navigation'].homeMasters} icon={<i className='ri-home-smile-2-line' />}>
-          <MenuItem href={`/${locale}/apps/category/header-category-indexing`}>{dictionary['navigation'].headerCategoryIndexing}</MenuItem>
-          <MenuItem href={`/${locale}/apps/category/banner-category-indexing`}>{dictionary['navigation'].bannerCategoryIndexing}</MenuItem>
+          <MenuItem href={`/${locale}/apps/category/header-category-indexing`}>
+            {dictionary['navigation'].headerCategoryIndexing}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/category/banner-category-indexing`}>
+            {dictionary['navigation'].bannerCategoryIndexing}
+          </MenuItem>
           <MenuItem href={`/${locale}/apps/home-sliders`}>{dictionary['navigation'].homeSliders}</MenuItem>
           <MenuItem href={`/${locale}/apps/homeSections`}>{dictionary['navigation'].homeSection}</MenuItem>
-          <MenuItem href={`/${locale}/apps/homeSectionIndexing`}>{dictionary['navigation'].homeSectionIndexing}</MenuItem>
-
-
+          <MenuItem href={`/${locale}/apps/homeSectionIndexing`}>
+            {dictionary['navigation'].homeSectionIndexing}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/brands`}>{dictionary['navigation'].brands}</MenuItem>
         </SubMenu>
         <SubMenu label={dictionary['navigation'].masters} icon={<i className='ri-archive-line' />}>
           <MenuItem href={`/${locale}/apps/category`}>{dictionary['navigation'].categorys}</MenuItem>
 
-
           <MenuItem href={`/${locale}/apps/sub-category`}>{dictionary['navigation'].subCategorys}</MenuItem>
 
-          <MenuItem href={`/${locale}/apps/secondary-sub-category`}>{dictionary['navigation'].secondarySubCategories}</MenuItem>
+          <MenuItem href={`/${locale}/apps/secondary-sub-category`}>
+            {dictionary['navigation'].secondarySubCategories}
+          </MenuItem>
           <MenuItem href={`/${locale}/apps/packaging`}>{dictionary['navigation'].packaging}</MenuItem>
           <MenuItem href={`/${locale}/apps/packaging-type`}>{dictionary['navigation'].packagingType}</MenuItem>
           <MenuItem href={`/${locale}/apps/manufacturer`}>{dictionary['navigation'].manufacturer}</MenuItem>
           <MenuItem href={`/${locale}/apps/product-form`}>{dictionary['navigation'].productForm}</MenuItem>
-
         </SubMenu>
-
-
-
 
         {/* <SubMenu label={dictionary['navigation'].subCategorys} icon={<i className='ri-archive-2-line' />}>
         </SubMenu> */}
-
-
-
 
         {canShowMaster('Products') && (
           <SubMenu
             label={dictionary['navigation'].products}
             icon={<i className='ri-home-smile-line' />}
 
-          // suffix={<Chip label='5' size='small' color='error' />}
+            // suffix={<Chip label='5' size='small' color='error' />}
           >
             {canShowSubmenu('Products', 'List Product') && (
               <MenuItem href={`/${locale}/apps/products`}>{dictionary['navigation'].productsList}</MenuItem>
@@ -529,7 +528,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             label={dictionary['navigation'].vendor}
             icon={<i className='ri-group-3-line' />}
 
-          // suffix={<Chip label='5' size='small' color='error' />}
+            // suffix={<Chip label='5' size='small' color='error' />}
           >
             <MenuItem href={`/${locale}/apps/formats`}>{dictionary['navigation'].formats}</MenuItem>
 
