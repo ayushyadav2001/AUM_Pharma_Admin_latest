@@ -9,7 +9,10 @@ const sectionValidationSchema = yup.object().shape({
 
   type: yup
     .string()
-    .oneOf(['banner', 'product_slider'], 'Type must be either "banner" or "product_slider"')
+    .oneOf(
+      ['banner', 'product_slider', 'prescription_component', 'category_slider'],
+      'Type must be either "banner" or "product_slider"'
+    )
     .required('Section type is required'),
 
   banners: yup
@@ -33,6 +36,15 @@ const sectionValidationSchema = yup.object().shape({
       is: 'product_slider',
       then: schema => schema.min(1, 'At least one product is required').required('Products are required for this type'),
       otherwise: schema => schema.length(0).notRequired() // Allow empty array when type is not product_slider
+    }),
+  categories: yup
+    .array()
+    .of(yup.string().required('Categories is required')) // Ensure product ID is required
+    .when('type', {
+      is: 'category_slider',
+      then: schema =>
+        schema.min(1, 'At least one Category is required').required('Category are required for this type'),
+      otherwise: schema => schema.length(0).notRequired()
     })
 })
 
@@ -42,6 +54,7 @@ const defaultValues = {
   type: 'banner', // or 'product_slider' depending on the initial form
   banners: [{ imageUrl: null, linkUrl: '' }], // Initialize with null for file
   products: [],
+  categories: [],
   status: true
 }
 
