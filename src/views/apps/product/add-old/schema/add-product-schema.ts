@@ -13,12 +13,6 @@ import {
   array
 } from 'valibot'
 
-// const ImageSchema = pipe(
-//   file('Please select an image file.'),
-//   mimeType(['image/jpeg', 'image/png'], 'Please select a JPEG or PNG file.'),
-//   maxSize(1024 * 1024 * 10, 'Please select a file smaller than 10 MB.')
-// )
-
 const ImageSchema = pipe(
   file('Please select an image file.'),
   mimeType(['image/jpeg', 'image/png'], 'Please select a JPEG or PNG file.'),
@@ -27,10 +21,24 @@ const ImageSchema = pipe(
 
 const objectId = string()
 
+const faqSchema = object({
+  question: pipe(string(), nonEmpty('Question is required')),
+  answer: pipe(string(), nonEmpty('Answer is required'))
+})
+
+const factBoxSchema = object({
+  label: pipe(string(), nonEmpty('Label is required')),
+  value: pipe(string(), nonEmpty('Value is required'))
+})
+
 const ArrayLengthSchema = pipe(array(objectId), minLength(1, 'At least one item is required.'))
 
 const basicInfoSchema = object({
   product_code: pipe(string(), nonEmpty('Product Code is required')),
+  product_type: pipe(string(), nonEmpty('Product Type is required')),
+
+  quantity: pipe(string(), nonEmpty('Product Quantity is required')),
+  label: optional(nullable(string())),
   product_image: pipe(
     array(ImageSchema), // Expect an array of image files
     minLength(1, 'At least one product image is required.')
@@ -54,28 +62,6 @@ const basicInfoSchema = object({
   alert_quantity: pipe(string(), nonEmpty('Alert Quantity is required when stock management is enabled'))
 })
 
-// const productDetailsSchema = object({
-//   introduction: optional(nullable(pipe(string(), nonEmpty('Introduction is required')))),
-//   description: optional(nullable(pipe(string(), nonEmpty('Description is required')))),
-//   salt_composition: optional(nullable(pipe(string(), nonEmpty('Salt Composition is required')))),
-//   benefits: optional(nullable(pipe(string(), nonEmpty('Benefits is required')))),
-//   use_of: optional(nullable(pipe(string(), nonEmpty('Use of is required')))),
-//   how_to_use: optional(nullable(pipe(string(), nonEmpty('How to Use is required')))),
-//   safety_advice: optional(nullable(pipe(string(), nonEmpty('Safety advice is required')))),
-//   ingredients: optional(nullable(pipe(string(), nonEmpty('Ingredients is required')))),
-//   primary_use: optional(nullable(pipe(string(), nonEmpty('Primary use is required')))),
-//   storage: optional(nullable(pipe(string(), nonEmpty('Storage is required')))),
-//   common_side_effects: optional(nullable(pipe(string(), nonEmpty('Common Side Effects is required')))),
-//   alcohol_interaction: optional(nullable(pipe(string(), nonEmpty('Alcohol Interaction is required')))),
-//   pregnancy_interaction: optional(nullable(pipe(string(), nonEmpty('Pregnancy Interaction is required')))),
-//   lactation_interaction: optional(nullable(pipe(string(), nonEmpty('Lactation Interaction is required')))),
-//   driving_interaction: optional(nullable(pipe(string(), nonEmpty('Driving Interaction is required')))),
-//   kidney_interaction: optional(nullable(pipe(string(), nonEmpty('Kidney Interaction is required')))),
-//   liver_interaction: optional(nullable(pipe(string(), nonEmpty('Liver Interaction is required')))),
-//   country_of_origin: optional(nullable(pipe(string(), nonEmpty('Country of origin is required')))),
-//   faqs: optional(nullable(pipe(string(), nonEmpty('Faqs is required'))))),
-// })
-
 const productDetailsSchema = object({
   introduction: pipe(string(), nonEmpty('Introduction is required')),
   description: pipe(string(), nonEmpty('Description is required')),
@@ -95,7 +81,20 @@ const productDetailsSchema = object({
   kidney_interaction: optional(nullable(pipe(string(), nonEmpty('Kidney Interaction is required')))),
   liver_interaction: optional(nullable(pipe(string(), nonEmpty('Liver Interaction is required')))),
   country_of_origin: optional(nullable(pipe(string(), nonEmpty('Country of origin is required')))),
-  faqs: optional(nullable(pipe(string(), nonEmpty('Faqs is required'))))
+  if_miss: optional(nullable(pipe(string(), nonEmpty('If Miss  is required')))),
+
+  faqs: optional(
+    nullable(
+      array(faqSchema) // Array of FAQ objects
+    )
+  ),
+
+  // New fact_box field
+  fact_box: optional(
+    nullable(
+      array(factBoxSchema) // Array of Fact Box objects
+    )
+  )
 })
 
 const healthInfoSchema = object({

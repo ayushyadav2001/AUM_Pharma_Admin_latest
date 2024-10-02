@@ -23,8 +23,7 @@ import Chip from '@mui/material/Chip'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 
-import { saveAs } from 'file-saver';
-
+import { saveAs } from 'file-saver'
 
 // import { styled } from '@mui/material/styles'
 
@@ -75,13 +74,11 @@ import { toast } from 'react-toastify'
 
 import { useDispatch } from 'react-redux'
 
-import { FaFileCsv, FaFileExcel, FaPrint, FaFilePdf } from 'react-icons/fa';
+import { FaFileCsv, FaFileExcel, FaPrint, FaFilePdf } from 'react-icons/fa'
 
-import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx'
 
-
-
-import { jsPDF } from 'jspdf';
+import { jsPDF } from 'jspdf'
 
 import type { UsersType } from '@/types/apps/userTypes'
 import type { Locale } from '@configs/i18n'
@@ -108,10 +105,9 @@ import ExcelImportTable from './ExcelImportTale'
 import { setProductData } from '@/redux-store/slices/productSlice'
 import Loader from '@/views/Loader/Loader'
 
-import 'jspdf-autotable';
+import 'jspdf-autotable'
 
-import DefaultProductImage from "@assets/defaultImages/default-prod.webp"
-
+import DefaultProductImage from '@assets/defaultImages/default-prod.webp'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -231,7 +227,9 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   const fetchVendors = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/get-all-vendor`, {
+        withCredentials: true
+      })
 
       setVendors(response.data.data)
     } catch (error) {
@@ -281,26 +279,20 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
       columnHelper.accessor('product_image', {
         header: 'Product Image',
         cell: ({ row }) => {
-          const productImage = row.original.product_images[0];
+          const productImage = row.original.product_images[0]
 
-          const imageUrl = productImage
-            ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${productImage}`
-            : DefaultProductImage;
+          const imageUrl = productImage ? `${process.env.NEXT_PUBLIC_IMAGE_URL}${productImage}` : DefaultProductImage
 
           return (
-
-            <div className="flex items-center justify-center w-12 h-12">
-              <Image
-                src={imageUrl}
-                alt="Product Image"
-                width={50}
-                height={50}
-                className="object-cover"
-                priority
-              />
+            <div className='flex items-center justify-center w-12 h-12'>
+              <Image src={imageUrl} alt='Product Image' width={50} height={50} className='object-cover' priority />
             </div>
-          );
-        },
+          )
+        }
+      }),
+      columnHelper.accessor('product_type', {
+        header: 'Product Type',
+        cell: ({ row }) => <Typography>{row.original.product_type === 'drug' ? 'Drug' : 'OTC'}</Typography>
       }),
       columnHelper.accessor('product_code', {
         header: 'Product ID',
@@ -321,7 +313,6 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
         cell: ({ row }) => <Typography>{row.original.product_name}</Typography>
       }),
 
-
       // columnHelper.accessor('igst', {
       //   header: 'IGST',
       //   cell: ({ row }) => <Typography>{row.original.igst}</Typography>
@@ -333,25 +324,22 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
       columnHelper.accessor('manufacturer', {
         header: 'Manufacturer',
-        cell: ({ row }) => <Typography>{row.original.manufacturer.name || "NA"}</Typography>
+        cell: ({ row }) => <Typography>{row.original.manufacturer.name || 'NA'}</Typography>
       }),
-
-
-
 
       columnHelper.accessor('packaging', {
         header: 'Packaging',
-        cell: ({ row }) => <Typography>{row.original.packaging.name || "NA"}</Typography>
+        cell: ({ row }) => <Typography>{row.original.packaging.name || 'NA'}</Typography>
       }),
 
       columnHelper.accessor('packing_type', {
         header: 'Packing Type',
-        cell: ({ row }) => <Typography>{row.original.packing_type.name || "NA"}</Typography>
+        cell: ({ row }) => <Typography>{row.original.packing_type.name || 'NA'}</Typography>
       }),
 
       columnHelper.accessor('alert_quantity', {
         header: 'Alert Quantity',
-        cell: ({ row }) => <Typography>{row.original.alert_quantity ? row.original.alert_quantity : "NA"}</Typography>
+        cell: ({ row }) => <Typography>{row.original.alert_quantity ? row.original.alert_quantity : 'NA'}</Typography>
       }),
 
       // columnHelper.accessor('Schedule', {
@@ -488,86 +476,128 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   const handleExportPDF = () => {
     const headers = [
-      'Product Image', 'Category', 'Sub Category', 'Product ID', 'Product Name',
-      'MRP', 'IGST', 'HSN', 'Manufacturer', 'Composition', 'Packing Type',
-      'Packaging', 'Schedule', 'Usage', 'About Salt', 'Status'
-    ];
+      'Product Image',
+      'Category',
+      'Sub Category',
+      'Product ID',
+      'Product Name',
+      'MRP',
+      'IGST',
+      'HSN',
+      'Manufacturer',
+      'Composition',
+      'Packing Type',
+      'Packaging',
+      'Schedule',
+      'Usage',
+      'About Salt',
+      'Status'
+    ]
 
     const rows = table.getRowModel().rows.map(row => {
-      return row.getAllCells().map(cell => cell.getValue());
-    });
+      return row.getAllCells().map(cell => cell.getValue())
+    })
 
-    const doc: any = new jsPDF();
+    const doc: any = new jsPDF()
 
-    doc?.autoTable({ head: [headers], body: rows });
-    doc.save('products.pdf');
-  };
+    doc?.autoTable({ head: [headers], body: rows })
+    doc.save('products.pdf')
+  }
 
   const handlePrint = () => {
-    const tableElement = document.getElementById('table-to-print');
+    const tableElement = document.getElementById('table-to-print')
 
     if (!tableElement) {
-      console.error('Table element not found');
+      console.error('Table element not found')
 
-      return;
+      return
     }
 
-    const printWindow = window.open('', '', 'height=600,width=800');
+    const printWindow = window.open('', '', 'height=600,width=800')
 
-    printWindow?.document.write('<html><head><title>Print Table</title>');
+    printWindow?.document.write('<html><head><title>Print Table</title>')
 
-    printWindow?.document.write('</head><body >');
-    printWindow?.document.write('<h1>Table Print</h1>');
-    printWindow?.document.write(tableElement.outerHTML); // Print the table HTML
-    printWindow?.document.write('</body></html>');
-    printWindow?.document.close();
-    printWindow?.focus();
-    printWindow?.print();
-  };
+    printWindow?.document.write('</head><body >')
+    printWindow?.document.write('<h1>Table Print</h1>')
+    printWindow?.document.write(tableElement.outerHTML) // Print the table HTML
+    printWindow?.document.write('</body></html>')
+    printWindow?.document.close()
+    printWindow?.focus()
+    printWindow?.print()
+  }
 
   const handleExportExcel = () => {
     const headers = [
-      'Product Image', 'Category', 'Sub Category', 'Product ID', 'Product Name',
-      'MRP', 'IGST', 'HSN', 'Manufacturer', 'Composition', 'Packing Type',
-      'Packaging', 'Schedule', 'Usage', 'About Salt', 'Status'
-    ];
+      'Product Image',
+      'Category',
+      'Sub Category',
+      'Product ID',
+      'Product Name',
+      'MRP',
+      'IGST',
+      'HSN',
+      'Manufacturer',
+      'Composition',
+      'Packing Type',
+      'Packaging',
+      'Schedule',
+      'Usage',
+      'About Salt',
+      'Status'
+    ]
 
     const rows = table.getRowModel().rows.map(row => {
-      return row.getAllCells().map(cell => cell.getValue());
-    });
+      return row.getAllCells().map(cell => cell.getValue())
+    })
 
-    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
+    const workbook = XLSX.utils.book_new()
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Products')
 
-    XLSX.writeFile(workbook, 'products.xlsx');
-  };
+    XLSX.writeFile(workbook, 'products.xlsx')
+  }
 
   const handleExportCSV = () => {
     const headers = [
-      'Product Image', 'Category', 'Sub Category', 'Product ID', 'Product Name',
-      'MRP', 'IGST', 'HSN', 'Manufacturer', 'Composition', 'Packing Type',
-      'Packaging', 'Schedule', 'Usage', 'About Salt', 'Status'
-    ];
+      'Product Image',
+      'Category',
+      'Sub Category',
+      'Product ID',
+      'Product Name',
+      'MRP',
+      'IGST',
+      'HSN',
+      'Manufacturer',
+      'Composition',
+      'Packing Type',
+      'Packaging',
+      'Schedule',
+      'Usage',
+      'About Salt',
+      'Status'
+    ]
 
-    const csvRows = [];
+    const csvRows = []
 
     // Add the headers
-    csvRows.push(headers.join(','));
+    csvRows.push(headers.join(','))
 
     // Add the data
     table.getRowModel().rows.forEach(row => {
-      const rowData = row.getAllCells().map(cell => `"${cell.getValue()}"`).join(',');
+      const rowData = row
+        .getAllCells()
+        .map(cell => `"${cell.getValue()}"`)
+        .join(',')
 
-      csvRows.push(rowData);
-    });
+      csvRows.push(rowData)
+    })
 
     // Create CSV blob and trigger download
-    const csvBlob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8' });
+    const csvBlob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8' })
 
-    saveAs(csvBlob, 'products.csv');
-  };
+    saveAs(csvBlob, 'products.csv')
+  }
 
   const importProductSchema = yup.object().shape({
     vendor_id: yup.string().required('Vendor is required'),
@@ -592,7 +622,9 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/get-all-product`, {
+        withCredentials: true
+      })
 
       dispatch(setProductData(response.data.products)) // Ensure `setData` action is correctly set
     } catch (err) {
@@ -621,8 +653,6 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
           },
           onUploadProgress: event => {
             if (event.total) {
-
-
               // setProgress(Math.round((event.loaded / event.total) * 100))
 
               const percent = Math.round((event.loaded / event.total) * 100)
@@ -635,16 +665,14 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
               }
             }
           },
-          withCredentials: true,
+          withCredentials: true
         })
         .then((res: any) => {
-
           setProgress(100)
           setLoading(false)
           fetchProducts()
 
           setExcelData(res.data.data)
-
 
           // setShowProgressBar(false)
         })
@@ -661,10 +689,13 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   const onSubmitInsert = async () => {
     try {
       await axios
-        .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/insert-product-using-excel`, { data: excelData }, { withCredentials: true, })
+        .post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/product/insert-product-using-excel`,
+          { data: excelData },
+          { withCredentials: true }
+        )
         .then((res: any) => {
-
-          console.log("res", res)
+          console.log('res', res)
           toast.success('Data Inserted Successfuly !')
           setImportModel(false)
         })
@@ -683,48 +714,47 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
 
   return (
     <>
-      <Card >
+      <Card>
         <CardHeader title='Products' className='pbe-4' />
         {/* <TableFilters setData={setData} tableData={tableData} /> */}
         <Divider />
         <div className='flex justify-between gap-4 p-4 flex-col items-start sm:flex-row sm:items-center'>
-          <div className="flex justify-between gap-4  flex-col items-start sm:flex-row sm:items-center">
-
+          <div className='flex justify-between gap-4  flex-col items-start sm:flex-row sm:items-center'>
             <Button
-              color="secondary"
-              variant="outlined"
-              startIcon={<FaFileCsv size={16} className="text-xl" />}
-              className="is-full sm:is-auto h-6 py-3"
+              color='secondary'
+              variant='outlined'
+              startIcon={<FaFileCsv size={16} className='text-xl' />}
+              className='is-full sm:is-auto h-6 py-3'
               onClick={handleExportCSV}
             >
               Export CSV
             </Button>
 
             <Button
-              color="secondary"
-              variant="outlined"
-              startIcon={<FaFileExcel className="text-xl" size={16} />}
-              className="is-full sm:is-auto h-6 py-3"
+              color='secondary'
+              variant='outlined'
+              startIcon={<FaFileExcel className='text-xl' size={16} />}
+              className='is-full sm:is-auto h-6 py-3'
               onClick={handleExportExcel}
             >
               Export Excel
             </Button>
 
             <Button
-              color="secondary"
-              variant="outlined"
-              startIcon={<FaPrint size={16} className="text-xl" />}
-              className="is-full sm:is-auto h-6 py-3"
+              color='secondary'
+              variant='outlined'
+              startIcon={<FaPrint size={16} className='text-xl' />}
+              className='is-full sm:is-auto h-6 py-3'
               onClick={handlePrint}
             >
               Print
             </Button>
 
             <Button
-              color="secondary"
-              variant="outlined"
-              startIcon={<FaFilePdf size={16} className="text-xl" />}
-              className="is-full sm:is-auto h-6 py-3"
+              color='secondary'
+              variant='outlined'
+              startIcon={<FaFilePdf size={16} className='text-xl' />}
+              className='is-full sm:is-auto h-6 py-3'
               onClick={handleExportPDF}
             >
               Export PDF
@@ -747,7 +777,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
           </div>
         </div>
         <div className='overflow-x-auto'>
-          <table id="table-to-print" className={tableStyles.table}>
+          <table id='table-to-print' className={tableStyles.table}>
             <thead>
               {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>
@@ -857,8 +887,6 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
                         defaultValue=''
                         label='Select Vendor'
                         onChange={(e: any) => {
-
-
                           setValue('vendor_id', e.target?.value)
                         }}
                         labelId='vendor-select'
