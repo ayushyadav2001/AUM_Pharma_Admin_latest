@@ -126,7 +126,7 @@ const basicInfoDefaultValues = {
   packaging: '',
   packing_type: '',
   mrp: '',
-  discount: null,
+  discount: 0,
   prescription_required: false,
   stock_management_required: true,
   alert_quantity: ''
