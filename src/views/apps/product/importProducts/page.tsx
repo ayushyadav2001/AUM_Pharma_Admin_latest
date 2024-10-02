@@ -60,9 +60,24 @@ const ImportProduct = () => {
       width: 20
     },
     {
+      fieldName: 'product_type', // Added product_type
+      headerName: 'Product Type',
+      width: 20
+    },
+    {
+      fieldName: 'label',
+      headerName: 'Label',
+      width: 20
+    },
+    {
+      fieldName: 'quantity',
+      headerName: 'Quantity',
+      width: 20
+    },
+    {
       fieldName: 'product_images',
       headerName: 'Product Images',
-      width: 30 // Adjusted to accommodate multiple images
+      width: 30
     },
     {
       fieldName: 'product_name',
@@ -72,6 +87,11 @@ const ImportProduct = () => {
     {
       fieldName: 'manufacturer',
       headerName: 'Manufacturer',
+      width: 25
+    },
+    {
+      fieldName: 'manufacturer_address',
+      headerName: 'Manufacturer Address',
       width: 25
     },
     {
@@ -200,6 +220,11 @@ const ImportProduct = () => {
       width: 30
     },
     {
+      fieldName: 'if_miss', // Added if_miss
+      headerName: 'If Missed',
+      width: 25
+    },
+    {
       fieldName: 'country_of_origin',
       headerName: 'Country Of Origin',
       width: 20
@@ -207,6 +232,11 @@ const ImportProduct = () => {
     {
       fieldName: 'faqs',
       headerName: 'FAQs',
+      width: 30
+    },
+    {
+      fieldName: 'fact_box', // Added fact_box (can display the label-value pairs in a structured way)
+      headerName: 'Fact Box',
       width: 30
     }
   ])
@@ -251,10 +281,9 @@ const ImportProduct = () => {
 
   const onSubmit = async (data: any) => {
     try {
-      // Create FormData object
+      setLoading(true) // Set loading state to true
 
-      setLoading(true)
-
+      // Create a FormData object
       const formData = new FormData()
 
       formData.append('product_excel', data.product_excel)
@@ -262,19 +291,16 @@ const ImportProduct = () => {
       // Make API call with progress tracking
       await axios
         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/product/insert-product-using-excel`, formData, {
+          withCredentials: true, // Send cookies along with the request
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data' // Set content type to multipart/form-data
           },
-          withCredentials: true,
           onUploadProgress: event => {
             if (event.total) {
-              // setProgress(Math.round((event.loaded / event.total) * 100))
-
               const percent = Math.round((event.loaded / event.total) * 100)
 
               if (percent >= 100) {
                 setProgress(100)
-                setLoading(false)
               } else {
                 setProgress(prevProgress => Math.max(prevProgress, percent))
               }
@@ -282,31 +308,25 @@ const ImportProduct = () => {
           }
         })
         .then((res: any) => {
-          if (res.data.errorData.length > 0) {
+          setLoading(false) // Set loading state to false after the response
+
+          if (res.data.errorData && res.data.errorData.length > 0) {
             // Handle error case
-            setLoading(false)
             toast.error('Some products failed to insert. Please check the errors.')
-
-            // Optionally log or display error details
             console.error('Error Data:', res.data.errorData)
-
-            // You can choose to show these errors to the user
-            // e.g., setErrorData(res.data.errorData);
           } else {
-            setProgress(100)
-            setLoading(false)
-            fetchProducts()
-            toast.success('Products Inserted Successfully !')
-            router.push('/apps/products')
-
-            setExcelData(res.data.data)
+            // Success case
+            fetchProducts() // Fetch updated product list
+            toast.success('Products Inserted Successfully!')
+            router.push('/apps/products') // Redirect after successful insertion
+            setExcelData(res.data.data) // Set Excel data if necessary
           }
         })
     } catch (error) {
       // Handle error (e.g., show an error message)
-      console.error('Error uploading file :', error)
-
-      setLoading(false)
+      console.error('Error uploading file:', error)
+      toast.error('Failed to upload the file. Please try again.') // Notify user of failure
+      setLoading(false) // Ensure loading state is reset on error
     }
   }
 
@@ -394,6 +414,168 @@ const ImportProduct = () => {
                 >
                   Download template file
                 </Button>
+              </Grid>
+
+              <Grid container spacing={2}>
+                {/* Informative UI for fields */}
+                <Grid item xs={12}>
+                  <Typography variant='h6' className='mb-2'>
+                    Upload Product Excel
+                  </Typography>
+                  <Typography variant='body2' className='mb-4'>
+                    Please ensure your Excel file contains the necessary product information in the specified format.
+                    The required fields include:
+                  </Typography>
+
+                  {/* Required Fields List */}
+                  <ul className='list-disc pl-5 mb-4'>
+                    <li>
+                      <strong>Product Code:</strong>
+                      <span className='ml-2'>
+                        {`    A unique identifier for each product, e.g., "P12345". Ensure this code is not duplicated in your
+                        product list.`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Product Type:</strong>
+                      <span className='ml-2'>
+                        {` Indicate the type of product as either "drug" or "otc" (over-the-counter). This categorization
+                        helps in managing inventory.`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Label:</strong>
+                      <span className='ml-2'>
+                        {`   Specify the label for the product, such as "ADD TO CART", "NOT FOR SALE", or other relevant tags
+                        that describe its availability.`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Quantity:</strong>
+                      <span className='ml-2'>
+                        {`    Enter the quantity in appropriate units, e.g., "10 ml", "10 tablets", "1KG". Make sure to match
+                        the format that your product is sold in.`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Product Images:</strong>
+                      <span className='ml-2'>
+                        {`   Provide an array of image paths for the product images, such as`}
+                        <code>
+                          {[
+                            '/uploads/Medicine/1_2.jpg',
+                            '/uploads/Medicine/1_1.jpg',
+                            '/uploads/Medicine/1_3.jpg',
+                            '/uploads/Medicine/1_4.jpg'
+                          ]}
+                        </code>
+                        . Ensure images are high quality and represent the product accurately.
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Product Name:</strong>
+                      <span className='ml-2'>
+                        {`    The name of the product as it should appear to customers, e.g., "Aspirin 500mg". Ensure that it
+                        is descriptive and clear.`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Manufacturer:</strong>
+                      <span className='ml-2'>
+                        {`     Select the manufacturer from the Manufacturer Master. If creating a new manufacturer, include
+                        both the name (e.g., "ABC Pharmaceuticals") and its address.`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Packaging:</strong>
+                      <span className='ml-2'>
+                        {`   Choose the packaging type from the Packaging Master, which defines how the product is packaged
+                        (e.g., "Bottle", "Box").`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Packing Type:</strong>
+                      <span className='ml-2'>
+                        {`      Specify the packing type from the Packing Type Master, which may include options like "Blister",
+                        "Strip", etc.`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Product Form:</strong>
+                      <span className='ml-2'>
+                        {`    Select the product form from the Product Form Master, such as "Tablet", "Syrup", "Cream", etc.`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>MRP:</strong>
+                      <span className='ml-2'>
+                        {`    Enter the Maximum Retail Price as a number (e.g., "999" or "100.34"). This is the price
+                        customers will pay.`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Discount:</strong>
+                      <span className='ml-2'>
+                        {`   Specify any discount percentage (e.g., "2" for 2%). This will be applied to the MRP for sales.`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Prescription Required:</strong>
+                      <span className='ml-2'>
+                        {` Indicate whether a prescription is needed for this product. Use "true" if required, otherwise
+                        use "false".`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Stock Management Required:</strong>
+                      <span className='ml-2'>
+                        {`  Specify if stock management is needed for this product. Use "true" to enable stock tracking,
+                        otherwise "false".`}
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Alert Quantity:</strong>
+                      <span className='ml-2'>
+                        If stock management is enabled, enter the alert quantity to notify when stock is low. If not,
+                        set this to 0.
+                      </span>
+                    </li>
+                    {/* Additional Fields */}
+                    <li>
+                      <strong>
+                        Introduction, Description, Salt Composition, Benefits, Use Of, How To Use, Safety Advice,
+                        Ingredients, Primary Use, Storage, Common Side Effects, Alcohol Interaction, Pregnancy
+                        Interaction, Lactation Interaction, Driving Interaction, Kidney Interaction, Liver Interaction,
+                        If Missed, Country Of Origin:
+                      </strong>
+                      <span className='ml-2'>
+                        Provide detailed information in these fields as required, ensuring clarity and completeness for
+                        each aspect of the product.
+                      </span>
+                    </li>
+                    <li>
+                      <strong>FAQs:</strong>
+                      <span className='ml-2'>
+                        List common questions and answers in a clear format, e.g.,
+                        <code>How to take this medicine?: You should take it after meals;</code>
+                        <code>What are the side effects?: Nausea, Dizziness;</code>
+                        <code>What should I avoid while taking this medicine?: Avoid alcohol.</code>
+                      </span>
+                    </li>
+                    <li>
+                      <strong>Fact Box:</strong>
+                      <span className='ml-2'>
+                        Provide key information in a compact format, e.g.,
+                        <code>Manufacturer: ABC Pharmaceuticals; Dosage: 1 Tablet Daily;</code>
+                      </span>
+                    </li>
+                  </ul>
+
+                  <Typography variant='body2'>
+                    Ensure the file is in .xlsx format and does not exceed 5MB in size. If you have any questions,
+                    please refer to the documentation or contact support.
+                  </Typography>
+                </Grid>
               </Grid>
 
               <Grid item xs={12} md={12}>
