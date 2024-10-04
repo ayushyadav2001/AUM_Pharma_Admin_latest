@@ -484,6 +484,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             {dictionary['navigation'].homeSectionIndexing}
           </MenuItem>
           <MenuItem href={`/${locale}/apps/brands`}>{dictionary['navigation'].brands}</MenuItem>
+          <MenuItem href={`/${locale}/apps/trending-today`}>{dictionary['navigation'].trendingToday}</MenuItem>
         </SubMenu>
         <SubMenu label={dictionary['navigation'].masters} icon={<i className='ri-archive-line' />}>
           <MenuItem href={`/${locale}/apps/category`}>{dictionary['navigation'].categorys}</MenuItem>

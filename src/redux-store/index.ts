@@ -30,6 +30,7 @@ import secondarySubCategorySlice from './slices/SecondarySlice'
 import homeSectionSlice from './slices/homeSlice'
 import homeSliderSlice from './slices/homeSliderSlice'
 import brandsSlice from './slices/brandsSlice'
+import trendingTodaySlice from './slices/trendingTodaySlice'
 
 export const store = configureStore({
   reducer: {
@@ -56,7 +57,8 @@ export const store = configureStore({
     secondarySubCategory: secondarySubCategorySlice,
     homeSection: homeSectionSlice,
     homeSlider: homeSliderSlice,
-    brands: brandsSlice
+    brands: brandsSlice,
+    trendingToday: trendingTodaySlice
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false })
 })
